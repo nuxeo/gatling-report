@@ -17,6 +17,8 @@
 
 import org.apache.log4j.Logger;
 
+import java.util.Locale;
+
 public class App implements Runnable {
     private final static Logger log = Logger.getLogger(App.class);
 
