@@ -14,6 +14,7 @@
  * Contributors:
  *     Benoit Delbosc
  */
+
 import org.apache.log4j.Logger;
 
 public class App implements Runnable {

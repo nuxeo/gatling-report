@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.nuxeo.tools</groupId>
@@ -6,7 +7,7 @@
   <version>1.0-SNAPSHOT</version>
 
   <dependencies>
-   <dependency>
+    <dependency>
       <groupId>co.paralleluniverse</groupId>
       <artifactId>capsule</artifactId>
       <version>1.0.1</version>
@@ -24,10 +25,10 @@
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
       <version>1.2.17</version>
-   </dependency>
- </dependencies>
+    </dependency>
+  </dependencies>
 
- <build>
+  <build>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -38,7 +39,7 @@
           <target>1.8</target>
         </configuration>
       </plugin>
-     <plugin>
+      <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <version>2.4</version>
         <configuration>
@@ -59,7 +60,7 @@
             </manifestEntries>
           </archive>
           <descriptors>
-            <descriptor>src/main/assembly/capsule-fat.xml</descriptor> 
+            <descriptor>src/main/assembly/capsule-fat.xml</descriptor>
             <!-- <descriptor>src/main/assembly/capsule.xml</descriptor> --> <!-- uncomment for a thin capsule -->
           </descriptors>
         </configuration>
@@ -73,7 +74,7 @@
           </execution>
         </executions>
       </plugin>
-  </plugins>
+    </plugins>
 
   </build>
 
