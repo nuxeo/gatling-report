@@ -1,4 +1,3 @@
-import javafx.scene.paint.Stop;
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 
@@ -12,7 +11,7 @@ public class Stat {
     String name;
     long start, end;
     long count, errorCount;
-    long min, max, mean, stddev, p50, p95, p99;
+    long min, max, avg, stddev, p50, p95, p99;
     double rps;
     double duration;
     private List<Double> durations;
@@ -44,12 +43,14 @@ public class Stat {
         double[] times = getDurationAsArray();
         min = (long) StatUtils.min(times);
         max = (long) StatUtils.max(times);
-        mean = (long) StatUtils.mean(times);
+        double sum = 0;
+        for (double d : times) sum += d;
+        avg = (long) sum/times.length;
         p50 = (long) StatUtils.percentile(times, 50.0);
         p95 = (long) StatUtils.percentile(times, 95.0);
         p99 = (long) StatUtils.percentile(times, 99.0);
         StandardDeviation stdDev = new StandardDeviation();
-        stddev = (long) stdDev.evaluate(times, mean);
+        stddev = (long) stdDev.evaluate(times, avg);
         this.duration = duration;
         rps = (count - errorCount) / duration;
     }
@@ -57,8 +58,8 @@ public class Stat {
     @Override
     public String toString() {
         return String.format(Locale.ENGLISH, "%s\t%s\t%.2f\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%.2f",
-                simulation, name, duration, start, end, count, errorCount, min, mean, max, stddev,
-                p50, p95, p99, rps);
+                simulation, name, duration, start, end, count, errorCount, min, p50, p95, p99, max, avg, stddev,
+                rps);
     }
 
     private double[] getDurationAsArray() {
