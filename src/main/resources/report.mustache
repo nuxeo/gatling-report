@@ -1,23 +1,52 @@
 <head>
-  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <!-- script src="https://cdn.plot.ly/plotly-latest.min.js"></script-->
+  <script src="file:///home/ben/dev/tools/gatling-report/src/main/resources/plotly-latest.min.js"></script>
 </head>
 
 <body>
 
-  <div id="myDiv" style="width: 480px; height: 380px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<h1>{{simStat.scenario}} {{simStat.startDate}}</h1>
+
+  <div id="totalDiv" style="width: 480px; height: 380px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+
+  <div id="responseDiv" style="width: 480px; height: 380px;"></div>
+
   <script>
 var data = [{
-  values: [530, 55],
+  values: [{{simStat.successCount}}, {{simStat.errorCount}}],
   labels: ['Success', 'Error'],
+  title: 'all',
   type: 'pie'
 }];
-
-var layout = {
+var layout1 = {
   height: 400,
-  width: 500
+  width: 500,
+  title: '{{simStat.scenario}}'
+};
+var layout2 = {
+  height: 400,
+  width: 500,
+  yaxis: {title: 'Time ms', type: 'log'}
 };
 
-Plotly.newPlot('myDiv', data, layout);
+Plotly.newPlot('totalDiv', data, layout1);
+var data = [
+  {
+    y: {{simStat.durations}},
+    boxpoints: 'all',
+    jitter: 0.3,
+    pointpos: -1.8,
+    type: 'box'
+  }
+];
+
+Plotly.newPlot('responseDiv', data, layout2);
+
+{{#simStat.
+
   </script>
+
+
+
 </body>
 

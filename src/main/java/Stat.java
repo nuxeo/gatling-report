@@ -8,15 +8,15 @@ import java.util.Locale;
 
 
 public class Stat {
-    private String scenario;
-    private String request;
-    private String startDate;
-    private long start, end;
-    private long count, successCount, errorCount;
-    private long min, max, avg, stddev, p50, p95, p99;
-    private double rps;
-    private double duration;
-    private List<Double> durations;
+    String scenario;
+    String request;
+    String startDate;
+    long start, end;
+    long count, successCount, errorCount;
+    long min, max, avg, stddev, p50, p95, p99;
+    double rps;
+    double duration;
+    List<Double> durations;
 
     public Stat(String scenario, String request, long start) {
         this.scenario = scenario;

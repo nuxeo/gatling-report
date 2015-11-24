@@ -65,6 +65,9 @@ public class App implements Runnable {
     private void renderPlotyReport(File outputDirectory, List<SimulationStat> stats) {
         outputDirectory.mkdirs();
         try {
+            // TODO here only take care of the first report
+            SimulationStat stat = stats.get(0);
+            stat.computeStat();
             String reportPath = PlotlyReport.generate(outputDirectory, stats.get(0));
             log.info("Report generated: " + reportPath);
         } catch (IOException e) {

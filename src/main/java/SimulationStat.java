@@ -1,15 +1,20 @@
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SimulationStat {
-    private String filePath;
-    private String simulationName;
-    private Stat simStat;
-    private Map<String, Stat> reqStats;
+    String filePath;
+    String simulationName;
+    Stat simStat;
+    Map<String, Stat> reqStats;
 
     private static final String ALL_REQUESTS = "_all";
     private long start;
+
+    public Collection<Stat> requests() {
+        return reqStats.values();
+    }
 
     public SimulationStat(String filePath) {
         this.filePath = filePath;
