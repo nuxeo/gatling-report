@@ -7,8 +7,8 @@ import java.util.Locale;
 
 
 public class Stat {
-    String simulation;
-    String name;
+    String scenario;
+    String request;
     long start, end;
     long count, errorCount;
     long min, max, avg, stddev, p50, p95, p99;
@@ -16,9 +16,10 @@ public class Stat {
     double duration;
     private List<Double> durations;
 
-    public Stat(String simulation, String name) {
-        this.simulation = simulation;
-        this.name = name;
+    public Stat(String scenario, String request, long start) {
+        this.scenario = scenario;
+        this.request = request;
+        this.start = start;
         durations = new ArrayList<>();
     }
 
@@ -57,8 +58,8 @@ public class Stat {
 
     @Override
     public String toString() {
-        return String.format(Locale.ENGLISH, "%s\t%s\t%.2f\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%.2f",
-                simulation, name, duration, start, end, count, errorCount, min, p50, p95, p99, max, avg, stddev,
+        return String.format(Locale.ENGLISH, "%s\t%s\t%s\t%.2f\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%.2f",
+                scenario, request, start, duration, end, count, errorCount, min, p50, p95, p99, max, avg, stddev,
                 rps);
     }
 
@@ -72,5 +73,13 @@ public class Stat {
 
     public double getDuration() {
         return duration;
+    }
+
+    public void setScenario(String name) {
+        scenario = name;
+    }
+
+    public void setStart(long start) {
+        this.start = start;
     }
 }

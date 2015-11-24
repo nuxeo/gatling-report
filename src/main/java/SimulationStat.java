@@ -1,39 +1,50 @@
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class SimulationStat {
-
-    private static final String ALL = "all";
+    String filepath;
     String simulationName;
-    Stat simulation;
-    Map<String, Stat> requests;
+    private Stat simStat;
+    Map<String, Stat> reqStats;
 
-    public SimulationStat(String simulation) {
-        simulationName = simulation;
-        this.simulation = new Stat(simulation, ALL);
-        requests = new HashMap<>();
+    private static final String ALL_REQUESTS = "_all";
+    private long start;
+
+    public SimulationStat(String filepath) {
+        this.filepath = filepath;
+        this.simStat = new Stat(filepath, ALL_REQUESTS, 0);
+        reqStats = new HashMap<>();
     }
 
-    public void addRequest(String name, long start, long end, boolean success) {
-        Stat request = requests.get(name);
+    public void addRequest(String requestName, long start, long end, boolean success) {
+        Stat request = reqStats.get(requestName);
         if (request == null) {
-            request = new Stat(simulationName, name);
-            requests.put(name, request);
+            request = new Stat(simulationName, requestName, this.start);
+            reqStats.put(requestName, request);
         }
         request.add(start, end, success);
-        simulation.add(start, end, success);
+        simStat.add(start, end, success);
     }
 
     public void computeStat() {
-        simulation.computeStat();
-        requests.values().forEach(request -> request.computeStat(simulation.duration));
+        simStat.computeStat();
+        reqStats.values().forEach(request -> request.computeStat(simStat.duration));
     }
 
     @Override
     public String toString() {
-        return simulation.toString() + "\n" + requests.values().stream().map(Stat::toString).collect(Collectors
+        return simStat.toString() + "\n" + reqStats.values().stream().map(Stat::toString).collect(Collectors
                 .joining("\n"));
+    }
+
+    public void setSimulationname(String name) {
+        this.simulationName = name;
+        simStat.setScenario(name);
+    }
+
+    public void setStart(long start) {
+        this.start = start;
+        simStat.setStart(start);
     }
 }
