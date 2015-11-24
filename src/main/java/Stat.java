@@ -5,11 +5,14 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class Stat {
     String scenario;
     String request;
+    static AtomicInteger statCounter = new AtomicInteger();
+    int indice;
     String startDate;
     long start, end;
     long count, successCount, errorCount;
@@ -23,6 +26,7 @@ public class Stat {
         this.request = request;
         this.start = start;
         durations = new ArrayList<>();
+        indice = statCounter.incrementAndGet();
     }
 
     public void add(long start, long end, boolean success) {

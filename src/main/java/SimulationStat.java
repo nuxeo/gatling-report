@@ -1,5 +1,7 @@
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -12,8 +14,8 @@ public class SimulationStat {
     private static final String ALL_REQUESTS = "_all";
     private long start;
 
-    public Collection<Stat> requests() {
-        return reqStats.values();
+    public List<Stat> getRequests() {
+        return new ArrayList<>(reqStats.values());
     }
 
     public SimulationStat(String filePath) {
