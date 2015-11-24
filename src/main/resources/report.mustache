@@ -7,11 +7,9 @@
 
 <h1>{{simStat.scenario}} {{simStat.startDate}}</h1>
 
-  <div id="totalDiv" style="width: 480px; height: 380px;"><!-- Plotly chart will be drawn inside this DIV --></div>
-
-  <div id="responseDiv" style="width: 480px; height: 380px;"></div>
-
-  <div id="allDiv" style="width: 480px; height: 380px;"></div>
+  <div id="totalDiv" style="width: 400px; height: 300px;">/div>
+  <div id="responseDiv" style="width: 400px; height: 300px;"></div>
+  <div id="allDiv" style="width: 1200px; height: 600px;"></div>
 
   <script>
 var data = [{
@@ -21,13 +19,13 @@ var data = [{
   type: 'pie'
 }];
 var layout1 = {
-  height: 400,
-  width: 500,
+  height: 300,
+  width: 400,
   title: '{{simStat.scenario}}'
 };
 var layout2 = {
-  height: 400,
-  width: 500,
+  height: 300,
+  width: 400,
   yaxis: {title: 'Time ms', type: 'log'}
 };
 
@@ -55,6 +53,7 @@ var data{{indice}} = {
     y: {{durations}},
     boxpoints: 'all',
     jitter: 0.2,
+    pointpos: -5,
     name: '{{request}}',
     type: 'box'
   };

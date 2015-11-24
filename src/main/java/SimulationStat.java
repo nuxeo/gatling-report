@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +17,14 @@ public class SimulationStat {
     private long start;
 
     public List<Stat> getRequests() {
-        return new ArrayList<>(reqStats.values());
+        List<Stat> ret = new ArrayList<>(reqStats.values());
+    Collections.sort(ret, new Comparator<Stat>() {
+            @Override
+            public int compare(Stat a, Stat b) {
+                return (int) (a.avg - b.avg);
+            }
+        });
+        return ret;
     }
 
     public SimulationStat(String filePath) {
