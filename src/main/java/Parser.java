@@ -1,5 +1,4 @@
 import au.com.bytecode.opencsv.CSVReader;
-import jdk.nashorn.internal.ir.ThrowNode;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,7 +36,7 @@ public class Parser {
                         throw new IllegalArgumentException(String.format("Invalid simulation file: %s expecting " +
                         "Gatling 2.x format", file.getAbsolutePath()));
                     }
-                    ret.setSimulationname(line[1]);
+                    ret.setSimulationName(line[1]);
                     ret.setStart(Long.parseLong(line[3]));
                     break;
                 case REQUEST:
