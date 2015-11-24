@@ -15,21 +15,101 @@
  *     Benoit Delbosc
  */
 
+import org.apache.commons.math3.stat.descriptive.AggregateSummaryStatistics;
 import org.apache.log4j.Logger;
+import sun.reflect.generics.tree.ReturnType;
 
-import java.util.Locale;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class App implements Runnable {
     private final static Logger log = Logger.getLogger(App.class);
+    private static final String USAGE = "java -jar gatling-report.jar simulation.log [simulation.log.2 ...] " +
+            "outputDirectory";
+    private final String[] args;
+
+    public App(String[] args) {
+        this.args = args;
+    }
 
     @Override
     public void run() {
-        log.info("Starting app...");
-        log.info("End of app");
+        List<SimulationStat> stats = getSimulationStats();
+        renderStats(stats, getOutputDirectory());
     }
 
+    private List<SimulationStat> getSimulationStats() {
+        List<File> files = getSimulationFiles();
+        List<SimulationStat> stats = new ArrayList<>(files.size());
+        for (File file : files) {
+            log.info("Parsing " + file.getAbsolutePath());
+            try {
+                stats.add(new Parser(file).parse());
+            } catch (IOException e) {
+                log.error("Invalid file: " + file.getAbsolutePath(), e);
+            }
+        }
+        return stats;
+    }
+
+    private void renderStats(List<SimulationStat> stats, File outputDirectory) {
+        if (outputDirectory == null) {
+            renderStatsAsCSV(stats);
+        } else {
+            renderPlotyReport(outputDirectory, stats);
+        }
+    }
+
+    private void renderPlotyReport(File outputDirectory, List<SimulationStat> stats) {
+        outputDirectory.mkdirs();
+        try {
+            String reportPath = PlotlyReport.generate(outputDirectory, stats.get(0));
+            log.info("Report generated: " + reportPath);
+        } catch (IOException e) {
+            log.error("Can not generate report", e);
+        }
+    }
+
+    private void renderStatsAsCSV(List<SimulationStat> stats) {
+        System.out.println(Stat.header());
+        for (SimulationStat stat: stats) {
+            stat.computeStat();
+            System.out.println(stat);
+        }
+    }
+
+    private void displayHelpAndExit() {
+        System.err.println(USAGE);
+        System.exit(-1);
+    }
+
+    private List<File> getSimulationFiles() {
+        List<File> ret = new ArrayList<>();
+        if (args.length < 1) {
+            displayHelpAndExit();
+        }
+        for (int i = 0; i < args.length - 1; i++) {
+            File file = new File(args[i]);
+            ret.add(new File(args[i]));
+        }
+        File file = new File(args[args.length-1]);
+        if (file.exists() && file.isFile()) {
+            ret.add(file);
+        }
+        return ret;
+    }
+
+    private File getOutputDirectory() {
+        File ret = new File(args[args.length - 1]);
+        if (! ret.isFile()) {
+            return ret;
+        }
+        return null;
+    }
 
     public static void main(String args[]) {
-        (new Thread(new App())).start();
+        (new Thread(new App(args))).start();
     }
 }

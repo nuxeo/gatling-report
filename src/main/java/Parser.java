@@ -29,12 +29,14 @@ public class Parser {
         long start, end;
         boolean success;
         while ((line = reader.readNext()) != null) {
+            if (line.length <= 2) {
+                invalidFile();
+            }
             switch (line[2]) {
                 case RUN:
                     String version = line[5];
                     if (! version.startsWith("2.")) {
-                        throw new IllegalArgumentException(String.format("Invalid simulation file: %s expecting " +
-                        "Gatling 2.x format", file.getAbsolutePath()));
+                        return invalidFile();
                     }
                     ret.setSimulationName(line[1]);
                     ret.setStart(Long.parseLong(line[3]));
@@ -52,6 +54,11 @@ public class Parser {
 
         }
         return ret;
+    }
+
+    private SimulationStat invalidFile() {
+        throw new IllegalArgumentException(String.format("Invalid simulation file: %s expecting " +
+        "Gatling 2.x format", file.getAbsolutePath()));
     }
 
 

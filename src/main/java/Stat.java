@@ -1,6 +1,7 @@
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -9,8 +10,9 @@ import java.util.Locale;
 public class Stat {
     private String scenario;
     private String request;
+    private String startDate;
     private long start, end;
-    private long count, errorCount;
+    private long count, successCount, errorCount;
     private long min, max, avg, stddev, p50, p95, p99;
     private double rps;
     private double duration;
@@ -46,7 +48,7 @@ public class Stat {
         max = (long) StatUtils.max(times);
         double sum = 0;
         for (double d : times) sum += d;
-        avg = (long) sum/times.length;
+        avg = (long) sum / times.length;
         p50 = (long) StatUtils.percentile(times, 50.0);
         p95 = (long) StatUtils.percentile(times, 95.0);
         p99 = (long) StatUtils.percentile(times, 99.0);
@@ -54,13 +56,21 @@ public class Stat {
         stddev = (long) stdDev.evaluate(times, avg);
         this.duration = duration;
         rps = (count - errorCount) / duration;
+        startDate = Instant.ofEpochMilli(start).toString();
+        successCount = count - errorCount;
+    }
+
+    public static String header() {
+        return "scenario\trequest\tstart\tstartDate\tduration\tend\tcount\tsuccessCount\terrorCount\tmin\tp50\tp95" +
+                "\tp99\tmax\tavg\tstddev\trps";
     }
 
     @Override
     public String toString() {
-        return String.format(Locale.ENGLISH, "%s\t%s\t%s\t%.2f\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%.2f",
-                scenario, request, start, duration, end, count, errorCount, min, p50, p95, p99, max, avg, stddev,
-                rps);
+        return String.format(Locale.ENGLISH, "%s\t%s\t%s\t%s\t%.2f\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%.2f",
+                scenario, request, start, startDate, duration, end, count, successCount, errorCount, min, p50, p95,
+                p99, max, avg,
+                stddev, rps);
     }
 
     private double[] getDurationAsArray() {

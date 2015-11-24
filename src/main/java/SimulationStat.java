@@ -34,8 +34,8 @@ public class SimulationStat {
 
     @Override
     public String toString() {
-        return simStat.toString() + "\n" + reqStats.values().stream().map(Stat::toString).collect(Collectors
-                .joining("\n"));
+        return simStat.toString() + "\n" + reqStats.values().stream().map(Stat::toString)
+                .collect(Collectors.joining("\n"));
     }
 
     public void setSimulationName(String name) {
