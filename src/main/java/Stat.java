@@ -2,6 +2,8 @@ import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -16,8 +18,8 @@ public class Stat {
     String startDate;
     long start, end;
     long count, successCount, errorCount;
-    long min, max, avg, stddev, p50, p95, p99;
-    double rps;
+    long min, max, stddev, p50, p95, p99;
+    double rps, avg;
     double duration;
     List<Double> durations;
 
@@ -52,7 +54,7 @@ public class Stat {
         max = (long) StatUtils.max(times);
         double sum = 0;
         for (double d : times) sum += d;
-        avg = (long) sum / times.length;
+        avg = sum / times.length;
         p50 = (long) StatUtils.percentile(times, 50.0);
         p95 = (long) StatUtils.percentile(times, 95.0);
         p99 = (long) StatUtils.percentile(times, 99.0);
@@ -60,8 +62,14 @@ public class Stat {
         stddev = (long) stdDev.evaluate(times, avg);
         this.duration = duration;
         rps = (count - errorCount) / duration;
-        startDate = Instant.ofEpochMilli(start).toString();
+        startDate =  getDateFromInstant(start);
         successCount = count - errorCount;
+    }
+
+    private String getDateFromInstant(long start) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd " +
+                "HH:mm:ss").withZone(ZoneId.systemDefault());
+        return formatter.format(Instant.ofEpochMilli(start));
     }
 
     public static String header() {
@@ -71,7 +79,7 @@ public class Stat {
 
     @Override
     public String toString() {
-        return String.format(Locale.ENGLISH, "%s\t%s\t%s\t%s\t%.2f\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%.2f",
+        return String.format(Locale.ENGLISH, "%s\t%s\t%s\t%s\t%.2f\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%.2f\t%s\t%.2f",
                 scenario, request, start, startDate, duration, end, count, successCount, errorCount, min, p50, p95,
                 p99, max, avg,
                 stddev, rps);

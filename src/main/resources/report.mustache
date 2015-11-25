@@ -7,7 +7,13 @@
 
 <h1>{{simStat.scenario}} {{simStat.startDate}}</h1>
 
-  <div id="totalDiv" style="width: 400px; height: 300px;">/div>
+<div>Bench: {{simStat.scenario}}</div>
+<div>Launched: {{simStat.startDate}}</div>
+<div>Duration: {{simStat.duration}} seconds</div>
+<div>Total requests: {{simStat.count}}</div>
+<div>Average request per second: {{simStat.rps}}</div>
+
+  <div id="totalDiv" style="width: 400px; height: 300px;"></div>
   <div id="responseDiv" style="width: 400px; height: 300px;"></div>
   <div id="allDiv" style="width: 1200px; height: 600px;"></div>
 
@@ -15,27 +21,34 @@
 var data = [{
   values: [{{simStat.successCount}}, {{simStat.errorCount}}],
   labels: ['Success', 'Error'],
-  title: 'all',
-  type: 'pie'
+  type: 'pie',
+  marker: {
+    colors: ['rgb(56,75,126)', 'rgb(255,67,67)']
+  }
 }];
 var layout1 = {
   height: 300,
   width: 400,
-  title: '{{simStat.scenario}}'
+  title: '{{simStat.scenario}} Errors'
 };
-var layout2 = {
-  height: 300,
-  width: 400,
-  yaxis: {title: 'Time ms', type: 'log'}
-};
-
 Plotly.newPlot('totalDiv', data, layout1);
+
+var layout2 = {
+  height: 400,
+  width: 300,
+  yaxis: {
+    title: 'Time ms',
+    type: 'log'
+  },
+  title: 'Response time all requests'
+};
 var data = [
   {
     y: {{simStat.durations}},
     boxpoints: 'all',
     jitter: 0.3,
     pointpos: -1.8,
+    boxmean: 'sd',
     type: 'box'
   }
 ];
@@ -44,7 +57,16 @@ Plotly.newPlot('responseDiv', data, layout2);
 var layout3 = {
   height: 600,
   width: 1200,
-  yaxis: {title: 'Time ms', type: 'log'}
+  yaxis: {
+    title: 'Time ms',
+    type: 'log',
+    zeroline: true
+  },
+  xaxis: {
+    showticklabels: false
+  },
+  title: '{{simStat.scenario}} {{simStat.startDate}} requests response time',
+  showlegend: true
 };
 
 var dataAll = [];
@@ -55,6 +77,7 @@ var data{{indice}} = {
     jitter: 0.2,
     pointpos: -5,
     name: '{{request}}',
+    boxmean: 'sd',
     type: 'box'
   };
 dataAll.push(data{{indice}});
@@ -62,8 +85,6 @@ dataAll.push(data{{indice}});
 Plotly.newPlot('allDiv', dataAll, layout3);
 
   </script>
-
-
 
 </body>
 

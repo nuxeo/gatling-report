@@ -15,9 +15,7 @@
  *     Benoit Delbosc
  */
 
-import org.apache.commons.math3.stat.descriptive.AggregateSummaryStatistics;
 import org.apache.log4j.Logger;
-import sun.reflect.generics.tree.ReturnType;
 
 import java.io.File;
 import java.io.IOException;
@@ -64,11 +62,29 @@ public class App implements Runnable {
 
     private void renderPlotyReport(File outputDirectory, List<SimulationStat> stats) {
         outputDirectory.mkdirs();
+        if (stats.size() == 1) {
+            renderPlotySingleReport(outputDirectory, stats.get(0));
+        } else {
+            renderPlotyTrendReport(outputDirectory, stats);
+        }
+    }
+
+    private void renderPlotyTrendReport(File outputDirectory, List<SimulationStat> stats) {
         try {
-            // TODO here only take care of the first report
-            SimulationStat stat = stats.get(0);
+            for (SimulationStat stat : stats) {
+                stat.computeStat();
+            }
+            String reportPath = PlotlyReport.generate(outputDirectory, stats);
+            log.info("Report generated: " + reportPath);
+        } catch (IOException e) {
+            log.error("Can not generate report", e);
+        }
+    }
+
+    private void renderPlotySingleReport(File outputDirectory, SimulationStat stat) {
+        try {
             stat.computeStat();
-            String reportPath = PlotlyReport.generate(outputDirectory, stats.get(0));
+            String reportPath = PlotlyReport.generate(outputDirectory, stat);
             log.info("Report generated: " + reportPath);
         } catch (IOException e) {
             log.error("Can not generate report", e);
@@ -77,7 +93,7 @@ public class App implements Runnable {
 
     private void renderStatsAsCSV(List<SimulationStat> stats) {
         System.out.println(Stat.header());
-        for (SimulationStat stat: stats) {
+        for (SimulationStat stat : stats) {
             stat.computeStat();
             System.out.println(stat);
         }
@@ -97,7 +113,7 @@ public class App implements Runnable {
             File file = new File(args[i]);
             ret.add(new File(args[i]));
         }
-        File file = new File(args[args.length-1]);
+        File file = new File(args[args.length - 1]);
         if (file.exists() && file.isFile()) {
             ret.add(file);
         }
@@ -106,7 +122,7 @@ public class App implements Runnable {
 
     private File getOutputDirectory() {
         File ret = new File(args[args.length - 1]);
-        if (! ret.isFile()) {
+        if (!ret.isFile()) {
             return ret;
         }
         return null;

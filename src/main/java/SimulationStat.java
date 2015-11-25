@@ -1,7 +1,5 @@
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,12 +16,7 @@ public class SimulationStat {
 
     public List<Stat> getRequests() {
         List<Stat> ret = new ArrayList<>(reqStats.values());
-    Collections.sort(ret, new Comparator<Stat>() {
-            @Override
-            public int compare(Stat a, Stat b) {
-                return (int) (a.avg - b.avg);
-            }
-        });
+        Collections.sort(ret, (a, b) -> (int) (1000 * (a.avg - b.avg)));
         return ret;
     }
 
@@ -50,7 +43,7 @@ public class SimulationStat {
 
     @Override
     public String toString() {
-        return simStat.toString() + "\n" + reqStats.values().stream().map(Stat::toString)
+        return simStat.toString() + "\n" + getRequests().stream().map(Stat::toString)
                 .collect(Collectors.joining("\n"));
     }
 
