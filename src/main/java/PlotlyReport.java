@@ -56,7 +56,7 @@ public class PlotlyReport {
         }
         MustacheFactory mf = new DefaultMustacheFactory();
         Mustache mustache = mf.compile("trend.mustache");
-        mustache.execute(output, new TrendStat(stats)).flush();
+        mustache.execute(output, new TrendContext(stats)).flush();
         return ret;
     }
 

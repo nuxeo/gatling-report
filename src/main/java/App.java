@@ -62,7 +62,7 @@ public class App implements Runnable {
 
     private void renderPlotyReport(File outputDirectory, List<SimulationStat> stats) {
         if (!outputDirectory.mkdirs()) {
-            throw new IllegalArgumentException("Can not create path: " + outputDirectory.toString());
+            log.warn("Overriding existing report directory" + outputDirectory);
         }
         if (stats.size() == 1) {
             renderPlotySingleReport(outputDirectory, stats.get(0));

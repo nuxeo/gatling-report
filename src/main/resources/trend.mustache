@@ -8,9 +8,54 @@
 <h1>{{scenario}} Trend report</h1>
 
   <div id="totalDiv" style="width: 800px; height: 500px;"></div>
+  {{#requests}}
+  <div id="{{indice}}Div" style="width: 800px; height: 500px;"></div>
+  {{/requests}}
 
   <script>
-    var data = {
+    var data = [{
+      type: 'scatter',
+      mode: 'lines',
+      x: {{{all.xvalues}}},
+      y: {{all.yvalues}},
+      line: {
+        width: 2
+      },
+      error_y: {
+        array: {{all.yerrors}},
+        thickness: 0.5,
+        width: 0
+      },
+      name: 'Response time'
+    },
+    {
+      type: 'scatter',
+      mode: 'lines',
+      x: {{{all.xvalues}}},
+      y: {{all.rps}},
+      yaxis: 'y2',
+      name: 'Request per second'
+    }];
+
+    var layout = {
+      title: "{{scenario}} - Response time (avg + stddev)",
+      xaxis: {
+        title: "Date"
+      },
+      yaxis: {
+        title: "Time in ms",
+        rangemode: "nonnegative"
+      },
+      yaxis2: {
+        title: 'Requests per second',
+        overlaying: 'y',
+        side: 'right'
+      }
+    };
+    Plotly.plot('totalDiv', data, layout, {showLink: false});
+
+{{#requests}}
+    var data = [{
       type: 'scatter',
       mode: 'lines',
       x: {{{xvalues}}},
@@ -22,22 +67,20 @@
         array: {{yerrors}},
         thickness: 0.5,
         width: 0
-      }
-    };
-
-    var layout = {
-      title: "{{scenario}} - Response time (avg + stddev)",
-      xaxis: {
-        title: "Date"
       },
-      yaxis: {
-        title: "Time in ms",
-        rangemode: "nonnegative"
-      }
-
-    };
-
-    Plotly.plot('totalDiv', [data], layout, {showLink: false});
+      name: 'Response time'
+    },
+    {
+      type: 'scatter',
+      mode: 'lines',
+      x: {{{xvalues}}},
+      y: {{rps}},
+      yaxis: 'y2',
+      name: 'Request per second'
+     }];
+    layout["title"] = "{{name}} - Response time (avg + stddev)";
+    Plotly.plot('{{indice}}Div', data, layout, {showLink: false});
+{{/requests}}
   </script>
 
 </body>
