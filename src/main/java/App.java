@@ -61,7 +61,9 @@ public class App implements Runnable {
     }
 
     private void renderPlotyReport(File outputDirectory, List<SimulationStat> stats) {
-        outputDirectory.mkdirs();
+        if (!outputDirectory.mkdirs()) {
+            throw new IllegalArgumentException("Can not create path: " + outputDirectory.toString());
+        }
         if (stats.size() == 1) {
             renderPlotySingleReport(outputDirectory, stats.get(0));
         } else {
@@ -71,9 +73,7 @@ public class App implements Runnable {
 
     private void renderPlotyTrendReport(File outputDirectory, List<SimulationStat> stats) {
         try {
-            for (SimulationStat stat : stats) {
-                stat.computeStat();
-            }
+            stats.forEach(SimulationStat::computeStat);
             String reportPath = PlotlyReport.generate(outputDirectory, stats);
             log.info("Report generated: " + reportPath);
         } catch (IOException e) {
@@ -110,7 +110,6 @@ public class App implements Runnable {
             displayHelpAndExit();
         }
         for (int i = 0; i < args.length - 1; i++) {
-            File file = new File(args[i]);
             ret.add(new File(args[i]));
         }
         File file = new File(args[args.length - 1]);

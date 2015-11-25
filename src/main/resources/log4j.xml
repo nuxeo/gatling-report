@@ -3,7 +3,7 @@
 
   <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
     <errorHandler class="org.apache.log4j.helpers.OnlyOnceErrorHandler" />
-    <param name="Target" value="System.out" />
+    <param name="Target" value="System.err" />
     <param name="Threshold" value="INFO" />
 
     <layout class="org.apache.log4j.PatternLayout">
@@ -13,8 +13,8 @@
 
   <appender name="FILE" class="org.apache.log4j.FileAppender">
     <errorHandler class="org.apache.log4j.helpers.OnlyOnceErrorHandler" />
-    <param name="File" value="/tmp/trace.log" />
-    <param name="Append" value="false" />
+    <param name="File" value="/tmp/gatling-report.log" />
+    <param name="Append" value="true" />
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="%d{HH:mm:ss,SSS} [%t] %-5p [%C{1}] %m%n" />
     </layout>

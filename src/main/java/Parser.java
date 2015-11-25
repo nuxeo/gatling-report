@@ -1,3 +1,20 @@
+/*
+ * (C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the GNU Lesser General Public License
+ * (LGPL) version 2.1 which accompanies this distribution, and is available at
+ * http://www.gnu.org/licenses/lgpl-2.1.html
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * Contributors:
+ *     Benoit Delbosc
+ */
+
 import au.com.bytecode.opencsv.CSVReader;
 
 import java.io.File;
@@ -25,7 +42,7 @@ public class Parser {
         SimulationStat ret = new SimulationStat(file.getAbsolutePath());
         CSVReader reader = new CSVReader(getReaderFor(file), '\t');
         String[] line;
-        String name, scenario;
+        String name;
         long start, end;
         boolean success;
         while ((line = reader.readNext()) != null) {
@@ -35,20 +52,19 @@ public class Parser {
             switch (line[2]) {
                 case RUN:
                     String version = line[5];
-                    if (! version.startsWith("2.")) {
+                    if (!version.startsWith("2.")) {
                         return invalidFile();
                     }
                     ret.setSimulationName(line[1]);
                     ret.setStart(Long.parseLong(line[3]));
                     break;
                 case REQUEST:
-                    scenario = line[0];
                     name = line[4];
                     start = Long.parseLong(line[6]);
                     end = Long.parseLong(line[8]);
                     success = OK.equals(line[9]);
                     ret.addRequest(name, start, end, success);
-                break;
+                    break;
 
             }
 
@@ -58,7 +74,7 @@ public class Parser {
 
     private SimulationStat invalidFile() {
         throw new IllegalArgumentException(String.format("Invalid simulation file: %s expecting " +
-        "Gatling 2.x format", file.getAbsolutePath()));
+                "Gatling 2.x format", file.getAbsolutePath()));
     }
 
 
