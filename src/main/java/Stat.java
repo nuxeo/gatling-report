@@ -40,6 +40,10 @@ public class Stat {
     double duration;
     List<Double> durations;
 
+    public String average() {
+        return String.format("%.1f", avg);
+    }
+
     public Stat(String scenario, String request, long start) {
         this.scenario = scenario;
         this.request = request;

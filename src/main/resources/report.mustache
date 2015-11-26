@@ -14,7 +14,7 @@
 <div>Average request per second: {{simStat.rps}}</div>
 
   <div id="totalDiv" style="width: 400px; height: 300px;"></div>
-  <div id="responseDiv" style="width: 400px; height: 300px;"></div>
+  <div id="responseDiv" style="width: 500px; height: 500px;"></div>
   <div id="allDiv" style="width: 1200px; height: 600px;"></div>
 
   <script>
@@ -23,39 +23,48 @@ var data = [{
   labels: ['Success', 'Error'],
   type: 'pie',
   marker: {
-    colors: ['rgb(56,75,126)', 'rgb(255,67,67)']
+    //colors: ['rgb(56,75,126)', 'rgb(255,67,67)']
   }
 }];
 var layout = {
   height: 300,
   width: 400,
-  title: '{{simStat.scenario}} Errors'
+  title: '{{simStat.startDate}} {{simStat.scenario}} Errors',
 };
 Plotly.newPlot('totalDiv', data, layout);
 
 var data = [
   {
     y: {{simStat.durations}},
+    name: 'All ({{simStat.average}}ms)',
     boxpoints: 'all',
     jitter: 0.3,
     pointpos: -1.8,
     boxmean: 'sd',
-    type: 'box'
-  },
+    type: 'box',
+    marker:{
+      size:2,
+      opacity:0.6
+    }
+  }
 ];
 
 var layout = {
-  height: 400,
-  width: 300,
+  height: 500,
+  width: 500,
   yaxis: {
     title: 'Time ms',
     type: 'log'
   },
-  title: 'Response time all requests'
+  showlegend: true,
+  xaxis: {
+      showticklabels: false
+  },
+  title: '{{simStat.scenario}} Total response time'
 };
 Plotly.newPlot('responseDiv', data, layout);
 
-var layout = {
+var layout2 = {
   height: 600,
   width: 1200,
   yaxis: {
@@ -66,11 +75,14 @@ var layout = {
   xaxis: {
     showticklabels: false
   },
-  title: '{{simStat.scenario}} {{simStat.startDate}} requests response time',
-  showlegend: true
+  title: '{{simStat.startDate}} {{simStat.scenario}} Requests response time',
+  showlegend: true,
+  legend: {
+    traceorder: 'reversed'
+  }
 };
 
-var data = [];
+var dataRequest = [];
 {{#requests}}
 var data{{indice}} = {
     y: {{durations}},
@@ -78,13 +90,18 @@ var data{{indice}} = {
     jitter: 0.2,
     pointpos: -5,
     fillcolor: 'cls',
-    name: '{{request}}',
+    name: '{{request}} ({{average}}ms)',
     boxmean: 'sd',
-    type: 'box'
+    type: 'box',
+    marker:{
+       size: 3,
+       opacity:0.7
+    }
+
   };
-data.push(data{{indice}});
+dataRequest.push(data{{indice}});
 {{/requests}}
-Plotly.newPlot('allDiv', data, layout);
+Plotly.newPlot('allDiv', dataRequest, layout2);
 
   </script>
 

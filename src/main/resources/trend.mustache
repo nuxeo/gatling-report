@@ -9,20 +9,29 @@
 
   <div id="totalDiv" style="width: 800px; height: 500px;"></div>
   {{#requests}}
-  <div id="{{indice}}Div" style="width: 800px; height: 500px;"></div>
+  <div id="div{{indice}}" style="width: 800px; height: 500px;"></div>
   {{/requests}}
 
   <script>
+function clone(obj) {
+    if(obj == null || typeof(obj) != 'object')
+        return obj;
+    var temp = new obj.constructor();
+    for(var key in obj)
+        temp[key] = clone(obj[key]);
+    return temp;
+}
+
 var data = [{
   type: 'scatter',
   mode: 'lines',
   x: {{{all.xvalues}}},
-  y: {{all.yvalues}},
+  y: [],
   line: {
     width: 2
   },
   error_y: {
-    array: {{all.yerrors}},
+    array: [],
     thickness: 0.5,
     width: 0
   },
@@ -32,14 +41,14 @@ var data = [{
     type: 'scatter',
     mode: 'lines',
     x: {{{all.xvalues}}},
-    y: {{all.rps}},
+    y: [],
     yaxis: 'y2',
-    name: 'Request per second'
+    name: 'Requests/s'
   }
 ];
 
 var layout = {
-  title: "{{scenario}} - Response time (avg + stddev)",
+  title: "",
   xaxis: {
     title: "Date"
   },
@@ -50,18 +59,28 @@ var layout = {
   yaxis2: {
     title: 'Requests per second',
     overlaying: 'y',
-    side: 'right'
+    side: 'right',
+    rangemode:"tozero"
   }
 };
 
-Plotly.plot('totalDiv', data, layout, {showLink: false});
+var layoutAll = clone(layout);
+layoutAll["title"] = "{{scenario}} - Response time (avg + stddev)";
+var dataAll = clone(data);
+dataAll[0]["y"] = {{{all.yvalues}}};
+dataAll[0]["error_y"]["array"] = {{{all.yerrors}}};
+dataAll[1]["y"] = {{{all.rps}}};
+
+Plotly.plot('totalDiv', dataAll, layoutAll, {showLink: false});
 
 {{#requests}}
-layout["title"] = "{{name}} - Response time (avg + stddev)";
-data[0]["y"] = {{{yvalues}}};
-data[0]["error_y"]["array"] = {{{yerrors}}};
-data[1]["y"] = {{{rps}}};
-Plotly.plot('{{indice}}Div', data, layout, {showLink: false});
+var layout{{indice}} = clone(layout);
+layout{{indice}}["title"] = "{{name}} - Response time (avg + stddev)";
+var data{{indice}} = clone(data);
+data{{indice}}[0]["y"] = {{{yvalues}}};
+data{{indice}}[0]["error_y"]["array"] = {{{yerrors}}};
+data{{indice}}[1]["y"] = {{{rps}}};
+Plotly.plot('div{{indice}}', data{{indice}}, layout{{indice}}, {showLink: false});
 
 {{/requests}}
   </script>
