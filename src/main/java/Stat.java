@@ -40,10 +40,6 @@ public class Stat {
     double duration;
     List<Double> durations;
 
-    public String average() {
-        return String.format("%.1f", avg);
-    }
-
     public Stat(String scenario, String request, long start) {
         this.scenario = scenario;
         this.request = request;
@@ -87,23 +83,22 @@ public class Stat {
         successCount = count - errorCount;
     }
 
+    public void setScenario(String name) {
+        scenario = name;
+    }
+
+    public void setStart(long start) {
+        this.start = start;
+    }
+
+    public String average() {
+        return String.format("%.1f", avg);
+    }
+
     private String getDateFromInstant(long start) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd " +
                 "HH:mm:ss").withZone(ZoneId.systemDefault());
         return formatter.format(Instant.ofEpochMilli(start));
-    }
-
-    public static String header() {
-        return "scenario\trequest\tstart\tstartDate\tduration\tend\tcount\tsuccessCount\terrorCount\tmin\tp50\tp95" +
-                "\tp99\tmax\tavg\tstddev\trps";
-    }
-
-    @Override
-    public String toString() {
-        return String.format(Locale.ENGLISH, "%s\t%s\t%s\t%s\t%.2f\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%.2f\t%s\t%.2f",
-                scenario, request, start, startDate, duration, end, count, successCount, errorCount, min, p50, p95,
-                p99, max, avg,
-                stddev, rps);
     }
 
     private double[] getDurationAsArray() {
@@ -118,11 +113,16 @@ public class Stat {
         return duration;
     }
 
-    public void setScenario(String name) {
-        scenario = name;
+    public static String header() {
+        return "scenario\trequest\tstart\tstartDate\tduration\tend\tcount\tsuccessCount\terrorCount\tmin\tp50\tp95" +
+                "\tp99\tmax\tavg\tstddev\trps";
     }
 
-    public void setStart(long start) {
-        this.start = start;
+    @Override
+    public String toString() {
+        return String.format(Locale.ENGLISH, "%s\t%s\t%s\t%s\t%.2f\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%.2f\t%s\t%.2f",
+                scenario, request, start, startDate, duration, end, count, successCount, errorCount, min, p50, p95,
+                p99, max, avg,
+                stddev, rps);
     }
 }

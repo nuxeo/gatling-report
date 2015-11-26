@@ -1,42 +1,50 @@
+<!DOCTYPE html>
 <head>
   <!-- script src="https://cdn.plot.ly/plotly-latest.min.js"></script-->
   <script src="file:///home/ben/dev/tools/gatling-report/src/main/resources/plotly-latest.min.js"></script>
+  <style media="screen" type="text/css">
+    th {text-align:left}
+    #responseAllDiv {float: left}
+    #countDiv {float: left}
+    #responseDiv {clear:both}
+  </style>
 </head>
 
-<body>
+<h1>{{simStat.startDate}} - Gatling report for simulation {{simStat.scenario}}</h1>
 
-<h1>{{simStat.scenario}} {{simStat.startDate}}</h1>
+<div id="summaryDiv">
+  <table id="summaryTab">
+    <tr><th>Simulation</th><td>{{simStat.scenario}}</td></tr>
+    <tr><th>Launched</th><td>{{simStat.startDate}}</td></tr>
+    <tr><th>Duration (s)</th><td>{{simStat.duration}}</td></tr>
+    <tr><th>Throughput requests/s</th><td>{{simStat.rps}}</td></tr>
+  </table>
+</div>
 
-<div>Bench: {{simStat.scenario}}</div>
-<div>Launched: {{simStat.startDate}}</div>
-<div>Duration: {{simStat.duration}} seconds</div>
-<div>Total requests: {{simStat.count}}</div>
-<div>Average request per second: {{simStat.rps}}</div>
+<div id="responseAllDiv"></div>
+<div id="countDiv"></div>
+<div id="responseDiv"></div>
 
-  <div id="totalDiv" style="width: 400px; height: 300px;"></div>
-  <div id="responseDiv" style="width: 500px; height: 500px;"></div>
-  <div id="allDiv" style="width: 1200px; height: 600px;"></div>
-
-  <script>
-var data = [{
+<script>
+var dataCount = [{
   values: [{{simStat.successCount}}, {{simStat.errorCount}}],
-  labels: ['Success', 'Error'],
+  labels: ['Success {{simStat.successCount}}', 'Error {{simStat.errorCount}}'],
   type: 'pie',
   marker: {
     //colors: ['rgb(56,75,126)', 'rgb(255,67,67)']
   }
 }];
-var layout = {
+var layoutCount = {
   height: 300,
   width: 400,
-  title: '{{simStat.startDate}} {{simStat.scenario}} Errors',
+  title: 'Requests count',
 };
-Plotly.newPlot('totalDiv', data, layout);
+Plotly.newPlot('countDiv', dataCount, layoutCount);
 
-var data = [
+var dataAll = [
   {
     y: {{simStat.durations}},
-    name: 'All ({{simStat.average}}ms)',
+    name: 'Average {{simStat.average}}ms',
     boxpoints: 'all',
     jitter: 0.3,
     pointpos: -1.8,
@@ -48,8 +56,7 @@ var data = [
     }
   }
 ];
-
-var layout = {
+var layoutAll = {
   height: 500,
   width: 500,
   yaxis: {
@@ -60,11 +67,11 @@ var layout = {
   xaxis: {
       showticklabels: false
   },
-  title: '{{simStat.scenario}} Total response time'
+  title: 'Response time all requests'
 };
-Plotly.newPlot('responseDiv', data, layout);
+Plotly.newPlot('responseAllDiv', dataAll, layoutAll);
 
-var layout2 = {
+var layoutResponse = {
   height: 600,
   width: 1200,
   yaxis: {
@@ -75,14 +82,14 @@ var layout2 = {
   xaxis: {
     showticklabels: false
   },
-  title: '{{simStat.startDate}} {{simStat.scenario}} Requests response time',
+  title: 'Response time per request',
   showlegend: true,
   legend: {
     traceorder: 'reversed'
   }
 };
 
-var dataRequest = [];
+var dataResponse = [];
 {{#requests}}
 var data{{indice}} = {
     y: {{durations}},
@@ -99,11 +106,8 @@ var data{{indice}} = {
     }
 
   };
-dataRequest.push(data{{indice}});
+dataResponse.push(data{{indice}});
 {{/requests}}
-Plotly.newPlot('allDiv', dataRequest, layout2);
+Plotly.newPlot('responseDiv', dataResponse, layoutResponse);
 
-  </script>
-
-</body>
-
+</script>

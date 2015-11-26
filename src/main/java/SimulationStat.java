@@ -31,16 +31,16 @@ public class SimulationStat {
     private static final String ALL_REQUESTS = "_all";
     private long start;
 
-    public List<Stat> getRequests() {
-        List<Stat> ret = new ArrayList<>(reqStats.values());
-        Collections.sort(ret, (a, b) -> (int) (1000 * (a.avg - b.avg)));
-        return ret;
-    }
-
     public SimulationStat(String filePath) {
         this.filePath = filePath;
         this.simStat = new Stat(filePath, ALL_REQUESTS, 0);
         reqStats = new HashMap<>();
+    }
+
+    public List<Stat> getRequests() {
+        List<Stat> ret = new ArrayList<>(reqStats.values());
+        Collections.sort(ret, (a, b) -> (int) (1000 * (a.avg - b.avg)));
+        return ret;
     }
 
     public void addRequest(String requestName, long start, long end, boolean success) {
@@ -58,12 +58,6 @@ public class SimulationStat {
         reqStats.values().forEach(request -> request.computeStat(simStat.getDuration()));
     }
 
-    @Override
-    public String toString() {
-        return simStat.toString() + "\n" + getRequests().stream().map(Stat::toString)
-                .collect(Collectors.joining("\n"));
-    }
-
     public void setSimulationName(String name) {
         this.simulationName = name;
         simStat.setScenario(name);
@@ -72,5 +66,11 @@ public class SimulationStat {
     public void setStart(long start) {
         this.start = start;
         simStat.setStart(start);
+    }
+
+    @Override
+    public String toString() {
+        return simStat.toString() + "\n" + getRequests().stream().map(Stat::toString)
+                .collect(Collectors.joining("\n"));
     }
 }
