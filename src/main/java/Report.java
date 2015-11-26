@@ -18,11 +18,14 @@
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Report {
@@ -30,9 +33,14 @@ public class Report {
     private static final String SIMULATION_TEMPLATE = "simulation.mustache";
     private static final String TREND_TEMPLATE = "trend.mustache";
     private static final String INDEX = "index.html";
+    private static final String DEFAULT_SCRIPT = "plotly-latest.min.js";
+    private static final String DEFAULT_CDN_SCRIPT = "https://cdn.plot.ly/plotly-latest.min.js";
+
     private final List<SimulationContext> stats;
     private File outputDirectory;
     private Writer writer;
+    private List<String> scripts = new ArrayList<>();
+    private boolean useCdn = false;
 
     public Report(List<SimulationContext> stats) {
         this.stats = stats;
@@ -48,6 +56,16 @@ public class Report {
         return this;
     }
 
+    public Report addScript(String script) {
+        scripts.add(script);
+        return this;
+    }
+
+    public Report useCdn() {
+        useCdn = true;
+        return this;
+    }
+
     public String create() throws IOException {
         if (stats.size() == 1) {
             createSimulationReport();
@@ -60,13 +78,13 @@ public class Report {
     public void createSimulationReport() throws IOException {
         MustacheFactory mf = new DefaultMustacheFactory();
         Mustache mustache = mf.compile(SIMULATION_TEMPLATE);
-        mustache.execute(getWriter(), stats.get(0)).flush();
+        mustache.execute(getWriter(), stats.get(0).setScripts(getScripts())).flush();
     }
 
     public void createTrendReport() throws IOException {
         MustacheFactory mf = new DefaultMustacheFactory();
         Mustache mustache = mf.compile(TREND_TEMPLATE);
-        mustache.execute(getWriter(), new TrendContext(stats)).flush();
+        mustache.execute(getWriter(), new TrendContext(stats).setScripts(getScripts())).flush();
     }
 
     public Writer getWriter() throws IOException {
@@ -79,5 +97,25 @@ public class Report {
 
     public File getReportPath() {
         return new File(outputDirectory, INDEX);
+    }
+
+    public List<String> getScripts() {
+        if (scripts.isEmpty()) {
+            scripts.add(getOrCreateDefaultScript());
+        }
+        return scripts;
+    }
+
+    public String getOrCreateDefaultScript() {
+        if (outputDirectory == null || useCdn) {
+            return DEFAULT_CDN_SCRIPT;
+        }
+        URL src = getClass().getResource(DEFAULT_SCRIPT);
+        try {
+            FileUtils.copyURLToFile(src, new File(outputDirectory, DEFAULT_SCRIPT));
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Can not copy script: " + src, e);
+        }
+        return DEFAULT_SCRIPT;
     }
 }

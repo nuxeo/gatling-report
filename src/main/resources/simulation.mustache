@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <head>
-  <!-- script src="https://cdn.plot.ly/plotly-latest.min.js"></script-->
-  <script src="file:///home/ben/dev/tools/gatling-report/src/main/resources/plotly-latest.min.js"></script>
+{{#scripts}}
+  <script src="{{.}}"></script>
+{{/scripts}}
   <style media="screen" type="text/css">
     th {text-align:left}
     #responseAllDiv {float: left}

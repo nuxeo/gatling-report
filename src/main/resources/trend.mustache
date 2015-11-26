@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <head>
-  <!-- script src="https://cdn.plot.ly/plotly-latest.min.js"></script-->
-  <script src="file:///home/ben/dev/tools/gatling-report/src/main/resources/plotly-latest.min.js"></script>
+{{#scripts}}
+  <script src="{{.}}"></script>
+{{/scripts}}
 </head>
 
 <h1>{{scenario}} Trend report</h1>
 
 <div id="totalDiv"></div>
 {{#requests}}
-<div id="div{{indice}}""></div>
+<div id="div{{indice}}"></div>
 {{/requests}}
 
 <script>

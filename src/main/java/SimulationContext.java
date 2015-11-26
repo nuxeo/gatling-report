@@ -27,6 +27,7 @@ public class SimulationContext {
     String simulationName;
     RequestStat simStat;
     Map<String, RequestStat> reqStats;
+    List<String> scripts = new ArrayList<>();
 
     private static final String ALL_REQUESTS = "_all";
     private long start;
@@ -66,6 +67,11 @@ public class SimulationContext {
     public void setStart(long start) {
         this.start = start;
         simStat.setStart(start);
+    }
+
+    public SimulationContext setScripts(List<String> scripts) {
+        this.scripts = scripts;
+        return this;
     }
 
     @Override

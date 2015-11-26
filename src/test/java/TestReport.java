@@ -27,7 +27,7 @@ import java.util.List;
  *     bdelbosc
  */
 
-public class TestPlotlyReport {
+public class TestReport {
 
     private static final String SIM_GZ = "simulation-1.log.gz";
     private static final List<String> SIMS_GZ = Arrays.asList("simulation.log.1.gz",

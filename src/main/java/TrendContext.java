@@ -27,6 +27,8 @@ public class TrendContext {
     String scenario;
     TrendStat all = new TrendStat();
     List<TrendStat> requests = new ArrayList<>();
+    List<String> scripts;
+
 
     class TrendStat {
         String name;
@@ -71,6 +73,11 @@ public class TrendContext {
             }
         }
         scenario = String.join(" ", names);
+    }
+
+    public TrendContext setScripts(List<String> scripts) {
+        this.scripts = scripts;
+        return this;
     }
 
     private List<String> getRequestListSorted(SimulationContext stat) {
