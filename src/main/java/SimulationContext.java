@@ -22,31 +22,31 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class SimulationStat {
+public class SimulationContext {
     String filePath;
     String simulationName;
-    Stat simStat;
-    Map<String, Stat> reqStats;
+    RequestStat simStat;
+    Map<String, RequestStat> reqStats;
 
     private static final String ALL_REQUESTS = "_all";
     private long start;
 
-    public SimulationStat(String filePath) {
+    public SimulationContext(String filePath) {
         this.filePath = filePath;
-        this.simStat = new Stat(filePath, ALL_REQUESTS, 0);
+        this.simStat = new RequestStat(filePath, ALL_REQUESTS, 0);
         reqStats = new HashMap<>();
     }
 
-    public List<Stat> getRequests() {
-        List<Stat> ret = new ArrayList<>(reqStats.values());
+    public List<RequestStat> getRequests() {
+        List<RequestStat> ret = new ArrayList<>(reqStats.values());
         Collections.sort(ret, (a, b) -> (int) (1000 * (a.avg - b.avg)));
         return ret;
     }
 
     public void addRequest(String requestName, long start, long end, boolean success) {
-        Stat request = reqStats.get(requestName);
+        RequestStat request = reqStats.get(requestName);
         if (request == null) {
-            request = new Stat(simulationName, requestName, this.start);
+            request = new RequestStat(simulationName, requestName, this.start);
             reqStats.put(requestName, request);
         }
         request.add(start, end, success);
@@ -70,7 +70,7 @@ public class SimulationStat {
 
     @Override
     public String toString() {
-        return simStat.toString() + "\n" + getRequests().stream().map(Stat::toString)
+        return simStat.toString() + "\n" + getRequests().stream().map(RequestStat::toString)
                 .collect(Collectors.joining("\n"));
     }
 }

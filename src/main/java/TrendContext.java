@@ -36,7 +36,7 @@ public class TrendContext {
         List<Long> yerrors = new ArrayList<>();
         List<Double> rps = new ArrayList<>();
 
-        public void add(Stat stat) {
+        public void add(RequestStat stat) {
             if (stat == null) {
                 xvalues.add(null);
                 yvalues.add(null);
@@ -53,26 +53,26 @@ public class TrendContext {
         }
     }
 
-    public TrendContext(List<SimulationStat> stats) {
+    public TrendContext(List<SimulationContext> stats) {
         Set<String> names = new HashSet<>();
         List<String> requestNames = getRequestListSorted(stats.get(0));
         for (String requestName : requestNames) {
             requests.add(new TrendStat());
         }
         Collections.sort(stats, (a, b) -> (int) (a.simStat.start - b.simStat.start));
-        for (SimulationStat simStat : stats) {
+        for (SimulationContext simStat : stats) {
             names.add(simStat.simulationName);
             all.add(simStat.simStat);
             for (int i = 0; i < requestNames.size(); i++) {
                 String name = requestNames.get(i);
-                Stat reqStat = simStat.reqStats.get(name);
+                RequestStat reqStat = simStat.reqStats.get(name);
                 requests.get(i).add(reqStat);
             }
         }
         scenario = String.join(" ", names);
     }
 
-    private List<String> getRequestListSorted(SimulationStat stat) {
+    private List<String> getRequestListSorted(SimulationContext stat) {
         return stat.getRequests().stream().map(s -> s.request).collect(Collectors.toList());
     }
 

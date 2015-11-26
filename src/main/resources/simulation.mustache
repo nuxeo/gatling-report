@@ -28,7 +28,7 @@
 <script>
 var dataCount = [{
   values: [{{simStat.successCount}}, {{simStat.errorCount}}],
-  labels: ['Success {{simStat.successCount}}', 'Error {{simStat.errorCount}}'],
+  labels: ['Success: {{simStat.successCount}}', 'Error: {{simStat.errorCount}}'],
   type: 'pie',
   marker: {
     //colors: ['rgb(56,75,126)', 'rgb(255,67,67)']
@@ -44,7 +44,7 @@ Plotly.newPlot('countDiv', dataCount, layoutCount);
 var dataAll = [
   {
     y: {{simStat.durations}},
-    name: 'Average {{simStat.average}}ms',
+    name: 'Average: {{simStat.average}}ms',
     boxpoints: 'all',
     jitter: 0.3,
     pointpos: -1.8,

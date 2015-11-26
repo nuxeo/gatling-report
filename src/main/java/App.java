@@ -34,17 +34,17 @@ public class App implements Runnable {
 
     @Override
     public void run() {
-        List<SimulationStat> stats = getSimulationStats();
+        List<SimulationContext> stats = getSimulationStats();
         renderStats(stats, getOutputDirectory());
     }
 
-    private List<SimulationStat> getSimulationStats() {
+    private List<SimulationContext> getSimulationStats() {
         List<File> files = getSimulationFiles();
-        List<SimulationStat> stats = new ArrayList<>(files.size());
+        List<SimulationContext> stats = new ArrayList<>(files.size());
         for (File file : files) {
             log.info("Parsing " + file.getAbsolutePath());
             try {
-                stats.add(new Parser(file).parse());
+                stats.add(new SimulationParser(file).parse());
             } catch (IOException e) {
                 log.error("Invalid file: " + file.getAbsolutePath(), e);
             }
@@ -52,7 +52,7 @@ public class App implements Runnable {
         return stats;
     }
 
-    private void renderStats(List<SimulationStat> stats, File outputDirectory) {
+    private void renderStats(List<SimulationContext> stats, File outputDirectory) {
         if (outputDirectory == null) {
             renderStatsAsCSV(stats);
         } else {
@@ -60,7 +60,7 @@ public class App implements Runnable {
         }
     }
 
-    private void renderPlotyReport(File outputDirectory, List<SimulationStat> stats) {
+    private void renderPlotyReport(File outputDirectory, List<SimulationContext> stats) {
         if (!outputDirectory.mkdirs()) {
             log.warn("Overriding existing report directory" + outputDirectory);
         }
@@ -71,32 +71,27 @@ public class App implements Runnable {
         }
     }
 
-    private void renderPlotyTrendReport(File outputDirectory, List<SimulationStat> stats) {
+    private void renderPlotyTrendReport(File outputDirectory, List<SimulationContext> stats) {
         try {
-            stats.forEach(SimulationStat::computeStat);
-            String reportPath = PlotlyReport.generate(outputDirectory, stats);
+            String reportPath = PlotlyReport.createTrendReport(stats, outputDirectory);
             log.info("Report generated: " + reportPath);
         } catch (IOException e) {
             log.error("Can not generate report", e);
         }
     }
 
-    private void renderPlotySingleReport(File outputDirectory, SimulationStat stat) {
+    private void renderPlotySingleReport(File outputDirectory, SimulationContext stat) {
         try {
-            stat.computeStat();
-            String reportPath = PlotlyReport.generate(outputDirectory, stat);
+            String reportPath = PlotlyReport.createSimulationReport(stat, outputDirectory);
             log.info("Report generated: " + reportPath);
         } catch (IOException e) {
             log.error("Can not generate report", e);
         }
     }
 
-    private void renderStatsAsCSV(List<SimulationStat> stats) {
-        System.out.println(Stat.header());
-        for (SimulationStat stat : stats) {
-            stat.computeStat();
-            System.out.println(stat);
-        }
+    private void renderStatsAsCSV(List<SimulationContext> stats) {
+        System.out.println(RequestStat.header());
+        stats.forEach(System.out::println);
     }
 
     private void displayHelpAndExit() {

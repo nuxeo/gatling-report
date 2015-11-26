@@ -1,18 +1,17 @@
+<!DOCTYPE html>
 <head>
   <!-- script src="https://cdn.plot.ly/plotly-latest.min.js"></script-->
   <script src="file:///home/ben/dev/tools/gatling-report/src/main/resources/plotly-latest.min.js"></script>
 </head>
 
-<body>
-
 <h1>{{scenario}} Trend report</h1>
 
-  <div id="totalDiv" style="width: 800px; height: 500px;"></div>
-  {{#requests}}
-  <div id="div{{indice}}" style="width: 800px; height: 500px;"></div>
-  {{/requests}}
+<div id="totalDiv"></div>
+{{#requests}}
+<div id="div{{indice}}""></div>
+{{/requests}}
 
-  <script>
+<script>
 function clone(obj) {
     if(obj == null || typeof(obj) != 'object')
         return obj;
@@ -83,7 +82,5 @@ data{{indice}}[1]["y"] = {{{rps}}};
 Plotly.plot('div{{indice}}', data{{indice}}, layout{{indice}}, {showLink: false});
 
 {{/requests}}
-  </script>
-
-</body>
+</script>
 

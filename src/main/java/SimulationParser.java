@@ -26,7 +26,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.zip.GZIPInputStream;
 
-public class Parser {
+public class SimulationParser {
 
     private static final String OK = "OK";
     private static final String REQUEST = "REQUEST";
@@ -34,12 +34,12 @@ public class Parser {
     private static final String GZ = "gz";
     private final File file;
 
-    public Parser(File file) {
+    public SimulationParser(File file) {
         this.file = file;
     }
 
-    public SimulationStat parse() throws IOException {
-        SimulationStat ret = new SimulationStat(file.getAbsolutePath());
+    public SimulationContext parse() throws IOException {
+        SimulationContext ret = new SimulationContext(file.getAbsolutePath());
         CSVReader reader = new CSVReader(getReaderFor(file), '\t');
         String[] line;
         String name;
@@ -69,14 +69,14 @@ public class Parser {
             }
 
         }
+        ret.computeStat();
         return ret;
     }
 
-    private SimulationStat invalidFile() {
+    private SimulationContext invalidFile() {
         throw new IllegalArgumentException(String.format("Invalid simulation file: %s expecting " +
                 "Gatling 2.x format", file.getAbsolutePath()));
     }
-
 
     private String getFileExtension(File file) {
         String name = file.getName();
@@ -86,7 +86,6 @@ public class Parser {
             return "";
         }
     }
-
 
     private Reader getReaderFor(File file) throws IOException {
         if (GZ.equals(getFileExtension(file))) {

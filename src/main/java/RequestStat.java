@@ -27,7 +27,7 @@ import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-public class Stat {
+public class RequestStat {
     String scenario;
     String request;
     static AtomicInteger statCounter = new AtomicInteger();
@@ -40,7 +40,7 @@ public class Stat {
     double duration;
     List<Double> durations;
 
-    public Stat(String scenario, String request, long start) {
+    public RequestStat(String scenario, String request, long start) {
         this.scenario = scenario;
         this.request = request;
         this.start = start;

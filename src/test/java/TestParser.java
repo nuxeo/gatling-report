@@ -3,7 +3,6 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 
 
 /*
@@ -29,18 +28,20 @@ public class TestParser {
 
     @Test
     public void parseSimpleSimulation() throws Exception {
-        SimulationStat ret = new Parser(getRessourceFile(SIM_SMALL)).parse();
-        ret.computeStat();
-        System.out.println(ret);
-        Assert.assertTrue(true);
+        SimulationContext ret = new SimulationParser(getRessourceFile(SIM_SMALL)).parse();
+        // System.out.println(ret);
+        Assert.assertEquals("sim80reindexall", ret.simulationName);
+        Assert.assertEquals(2, ret.simStat.count);
+        Assert.assertTrue(ret.toString().contains("_all"));
     }
 
     @Test
     public void parseCompressedSimulation() throws Exception {
-        SimulationStat ret = new Parser(getRessourceFile(SIM_GZ)).parse();
-        ret.computeStat();
-        System.out.println(ret);
-        Assert.assertTrue(true);
+        SimulationContext ret = new SimulationParser(getRessourceFile(SIM_GZ)).parse();
+        // System.out.println(ret);
+        Assert.assertEquals("sim50bench", ret.simulationName);
+        Assert.assertEquals(2464, ret.simStat.count);
+        Assert.assertTrue(ret.toString().contains("_all"));
     }
 
     private File getRessourceFile(String filename) throws FileNotFoundException {

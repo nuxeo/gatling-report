@@ -1,7 +1,13 @@
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /*
  * (C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
@@ -20,14 +26,29 @@ import java.io.FileNotFoundException;
  *     bdelbosc
  */
 
-public class TestPlotly {
+public class TestPlotlyReport {
+
     private static final String SIM_GZ = "simulation-1.log.gz";
+    private static final List<String> SIMS_GZ = Arrays.asList("simulation-1.log.gz", "simulation-2.log.gz",
+            "simulation-3.log.gz");
 
     @Test
-    public void parseCompressedSimulation() throws Exception {
-        SimulationStat ret = new Parser(getRessourceFile(SIM_GZ)).parse();
-        ret.computeStat();
-        PlotlyReport.generate(null, ret);
+    public void generateSimulationReport() throws Exception {
+        SimulationContext stat = new SimulationParser(getRessourceFile(SIM_GZ)).parse();
+        Writer writer = new StringWriter();
+        PlotlyReport.generate(stat, writer);
+        // System.out.println(writer);
+        Assert.assertTrue(writer.toString().contains("DOCTYPE html"));
+    }
+
+    @Test
+    public void generateTrendReport() throws Exception {
+        List<SimulationContext> stats = new ArrayList<>(SIMS_GZ.size());
+        SIMS_GZ.forEach(file -> stats.add(new SimulationContext(file)));
+        Writer writer = new StringWriter();
+        PlotlyReport.generate(stats, writer);
+        // System.out.println(writer);
+        Assert.assertTrue(writer.toString().contains("DOCTYPE html"));
     }
 
     private File getRessourceFile(String filename) throws FileNotFoundException {
