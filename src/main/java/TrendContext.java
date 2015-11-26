@@ -56,6 +56,7 @@ public class TrendContext {
     public TrendContext(List<SimulationContext> stats) {
         Set<String> names = new HashSet<>();
         List<String> requestNames = getRequestListSorted(stats.get(0));
+        Collections.reverse(requestNames);
         for (String requestName : requestNames) {
             requests.add(new TrendStat());
         }

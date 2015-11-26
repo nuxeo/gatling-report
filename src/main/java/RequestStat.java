@@ -95,6 +95,10 @@ public class RequestStat {
         return String.format("%.1f", avg);
     }
 
+    public String throughput() {
+        return String.format("%.1f", rps);
+    }
+
     private String getDateFromInstant(long start) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd " +
                 "HH:mm:ss").withZone(ZoneId.systemDefault());
