@@ -3,6 +3,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -29,26 +30,34 @@ import java.util.List;
 public class TestPlotlyReport {
 
     private static final String SIM_GZ = "simulation-1.log.gz";
-    private static final List<String> SIMS_GZ = Arrays.asList("simulation-1.log.gz", "simulation-2.log.gz",
-            "simulation-3.log.gz");
+    private static final List<String> SIMS_GZ = Arrays.asList("simulation.log.1.gz",
+            "simulation.log.2.gz", "simulation.log.3.gz", "simulation.log.4.gz");
 
     @Test
     public void generateSimulationReport() throws Exception {
-        SimulationContext stat = new SimulationParser(getRessourceFile(SIM_GZ)).parse();
+        List<SimulationContext> stats = Arrays.asList(new SimulationParser(getRessourceFile(SIM_GZ)).parse());
         Writer writer = new StringWriter();
-        PlotlyReport.generate(stat, writer);
+        String reportPath = new Report(stats).setWriter(writer).create();
         // System.out.println(writer);
-        Assert.assertTrue(writer.toString().contains("DOCTYPE html"));
+        Assert.assertTrue(reportPath.endsWith("index.html"));
+        Assert.assertTrue(writer.toString().contains("simulation sim50bench"));
     }
 
     @Test
     public void generateTrendReport() throws Exception {
         List<SimulationContext> stats = new ArrayList<>(SIMS_GZ.size());
-        SIMS_GZ.forEach(file -> stats.add(new SimulationContext(file)));
+        SIMS_GZ.forEach(file -> {
+            try {
+                stats.add(new SimulationParser(getRessourceFile(file)).parse());
+            } catch (IOException e) {
+                Assert.fail("Can not parse: " + file);
+            }
+        });
         Writer writer = new StringWriter();
-        PlotlyReport.generate(stats, writer);
+        String reportPath = new Report(stats).setWriter(writer).create();
         // System.out.println(writer);
-        Assert.assertTrue(writer.toString().contains("DOCTYPE html"));
+        Assert.assertTrue(reportPath.endsWith("index.html"));
+        Assert.assertTrue(writer.toString().contains("Trend report"));
     }
 
     private File getRessourceFile(String filename) throws FileNotFoundException {

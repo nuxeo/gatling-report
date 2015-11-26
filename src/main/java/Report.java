@@ -22,7 +22,6 @@ import com.github.mustachejava.MustacheFactory;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.List;
 
@@ -31,31 +30,54 @@ public class Report {
     private static final String SIMULATION_TEMPLATE = "simulation.mustache";
     private static final String TREND_TEMPLATE = "trend.mustache";
     private static final String INDEX = "index.html";
+    private final List<SimulationContext> stats;
+    private File outputDirectory;
+    private Writer writer;
 
-    public static String createSimulationReport(SimulationContext stat, File outputDirectory) throws IOException {
-        File index = new File(outputDirectory, INDEX);
-        Writer output = new FileWriter(index);
-        generate(stat, output);
-        return index.getAbsolutePath();
+    public Report(List<SimulationContext> stats) {
+        this.stats = stats;
     }
 
-    protected static void generate(SimulationContext stat, Writer output) throws IOException {
+    public Report setOutputDirectory(File output) {
+        this.outputDirectory = output;
+        return this;
+    }
+
+    public Report setWriter(Writer writer) {
+        this.writer = writer;
+        return this;
+    }
+
+    public String create() throws IOException {
+        if (stats.size() == 1) {
+            createSimulationReport();
+        } else {
+            createTrendReport();
+        }
+        return getReportPath().getAbsolutePath();
+    }
+
+    public void createSimulationReport() throws IOException {
         MustacheFactory mf = new DefaultMustacheFactory();
         Mustache mustache = mf.compile(SIMULATION_TEMPLATE);
-        mustache.execute(output, stat).flush();
+        mustache.execute(getWriter(), stats.get(0)).flush();
     }
 
-    public static String createTrendReport(List<SimulationContext> stats, File outputDirectory) throws IOException {
-            File index = new File(outputDirectory, INDEX);
-            Writer output = new FileWriter(index);
-        generate(stats, output);
-        return index.getAbsolutePath();
-    }
-
-    protected static void generate(List<SimulationContext> stats, Writer output) throws IOException {
+    public void createTrendReport() throws IOException {
         MustacheFactory mf = new DefaultMustacheFactory();
         Mustache mustache = mf.compile(TREND_TEMPLATE);
-        mustache.execute(output, new TrendContext(stats)).flush();
+        mustache.execute(getWriter(), new TrendContext(stats)).flush();
     }
 
+    public Writer getWriter() throws IOException {
+        if (writer == null) {
+            File index = getReportPath();
+            writer = new FileWriter(index);
+        }
+        return writer;
+    }
+
+    public File getReportPath() {
+        return new File(outputDirectory, INDEX);
+    }
 }

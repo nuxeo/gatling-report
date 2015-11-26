@@ -35,7 +35,7 @@ public class App implements Runnable {
     @Override
     public void run() {
         List<SimulationContext> stats = getSimulationStats();
-        renderStats(stats, getOutputDirectory());
+        render(stats, getOutputDirectory());
     }
 
     private List<SimulationContext> getSimulationStats() {
@@ -52,44 +52,28 @@ public class App implements Runnable {
         return stats;
     }
 
-    private void renderStats(List<SimulationContext> stats, File outputDirectory) {
+    private void render(List<SimulationContext> stats, File outputDirectory) {
         if (outputDirectory == null) {
-            renderStatsAsCSV(stats);
+            renderAsCsv(stats);
         } else {
-            renderPlotyReport(outputDirectory, stats);
+
+            try {
+                renderAsReport(outputDirectory, stats);
+            } catch (IOException e) {
+                log.error("Can not generate report", e);
+            }
         }
     }
 
-    private void renderPlotyReport(File outputDirectory, List<SimulationContext> stats) {
+    private void renderAsReport(File outputDirectory, List<SimulationContext> stats) throws IOException {
         if (!outputDirectory.mkdirs()) {
             log.warn("Overriding existing report directory" + outputDirectory);
         }
-        if (stats.size() == 1) {
-            renderPlotySingleReport(outputDirectory, stats.get(0));
-        } else {
-            renderPlotyTrendReport(outputDirectory, stats);
-        }
+        String reportPath = new Report(stats).setOutputDirectory(outputDirectory).create();
+        log.info("Report generated: " + reportPath);
     }
 
-    private void renderPlotyTrendReport(File outputDirectory, List<SimulationContext> stats) {
-        try {
-            String reportPath = PlotlyReport.createTrendReport(stats, outputDirectory);
-            log.info("Report generated: " + reportPath);
-        } catch (IOException e) {
-            log.error("Can not generate report", e);
-        }
-    }
-
-    private void renderPlotySingleReport(File outputDirectory, SimulationContext stat) {
-        try {
-            String reportPath = PlotlyReport.createSimulationReport(stat, outputDirectory);
-            log.info("Report generated: " + reportPath);
-        } catch (IOException e) {
-            log.error("Can not generate report", e);
-        }
-    }
-
-    private void renderStatsAsCSV(List<SimulationContext> stats) {
+    private void renderAsCsv(List<SimulationContext> stats) {
         System.out.println(RequestStat.header());
         stats.forEach(System.out::println);
     }
