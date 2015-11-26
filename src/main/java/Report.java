@@ -26,7 +26,7 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.List;
 
-public class PlotlyReport {
+public class Report {
 
     private static final String SIMULATION_TEMPLATE = "simulation.mustache";
     private static final String TREND_TEMPLATE = "trend.mustache";
