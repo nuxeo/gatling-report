@@ -1,12 +1,22 @@
-# Gatling report
+# About Gatling report
 
-Parse Galting simulation.log file to output request stats in CSV or build HTML reports like trend reports.
+This is a reporting tool that parses [Galting](http://gatling.io/) result files (aka `simulation.log`) and creates HTML 
+reports with [Plotly](https://plot.ly/) charts or CSV output.
+
+
+# Report examples
+
+- [Simulation report](http://public.dev.nuxeo.com/~ben/gat-simulation/): compact representation of response time for a
+bench, help to pinpoint slow requests.
+- [Diff report](http://public.dev.nuxeo.com/~ben/gat-diff/): compare 2 bench result.
+- [Trend report](http://public.dev.nuxeo.com/~ben/gat-trend/): follow the trend of bench results over time.
+- [CSV output](http://public.dev.nuxeo.com/~ben/gat.csv)
 
 # Install
 
 ## Download
 
-From [nexus](http://maven.nuxeo.org/nexus/#nexus-search;quick~gatling-report)
+Take the latest jar from [nexus](http://maven.nuxeo.org/nexus/#nexus-search;quick~gatling-report).
 
 ## Building from sources
 
@@ -14,13 +24,17 @@ Create the all in one jar:
 
         mvn package
 
-A jar will all its dependencies is located here:
+The `jar` file that include all its dependencies is located here:
 
         ./target/gatling-report-VERSION-capsule-full.jar
 
 # Usage
 
-## Generate CSV stats
+## Help
+
+        java -jar path/to/gatling-report-VERSION-capsule-fat.jar -h
+
+## Output CSV stats
 
 The following command will output to stdout a CSV with stats per request.
 
@@ -51,24 +65,38 @@ You can also submit multiple simulation files, the output will concatenate stats
         java -jar path/to/gatling-report-VERSION-capsule-fat.jar path/to/simulation.log [path/to/simulation2.log ...]
   
 
-The tool also accept simulation log that are gzipped:
+You can also submit gzipped simulation files:
  
         java -jar path/to/gatling-report-VERSION-capsule-fat.jar path/to/simulation.log.gz
          
   
         
-## Generate an overview report for a simulation
+## Generate HTML report with Plotly charts
+
+When using the `-o REPORT_PATH` option a report is generated.
+ 
+When submitting a single simulation file it creates a simulation report:
+ 
+       java -jar path/to/gatling-report-VERSION-capsule-fat.jar path/to/simulation.log.gz -o /path/to/report/directory
 
  
-       java -jar path/to/gatling-report-VERSION-capsule-fat.jar path/to/simulation.log.gz /path/to/report/directory
-
- 
-## Generate a trend report for a list of simulations
+When submitting two simulations files it creates a differential report:
 
 
-       java -jar path/to/gatling-report-VERSION-capsule-fat.jar path/to/simulation.log.gz path/to/simuation2.log /path/to/report/directory
+       java -jar path/to/gatling-report-VERSION-capsule-fat.jar path/to/ref/simulation.log.gz path/to/challenger/simuation2.log -o /path/to/report/directory
+
+When submitting more than two simulations files it creates a trend report.
 
 
+## Customizing the report
+
+You can use your own mustache tempate to customize the report:
+
+        java -jar path/to/gatling-report-VERSION-capsule-fat.jar --template /my/template.mustache path/to/ref/simulation.log.gz -o /path/to/report/directory
+
+Take example to the default templates located in src/main/resources.
+
+Note that [Plotly charts](https://plot.ly/) can be edited online.
 
 # About Nuxeo
 
