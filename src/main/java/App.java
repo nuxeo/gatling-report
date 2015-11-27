@@ -80,7 +80,11 @@ public class App implements Runnable {
             }
             log.warn("Overriding existing report directory" + outputDirectory);
         }
-        String reportPath = new Report(stats).setOutputDirectory(dir).includeJs(options.includeJs).create();
+        String reportPath = new Report(stats)
+                .setOutputDirectory(dir)
+                .includeJs(options.includeJs)
+                .setTemplate(options.template)
+                .create();
         log.info("Report generated: " + reportPath);
     }
 

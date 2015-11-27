@@ -21,19 +21,24 @@ import com.beust.jcommander.internal.Lists;
 import java.util.List;
 
 public class Options {
-    @Parameter(required = true, description="SIMULATION.LOG...")
+    @Parameter(required = true, description = "SIMULATION.LOG...")
     public List<String> simulations = Lists.newArrayList();
 
-    @Parameter(names = {"--output-dir", "-o"}, description = "Create a report, if not specified output CSV stat to " +
-            "stdout")
+    @Parameter(names = {"--output-dir", "-o"},
+            description = "Create a report in this directory, if not specified output CSV stats to stdout.")
     public String outputDirectory;
 
-    @Parameter(names = {"--force", "-f"}, description = "Override an existing report")
+    @Parameter(names = {"--force", "-f"}, description = "Override an existing report.")
     public boolean force = false;
 
-    @Parameter(names = {"--include-js", "-i"}, description = "Include Plotly js into the report")
+    @Parameter(names = {"--include-js", "-i"},
+            description = "Include Plotly js in the report, otherwhise use the CDN version.")
     public boolean includeJs = false;
 
-    @Parameter(names = {"--help", "-h"}, help = true)
+    @Parameter(names = {"--template", "-t"},
+            description = "Use a custom mustache template to generate the report.")
+    public String template;
+
+    @Parameter(names = {"--help", "-h"}, description = "Display this message.", help = true)
     public boolean help;
 }

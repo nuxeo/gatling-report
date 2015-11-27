@@ -21,6 +21,8 @@ import com.github.mustachejava.MustacheFactory;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -41,6 +43,7 @@ public class Report {
     private Writer writer;
     private List<String> scripts = new ArrayList<>();
     private boolean includeJs = false;
+    private String template;
 
     public Report(List<SimulationContext> stats) {
         this.stats = stats;
@@ -66,6 +69,11 @@ public class Report {
         return this;
     }
 
+    public Report setTemplate(String template) {
+        this.template = template;
+        return this;
+    }
+
     public String create() throws IOException {
         if (stats.size() == 1) {
             createSimulationReport();
@@ -76,14 +84,23 @@ public class Report {
     }
 
     public void createSimulationReport() throws IOException {
-        MustacheFactory mf = new DefaultMustacheFactory();
-        Mustache mustache = mf.compile(SIMULATION_TEMPLATE);
+        Mustache mustache = getMustache();
         mustache.execute(getWriter(), stats.get(0).setScripts(getScripts())).flush();
     }
 
-    public void createTrendReport() throws IOException {
+    private Mustache getMustache() throws FileNotFoundException {
         MustacheFactory mf = new DefaultMustacheFactory();
-        Mustache mustache = mf.compile(TREND_TEMPLATE);
+        Mustache mustache;
+        if (template == null) {
+            mustache = mf.compile(getDefaultTemplate());
+        } else {
+            mustache = mf.compile(new FileReader(new File(template)), template);
+        }
+        return mustache;
+    }
+
+    public void createTrendReport() throws IOException {
+        Mustache mustache = getMustache();
         mustache.execute(getWriter(), new TrendContext(stats).setScripts(getScripts())).flush();
     }
 
@@ -117,5 +134,12 @@ public class Report {
             throw new IllegalArgumentException("Can not copy script: " + src, e);
         }
         return DEFAULT_SCRIPT;
+    }
+
+    public String getDefaultTemplate() {
+        if (stats.size() == 1) {
+            return SIMULATION_TEMPLATE;
+        }
+        return template = TREND_TEMPLATE;
     }
 }
