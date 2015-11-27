@@ -53,4 +53,27 @@ public class DiffContext {
         Collections.reverse(ret);
         return ret;
     }
+
+    public String avgPercent() {
+        return String.format("%+.2f", (challenger.simStat.avg * 100.0 / ref.simStat.avg) - 100.0);
+    }
+
+    public String avgClass() {
+        if (challenger.simStat.avg > ref.simStat.avg) {
+            return "win";
+        }
+        return "loose";
+    }
+
+    public String rpsPercent() {
+        return String.format("%+.2f", (challenger.simStat.rps * 100.0 / ref.simStat.rps) - 100.0);
+    }
+
+    public String rpsClass() {
+        if (challenger.simStat.rps > ref.simStat.rps) {
+            return "win";
+        }
+        return "loose";
+    };
+
 }

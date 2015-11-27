@@ -5,6 +5,7 @@
 {{/scripts}}
   <style media="screen" type="text/css">
     th {text-align:left}
+    td {text-align:right}
     #responseAllDiv {float: left}
     #countDiv {float: left}
     #responseDiv {clear:both}
@@ -17,7 +18,7 @@
   <table id="summaryTab">
     <tr><th>Simulation</th><td>{{simStat.scenario}}</td></tr>
     <tr><th>Launched</th><td>{{simStat.startDate}}</td></tr>
-    <tr><th>Duration (s)</th><td>{{simStat.duration}}</td></tr>
+    <tr><th>Duration (s)</th><td>{{simStat.getDuration}}</td></tr>
     <tr><th>Throughput requests/s</th><td>{{simStat.throughput}}</td></tr>
   </table>
 </div>

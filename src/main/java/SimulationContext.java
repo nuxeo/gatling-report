@@ -56,7 +56,7 @@ public class SimulationContext {
 
     public void computeStat() {
         simStat.computeStat();
-        reqStats.values().forEach(request -> request.computeStat(simStat.getDuration()));
+        reqStats.values().forEach(request -> request.computeStat(simStat.duration));
     }
 
     public void setSimulationName(String name) {

@@ -113,8 +113,8 @@ public class RequestStat {
         return ret;
     }
 
-    public double getDuration() {
-        return duration;
+    public String getDuration() {
+        return String.format("%.1f", duration);
     }
 
     public static String header() {

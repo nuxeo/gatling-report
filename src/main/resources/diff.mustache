@@ -3,19 +3,25 @@
 {{#scripts}}
   <script src="{{.}}"></script>
 {{/scripts}}
+  <style media="screen" type="text/css">
+    th {text-align:left}
+    td {text-align:right}
+    td.win {background-color: chartreuse;}
+    td.loose {background-color: darksalmon;}
+  </style>
 </head>
 
 <h1>{{ref.scenario}} Diff report</h1>
 <div id="summaryDiv">
   <table id="summaryTab">
-    <tr><td></td><th>Reference</th><th>Challenger</th></tr>
-    <tr><th>Date</th><td>{{ref.simStat.startDate}}</td><td>{{challenger.simStat.startDate}}</td></tr>
-    <tr><th>Simulation</th><td>{{ref.simStat.scenario}}</td><td>{{challenger.simStat.scenario}}</td></tr>
-    <tr><th>Duration (s)</th><td>{{ref.simStat.duration}}</td><td>{{challenger.simStat.duration}}</td></tr>
-    <tr><th>Throughput requests/s</th><td>{{ref.simStat.throughput}}</td><td>{{challenger.simStat.throughput}}</td></tr>
-    <tr><th>Average response time ms</th><td>{{ref.simStat.average}}</td><td>{{challenger.simStat.average}}</td></tr>
-    <tr><th>Requests</th><td>{{ref.simStat.count}}</td><td>{{challenger.simStat.count}}</td></tr>
-    <tr><th>Error(s)</th><td>{{ref.simStat.errorCount}}</td><td>{{challenger.simStat.errorCount}}</td></tr>
+    <tr><td></td><th>Reference</th><th>Challenger</th><th></th></tr>
+    <tr><th>Date</th><td>{{ref.simStat.startDate}}</td><td>{{challenger.simStat.startDate}}</td><td></td></tr>
+    <tr><th>Simulation</th><td>{{ref.simStat.scenario}}</td><td>{{challenger.simStat.scenario}}</td><td></td></tr>
+    <tr><th>Duration (s)</th><td>{{ref.simStat.duration}}</td><td>{{challenger.simStat.getDuration}}</td><td></td></tr>
+    <tr><th>Throughput requests/s</th><td>{{ref.simStat.throughput}}</td><td>{{challenger.simStat.throughput}}</td><td class="{{rpsClass}}">{{rpsPercent}} %</td></tr>
+    <tr><th>Average response time ms</th><td>{{ref.simStat.average}}</td><td>{{challenger.simStat.average}}</td><td class="{{avgClass}}">{{avgPercent}} %</td></tr>
+    <tr><th>Requests</th><td>{{ref.simStat.count}}</td><td>{{challenger.simStat.count}}</td><td></td></tr>
+    <tr><th>Error(s)</th><td>{{ref.simStat.errorCount}}</td><td>{{challenger.simStat.errorCount}}</td><td></td></tr>
   </table>
 </div>
 
