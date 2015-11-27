@@ -40,7 +40,7 @@ public class Report {
     private File outputDirectory;
     private Writer writer;
     private List<String> scripts = new ArrayList<>();
-    private boolean useCdn = false;
+    private boolean includeJs = false;
 
     public Report(List<SimulationContext> stats) {
         this.stats = stats;
@@ -61,8 +61,8 @@ public class Report {
         return this;
     }
 
-    public Report useCdn() {
-        useCdn = true;
+    public Report includeJs(boolean value) {
+        includeJs = value;
         return this;
     }
 
@@ -107,7 +107,7 @@ public class Report {
     }
 
     public String getOrCreateDefaultScript() {
-        if (outputDirectory == null || useCdn) {
+        if (outputDirectory == null || !includeJs) {
             return DEFAULT_CDN_SCRIPT;
         }
         URL src = getClass().getResource(DEFAULT_SCRIPT);

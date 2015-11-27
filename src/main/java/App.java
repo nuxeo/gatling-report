@@ -15,6 +15,7 @@
  *     Benoit Delbosc
  */
 
+import com.beust.jcommander.JCommander;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -24,23 +25,29 @@ import java.util.List;
 
 public class App implements Runnable {
     private final static Logger log = Logger.getLogger(App.class);
-    private static final String USAGE = "java -jar gatling-report.jar simulation.log [simulation.log.2 ...] " +
-            "outputDirectory";
-    private final String[] args;
+    private final Options options;
+    private final JCommander command;
 
     public App(String[] args) {
-        this.args = args;
+        options = new Options();
+        command = new JCommander(options, args);
+        command.setProgramName("java -jar gatling-report.jar");
+        if (options.help) {
+            command.usage();
+            System.exit(0);
+        }
     }
 
     @Override
     public void run() {
         List<SimulationContext> stats = getSimulationStats();
-        render(stats, getOutputDirectory());
+        render(stats, options.outputDirectory);
     }
 
     private List<SimulationContext> getSimulationStats() {
-        List<File> files = getSimulationFiles();
+        List<File> files = new ArrayList<>(options.simulations.size());
         List<SimulationContext> stats = new ArrayList<>(files.size());
+        options.simulations.forEach(simulation -> files.add(new File(simulation)));
         for (File file : files) {
             log.info("Parsing " + file.getAbsolutePath());
             try {
@@ -52,58 +59,34 @@ public class App implements Runnable {
         return stats;
     }
 
-    private void render(List<SimulationContext> stats, File outputDirectory) {
+    private void render(List<SimulationContext> stats, String outputDirectory) {
         if (outputDirectory == null) {
             renderAsCsv(stats);
         } else {
-
             try {
-                renderAsReport(outputDirectory, stats);
+                renderAsReport(stats, outputDirectory);
             } catch (IOException e) {
                 log.error("Can not generate report", e);
             }
         }
     }
 
-    private void renderAsReport(File outputDirectory, List<SimulationContext> stats) throws IOException {
-        if (!outputDirectory.mkdirs()) {
+    private void renderAsReport(List<SimulationContext> stats, String outputDirectory) throws IOException {
+        File dir = new File(outputDirectory);
+        if (!dir.mkdirs()) {
+            if (!options.force) {
+                log.error("Abort, report direcotry already exists, use -f to override.");
+                System.exit(-2);
+            }
             log.warn("Overriding existing report directory" + outputDirectory);
         }
-        String reportPath = new Report(stats).setOutputDirectory(outputDirectory).create();
+        String reportPath = new Report(stats).setOutputDirectory(dir).includeJs(options.includeJs).create();
         log.info("Report generated: " + reportPath);
     }
 
     private void renderAsCsv(List<SimulationContext> stats) {
         System.out.println(RequestStat.header());
         stats.forEach(System.out::println);
-    }
-
-    private void displayHelpAndExit() {
-        System.err.println(USAGE);
-        System.exit(-1);
-    }
-
-    private List<File> getSimulationFiles() {
-        List<File> ret = new ArrayList<>();
-        if (args.length < 1) {
-            displayHelpAndExit();
-        }
-        for (int i = 0; i < args.length - 1; i++) {
-            ret.add(new File(args[i]));
-        }
-        File file = new File(args[args.length - 1]);
-        if (file.exists() && file.isFile()) {
-            ret.add(file);
-        }
-        return ret;
-    }
-
-    private File getOutputDirectory() {
-        File ret = new File(args[args.length - 1]);
-        if (!ret.isFile()) {
-            return ret;
-        }
-        return null;
     }
 
     public static void main(String args[]) {
