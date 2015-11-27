@@ -84,4 +84,12 @@ public class TrendContext {
         return stat.getRequests().stream().map(s -> s.request).collect(Collectors.toList());
     }
 
+    public TrendStat getRef() {
+        return requests.get(0);
+    }
+
+    public TrendStat getChallenger() {
+        return requests.get(1);
+    }
+
 }

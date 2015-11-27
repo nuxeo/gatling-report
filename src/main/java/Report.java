@@ -34,6 +34,7 @@ public class Report {
 
     private static final String SIMULATION_TEMPLATE = "simulation.mustache";
     private static final String TREND_TEMPLATE = "trend.mustache";
+    private static final String DIFF_TEMPLATE = "diff.mustache";
     private static final String INDEX = "index.html";
     private static final String DEFAULT_SCRIPT = "plotly-latest.min.js";
     private static final String DEFAULT_CDN_SCRIPT = "https://cdn.plot.ly/plotly-latest.min.js";
@@ -75,10 +76,16 @@ public class Report {
     }
 
     public String create() throws IOException {
-        if (stats.size() == 1) {
-            createSimulationReport();
-        } else {
-            createTrendReport();
+        int nbSimulation = stats.size();
+        switch (nbSimulation) {
+            case 1:
+                createSimulationReport();
+                break;
+            case 2:
+                createDiffReport();
+                break;
+            default:
+                createTrendReport();
         }
         return getReportPath().getAbsolutePath();
     }
@@ -102,6 +109,11 @@ public class Report {
     public void createTrendReport() throws IOException {
         Mustache mustache = getMustache();
         mustache.execute(getWriter(), new TrendContext(stats).setScripts(getScripts())).flush();
+    }
+
+    public void createDiffReport() throws IOException {
+        Mustache mustache = getMustache();
+        mustache.execute(getWriter(), new DiffContext(stats).setScripts(getScripts())).flush();
     }
 
     public Writer getWriter() throws IOException {
@@ -137,9 +149,14 @@ public class Report {
     }
 
     public String getDefaultTemplate() {
-        if (stats.size() == 1) {
-            return SIMULATION_TEMPLATE;
+        int nbSimulation = stats.size();
+        switch (nbSimulation) {
+            case 1:
+                return SIMULATION_TEMPLATE;
+            case 2:
+                return DIFF_TEMPLATE;
+            default:
+                return template = TREND_TEMPLATE;
         }
-        return template = TREND_TEMPLATE;
     }
 }

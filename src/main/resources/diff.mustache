@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<head>
+{{#scripts}}
+  <script src="{{.}}"></script>
+{{/scripts}}
+</head>
+
+<h1>{{ref.scenario}} Diff report</h1>
+<div id="summaryDiv">
+  <table id="summaryTab">
+    <tr><td></td><th>Reference</th><th>Challenger</th></tr>
+    <tr><th>Date</th><td>{{ref.simStat.startDate}}</td><td>{{challenger.simStat.startDate}}</td></tr>
+    <tr><th>Simulation</th><td>{{ref.simStat.scenario}}</td><td>{{challenger.simStat.scenario}}</td></tr>
+    <tr><th>Duration (s)</th><td>{{ref.simStat.duration}}</td><td>{{challenger.simStat.duration}}</td></tr>
+    <tr><th>Throughput requests/s</th><td>{{ref.simStat.throughput}}</td><td>{{challenger.simStat.throughput}}</td></tr>
+    <tr><th>Average response time ms</th><td>{{ref.simStat.average}}</td><td>{{challenger.simStat.average}}</td></tr>
+    <tr><th>Requests</th><td>{{ref.simStat.count}}</td><td>{{challenger.simStat.count}}</td></tr>
+    <tr><th>Error(s)</th><td>{{ref.simStat.errorCount}}</td><td>{{challenger.simStat.errorCount}}</td></tr>
+  </table>
+</div>
+
+<div id="responseAllDiv"></div>
+{{#getDiffRequests}}
+<div id="response{{refR.indice}}Div"></div>
+{{/getDiffRequests}}
+<script>
+
+var dataAll = [
+  {
+    y: {{ref.simStat.durations}},
+    name: 'Reference: {{ref.simStat.average}}ms',
+    boxpoints: 'all',
+    jitter: 0.3,
+    pointpos: -1.8,
+    boxmean: 'sd',
+    type: 'box',
+    marker:{
+      size:2,
+      opacity:0.6
+    }
+  },
+  {
+    y: {{challenger.simStat.durations}},
+    name: 'Challenger: {{challenger.simStat.average}}ms',
+    boxpoints: 'all',
+    jitter: 0.3,
+    pointpos: -1.8,
+    boxmean: 'sd',
+    type: 'box',
+    marker:{
+      size:2,
+      opacity:0.6
+    }
+  }
+];
+var layoutAll = {
+  height: 500,
+  width: 500,
+  yaxis: {
+    title: 'Time ms',
+    type: 'log'
+  },
+  showlegend: true,
+  xaxis: {
+      showticklabels: false
+  },
+  title: 'Response time all requests'
+};
+Plotly.newPlot('responseAllDiv', dataAll, layoutAll);
+
+var layoutResponse = {
+  height: 600,
+  width: 1200,
+  yaxis: {
+    title: 'Time ms',
+    type: 'log',
+    zeroline: true
+  },
+  xaxis: {
+    showticklabels: false
+  },
+  title: 'Response time per request',
+  showlegend: true,
+  legend: {
+    traceorder: 'reversed'
+  }
+};
+
+{{#getDiffRequests}}
+var data{{refR.indice}} = [
+  {
+    y: {{refR.durations}},
+    name: 'Reference: {{refR.average}}ms',
+    boxpoints: 'all',
+    jitter: 0.3,
+    pointpos: -1.8,
+    boxmean: 'sd',
+    type: 'box',
+    marker:{
+      size:2,
+      opacity:0.6
+    }
+  },
+  {
+    y: {{challengerR.durations}},
+    name: 'Challenger: {{challengerR.average}}ms',
+    boxpoints: 'all',
+    jitter: 0.3,
+    pointpos: -1.8,
+    boxmean: 'sd',
+    type: 'box',
+    marker:{
+      size:2,
+      opacity:0.6
+    }
+  }
+];
+var layout{{refR.indice}} = {
+  height: 500,
+  width: 500,
+  yaxis: {
+    title: 'Time ms',
+    type: 'log'
+  },
+  showlegend: true,
+  xaxis: {
+      showticklabels: false
+  },
+  title: '{{refR.request}}'
+};
+Plotly.newPlot('response{{refR.indice}}Div', data{{refR.indice}}, layout{{refR.indice}});
+{{/getDiffRequests}}
+
+</script>
+
