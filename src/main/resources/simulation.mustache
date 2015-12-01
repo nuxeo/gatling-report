@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <head>
-{{#scripts}}
-  <script src="{{.}}"></script>
-{{/scripts}}
+  {{#scripts}}
+    <script src="{{.}}"></script>
+  {{/scripts}}
   <style media="screen" type="text/css">
     th {text-align:left}
     td {text-align:right}
@@ -17,10 +17,22 @@
 
 <div id="summaryDiv">
   <table id="summaryTab">
-    <tr><th>Simulation</th><td>{{simStat.scenario}}</td></tr>
-    <tr><th>Launched</th><td>{{simStat.startDate}}</td></tr>
-    <tr><th>Duration (s)</th><td>{{simStat.getDuration}}</td></tr>
-    <tr><th>Throughput requests/s</th><td>{{simStat.throughput}}</td></tr>
+    <tr>
+      <th>Simulation</th>
+      <td>{{simStat.scenario}}</td>
+    </tr>
+    <tr>
+      <th>Launched</th>
+      <td>{{simStat.startDate}}</td>
+    </tr>
+    <tr>
+      <th>Duration (s)</th>
+      <td>{{simStat.getDuration}}</td>
+    </tr>
+    <tr>
+      <th>Throughput requests/s</th>
+      <td>{{simStat.throughput}}</td>
+    </tr>
   </table>
 </div>
 
@@ -28,9 +40,9 @@
 <div id="countDiv"></div>
 <div id="responseDiv"></div>
 <div id="monitoring">
-{{#simStat.graphite.images}}
-<a class="image" href="{{url}}" title="{{title}}"><img src="{{filename}}" alt="{{title}}"/></a>
-{{/simStat.graphite.images}}
+  {{#simStat.graphite.images}}
+    <a class="image" href="{{url}}" title="{{title}}"><img src="{{filename}}" alt="{{title}}"/></a>
+  {{/simStat.graphite.images}}
 </div>
 <script>
 var dataCount = [{
@@ -116,5 +128,6 @@ var data{{indice}} = {
 dataResponse.push(data{{indice}});
 {{/requests}}
 Plotly.newPlot('responseDiv', dataResponse, layoutResponse);
+
 
 </script>
