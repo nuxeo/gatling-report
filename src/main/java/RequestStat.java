@@ -39,14 +39,16 @@ public class RequestStat {
     double rps, avg;
     double duration;
     List<Double> durations;
-    public Graphite graphite;
+    Graphite graphite;
+    Apdex apdex;
 
-    public RequestStat(String scenario, String request, long start) {
+    public RequestStat(String scenario, String request, long start, Double apdexT) {
         this.scenario = scenario;
         this.request = request;
         this.start = start;
         durations = new ArrayList<>();
         indice = statCounter.incrementAndGet();
+        apdex = new Apdex(apdexT);
     }
 
     public void add(long start, long end, boolean success) {
@@ -59,7 +61,9 @@ public class RequestStat {
         if (!success) {
             errorCount += 1;
         }
-        durations.add((double) (end - start));
+        long duration = end - start;
+        durations.add((double) duration);
+        apdex.addMs(duration);
     }
 
     public void computeStat() {
@@ -120,14 +124,14 @@ public class RequestStat {
 
     public static String header() {
         return "scenario\trequest\tstart\tstartDate\tduration\tend\tcount\tsuccessCount\terrorCount\tmin\tp50\tp95" +
-                "\tp99\tmax\tavg\tstddev\trps";
+                "\tp99\tmax\tavg\tstddev\trps\tapdex\trating";
     }
 
     @Override
     public String toString() {
-        return String.format(Locale.ENGLISH, "%s\t%s\t%s\t%s\t%.2f\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%.2f\t%s\t%.2f",
+        return String.format(Locale.ENGLISH, "%s\t%s\t%s\t%s\t%.2f\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%.2f\t%s\t" +
+                "%.2f\t%.2f\t%s",
                 scenario, request, start, startDate, duration, end, count, successCount, errorCount, min, p50, p95,
-                p99, max, avg,
-                stddev, rps);
+                p99, max, avg, stddev, rps, apdex.getScore(), apdex.getRating());
     }
 }

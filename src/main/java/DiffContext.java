@@ -41,7 +41,7 @@ public class DiffContext {
         for (RequestStat refStat : ref.getRequests()) {
             RequestStat challengerStat = challenger.reqStats.get(refStat.request);
             if (challengerStat == null) {
-                challengerStat = new RequestStat(refStat.scenario, refStat.request, 0);
+                challengerStat = new RequestStat(refStat.scenario, refStat.request, 0, null);
                 challengerStat.add(0, 0, false);
                 challengerStat.computeStat();
             }

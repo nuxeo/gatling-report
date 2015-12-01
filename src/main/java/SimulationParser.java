@@ -33,13 +33,20 @@ public class SimulationParser {
     private static final String RUN = "RUN";
     private static final String GZ = "gz";
     private final File file;
+    private final Double apdexT;
+
+    public SimulationParser(File file, Double apdexT) {
+        this.file = file;
+        this.apdexT = apdexT;
+    }
 
     public SimulationParser(File file) {
         this.file = file;
+        this.apdexT = null;
     }
 
     public SimulationContext parse() throws IOException {
-        SimulationContext ret = new SimulationContext(file.getAbsolutePath());
+        SimulationContext ret = new SimulationContext(file.getAbsolutePath(), apdexT);
         CSVReader reader = new CSVReader(getReaderFor(file), '\t');
         String[] line;
         String name;

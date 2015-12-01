@@ -51,6 +51,10 @@ public class Options {
             description = "Graphite basic authoentication password.")
     public String password;
 
+    @Parameter(names = {"--apdexT", "-T"},
+            description = "Apdex reference time in second (T).")
+    public Double apdexT;
+
     @Parameter(names = {"--help", "-h"}, description = "Display this message.", help = true)
     public boolean help;
 }
