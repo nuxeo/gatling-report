@@ -39,6 +39,18 @@ public class Options {
             description = "Use a custom mustache template to generate the report.")
     public String template;
 
+    @Parameter(names = {"--graphite", "-g"},
+            description = "Download graphite dashboard images.")
+    public String graphiteUrl;
+
+    @Parameter(names = {"--user", "-u"},
+            description = "Graphite basic authentication user.")
+    public String user;
+
+    @Parameter(names = {"--password", "-p"},
+            description = "Graphite basic authoentication password.")
+    public String password;
+
     @Parameter(names = {"--help", "-h"}, description = "Display this message.", help = true)
     public boolean help;
 }

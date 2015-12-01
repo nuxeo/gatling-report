@@ -15,9 +15,6 @@
  *     Benoit Delbosc
  */
 
-import org.apache.commons.io.filefilter.FalseFileFilter;
-import sun.nio.cs.KOI8_R;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,11 +38,11 @@ public class DiffContext {
 
     public List<DiffRequestStat> getDiffRequests() {
         List<DiffRequestStat> ret = new ArrayList<>(ref.reqStats.size());
-        for(RequestStat refStat:  ref.getRequests()) {
+        for (RequestStat refStat : ref.getRequests()) {
             RequestStat challengerStat = challenger.reqStats.get(refStat.request);
             if (challengerStat == null) {
                 challengerStat = new RequestStat(refStat.scenario, refStat.request, 0);
-                challengerStat.add(0,0,false);
+                challengerStat.add(0, 0, false);
                 challengerStat.computeStat();
             }
             ret.add(new DiffRequestStat(refStat, challengerStat));
@@ -74,6 +71,8 @@ public class DiffContext {
             return "win";
         }
         return "loose";
-    };
+    }
+
+    ;
 
 }

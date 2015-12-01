@@ -39,6 +39,7 @@ public class RequestStat {
     double rps, avg;
     double duration;
     List<Double> durations;
+    public Graphite graphite;
 
     public RequestStat(String scenario, String request, long start) {
         this.scenario = scenario;

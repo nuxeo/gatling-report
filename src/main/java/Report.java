@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Report {
-
     private static final String SIMULATION_TEMPLATE = "simulation.mustache";
     private static final String TREND_TEMPLATE = "trend.mustache";
     private static final String DIFF_TEMPLATE = "diff.mustache";
@@ -45,6 +44,8 @@ public class Report {
     private List<String> scripts = new ArrayList<>();
     private boolean includeJs = false;
     private String template;
+    private String graphiteUrl, user, password;
+    private Graphite graphite;
 
     public Report(List<SimulationContext> stats) {
         this.stats = stats;
@@ -77,6 +78,10 @@ public class Report {
 
     public String create() throws IOException {
         int nbSimulation = stats.size();
+        if (graphiteUrl != null) {
+            stats.forEach(stats -> stats.simStat.graphite = new Graphite(graphiteUrl, user, password, stats,
+                    outputDirectory));
+        }
         switch (nbSimulation) {
             case 1:
                 createSimulationReport();
@@ -158,5 +163,12 @@ public class Report {
             default:
                 return template = TREND_TEMPLATE;
         }
+    }
+
+    public Report includeGraphite(String graphiteUrl, String user, String password) {
+        this.graphiteUrl = graphiteUrl;
+        this.user = user;
+        this.password = password;
+        return this;
     }
 }

@@ -25,13 +25,14 @@ import java.util.List;
 
 public class App implements Runnable {
     private final static Logger log = Logger.getLogger(App.class);
+    private static final String PROGRAM_NAME = "java -jar gatling-report.jar";
     private final Options options;
-    private final JCommander command;
+    private List<SimulationContext> stats;
 
     public App(String[] args) {
         options = new Options();
-        command = new JCommander(options, args);
-        command.setProgramName("java -jar gatling-report.jar");
+        JCommander command = new JCommander(options, args);
+        command.setProgramName(PROGRAM_NAME);
         if (options.help) {
             command.usage();
             System.exit(0);
@@ -40,55 +41,56 @@ public class App implements Runnable {
 
     @Override
     public void run() {
-        List<SimulationContext> stats = getSimulationStats();
-        render(stats, options.outputDirectory);
+        parseSimulationFiles();
+        render();
     }
 
-    private List<SimulationContext> getSimulationStats() {
+    private void parseSimulationFiles() {
         List<File> files = new ArrayList<>(options.simulations.size());
-        List<SimulationContext> stats = new ArrayList<>(files.size());
-        options.simulations.forEach(simulation -> files.add(new File(simulation)));
-        for (File file : files) {
-            log.info("Parsing " + file.getAbsolutePath());
-            try {
-                stats.add(new SimulationParser(file).parse());
-            } catch (IOException e) {
-                log.error("Invalid file: " + file.getAbsolutePath(), e);
-            }
-        }
-        return stats;
+        stats = new ArrayList<>(files.size());
+        options.simulations.forEach(simulation -> parseSimulationFile(new File(simulation)));
     }
 
-    private void render(List<SimulationContext> stats, String outputDirectory) {
-        if (outputDirectory == null) {
-            renderAsCsv(stats);
+    private void parseSimulationFile(File file) {
+        log.info("Parsing " + file.getAbsolutePath());
+        try {
+            stats.add(new SimulationParser(file).parse());
+        } catch (IOException e) {
+            log.error("Invalid file: " + file.getAbsolutePath(), e);
+        }
+    }
+
+    private void render() {
+        if (options.outputDirectory == null) {
+            renderAsCsv();
         } else {
             try {
-                renderAsReport(stats, outputDirectory);
+                renderAsReport();
             } catch (IOException e) {
                 log.error("Can not generate report", e);
             }
         }
     }
 
-    private void renderAsReport(List<SimulationContext> stats, String outputDirectory) throws IOException {
-        File dir = new File(outputDirectory);
+    private void renderAsReport() throws IOException {
+        File dir = new File(options.outputDirectory);
         if (!dir.mkdirs()) {
             if (!options.force) {
-                log.error("Abort, report direcotry already exists, use -f to override.");
+                log.error("Abort, report directory already exists, use -f to override.");
                 System.exit(-2);
             }
-            log.warn("Overriding existing report directory" + outputDirectory);
+            log.warn("Overriding existing report directory" + options.outputDirectory);
         }
         String reportPath = new Report(stats)
                 .setOutputDirectory(dir)
                 .includeJs(options.includeJs)
                 .setTemplate(options.template)
+                .includeGraphite(options.graphiteUrl, options.user, options.password)
                 .create();
         log.info("Report generated: " + reportPath);
     }
 
-    private void renderAsCsv(List<SimulationContext> stats) {
+    private void renderAsCsv() {
         System.out.println(RequestStat.header());
         stats.forEach(System.out::println);
     }

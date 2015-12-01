@@ -9,6 +9,7 @@
     #responseAllDiv {float: left}
     #countDiv {float: left}
     #responseDiv {clear:both}
+    #image {float: left}
   </style>
 </head>
 
@@ -26,7 +27,11 @@
 <div id="responseAllDiv"></div>
 <div id="countDiv"></div>
 <div id="responseDiv"></div>
-
+<div id="monitoring">
+{{#simStat.graphite.images}}
+<a class="image" href="{{url}}" title="{{title}}"><img src="{{filename}}" alt="{{title}}"/></a>
+{{/simStat.graphite.images}}
+</div>
 <script>
 var dataCount = [{
   values: [{{simStat.successCount}}, {{simStat.errorCount}}],
