@@ -16,7 +16,7 @@
  */
 
 /**
- * Application Performance Index
+ * Application Performance Index, measuring user satisfaction.
  *
  * The Apdex score converts many measurements into one number on a uniform scale of 0-to-1
  * (0 = no users satisfied, 1 = all users satisfied).
@@ -25,25 +25,23 @@
  *
  */
 public class Apdex {
-    private static final double DEFAULT_T = 1.5;
-    final double t;
-    long satisfying;
-    long tolerable;
-    long frustrating;
+    private static final float DEFAULT_THRESOLD = 1.5f;
+    final float threshold;
+    int satisfied, tolerating, frustrated;
 
     enum Rating {
         Unacceptable, Poor, Fair, Good, Excellent
     }
 
     Apdex() {
-        t = DEFAULT_T;
+        threshold = DEFAULT_THRESOLD;
     }
 
-    Apdex(Double t) {
-        if (t == null) {
-            this.t = DEFAULT_T;
+    Apdex(Float thresold) {
+        if (thresold == null) {
+            this.threshold = DEFAULT_THRESOLD;
         } else {
-            this.t = t;
+            this.threshold = thresold;
         }
     }
 
@@ -52,25 +50,25 @@ public class Apdex {
     }
 
     public void add(double value) {
-        if (value < t) {
-            satisfying++;
-        } else if (value < 4 * t) {
-            tolerable++;
+        if (value <= threshold) {
+            satisfied++;
+        } else if (value <= 4 * threshold) {
+            tolerating++;
         } else {
-            frustrating++;
+            frustrated++;
         }
     }
 
-    public double getScore() {
-        long total = satisfying + tolerable + frustrating;
+    public float getScore() {
+        long total = satisfied + tolerating + frustrated;
         if (total == 0) {
             return 0;
         }
-        return (satisfying + (tolerable / 2.0)) / total;
+        return (float) ((satisfied + (tolerating / 2.0)) / total);
     }
 
     public Rating getRating() {
-        double score = getScore();
+        float score = getScore();
         if (score < 0.5) {
             return Rating.Unacceptable;
         } else if (score < 0.7) {

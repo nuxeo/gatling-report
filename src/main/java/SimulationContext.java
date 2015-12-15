@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SimulationContext {
-    private final Double apdexT;
+    private final Float apdexT;
     String filePath;
     String simulationName;
     RequestStat simStat;
@@ -33,7 +33,7 @@ public class SimulationContext {
     private static final String ALL_REQUESTS = "_all";
     private long start;
 
-    public SimulationContext(String filePath, Double apdexT) {
+    public SimulationContext(String filePath, Float apdexT) {
         this.filePath = filePath;
         this.simStat = new RequestStat(filePath, ALL_REQUESTS, 0, apdexT);
         reqStats = new HashMap<>();

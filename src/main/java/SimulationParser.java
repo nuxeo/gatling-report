@@ -33,9 +33,9 @@ public class SimulationParser {
     private static final String RUN = "RUN";
     private static final String GZ = "gz";
     private final File file;
-    private final Double apdexT;
+    private final Float apdexT;
 
-    public SimulationParser(File file, Double apdexT) {
+    public SimulationParser(File file, Float apdexT) {
         this.file = file;
         this.apdexT = apdexT;
     }

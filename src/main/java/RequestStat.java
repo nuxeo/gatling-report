@@ -42,7 +42,7 @@ public class RequestStat {
     Graphite graphite;
     Apdex apdex;
 
-    public RequestStat(String scenario, String request, long start, Double apdexT) {
+    public RequestStat(String scenario, String request, long start, Float apdexT) {
         this.scenario = scenario;
         this.request = request;
         this.start = start;
