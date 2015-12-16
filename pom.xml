@@ -57,12 +57,12 @@
       <artifactId>jcommander</artifactId>
       <version>1.48</version>
     </dependency>
-   <dependency>
+    <dependency>
       <groupId>com.googlecode.json-simple</groupId>
       <artifactId>json-simple</artifactId>
       <version>1.1.1</version>
     </dependency>
- </dependencies>
+  </dependencies>
 
   <build>
     <plugins>
@@ -145,6 +145,21 @@
           </snapshots>
         </repository>
       </repositories>
+      <distributionManagement>
+        <repository>
+          <id>public-releases</id>
+          <url>
+            http://maven.in.nuxeo.com/nexus/content/repositories/public-releases
+          </url>
+        </repository>
+        <snapshotRepository>
+          <id>public-snapshots</id>
+          <url>
+            http://maven.in.nuxeo.com/nexus/content/repositories/public-snapshots
+          </url>
+          <uniqueVersion>true</uniqueVersion>
+        </snapshotRepository>
+      </distributionManagement>
     </profile>
   </profiles>
 
