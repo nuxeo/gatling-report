@@ -56,7 +56,7 @@ public class DiffContext {
     }
 
     public String avgClass() {
-        if (challenger.simStat.avg > ref.simStat.avg) {
+        if (challenger.simStat.avg < ref.simStat.avg) {
             return "win";
         }
         return "loose";
