@@ -85,7 +85,7 @@ public class App implements Runnable {
                 .setOutputDirectory(dir)
                 .includeJs(options.includeJs)
                 .setTemplate(options.template)
-                .includeGraphite(options.graphiteUrl, options.user, options.password)
+                .includeGraphite(options.graphiteUrl, options.user, options.password, options.getZoneId())
                 .create();
         log.info("Report generated: " + reportPath);
     }

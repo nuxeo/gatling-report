@@ -27,6 +27,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URL;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +47,7 @@ public class Report {
     private String template;
     private String graphiteUrl, user, password;
     private Graphite graphite;
+    private ZoneId zoneId;
 
     public Report(List<SimulationContext> stats) {
         this.stats = stats;
@@ -80,7 +82,7 @@ public class Report {
         int nbSimulation = stats.size();
         if (graphiteUrl != null) {
             stats.forEach(stats -> stats.simStat.graphite = new Graphite(graphiteUrl, user, password, stats,
-                    outputDirectory));
+                    outputDirectory, zoneId));
         }
         switch (nbSimulation) {
             case 1:
@@ -165,10 +167,11 @@ public class Report {
         }
     }
 
-    public Report includeGraphite(String graphiteUrl, String user, String password) {
+    public Report includeGraphite(String graphiteUrl, String user, String password, ZoneId zoneId) {
         this.graphiteUrl = graphiteUrl;
         this.user = user;
         this.password = password;
+        this.zoneId = zoneId;
         return this;
     }
 }

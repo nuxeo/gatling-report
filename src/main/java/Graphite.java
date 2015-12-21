@@ -33,6 +33,7 @@ import java.util.List;
 
 public class Graphite {
     private final static Logger log = Logger.getLogger(Report.class);
+    final ZoneId zoneId;
     String dashboardUrl, user, password;
     String baseUrl;
     List<Image> images = new ArrayList<>();
@@ -60,21 +61,27 @@ public class Graphite {
         }
     }
 
-    public Graphite(String graphiteUrl, String user, String password, SimulationContext stats, File outputDirectory) {
+    public Graphite(String graphiteUrl, String user, String password, SimulationContext stats, File outputDirectory,
+                    ZoneId zoneId) {
         this.dashboardUrl = graphiteUrl;
         baseUrl = Utils.getBaseUrl(graphiteUrl);
-        this.from = getDateAsString(stats.simStat.start);
+        this.from = getDateAsString(stats.simStat.start - 30000L);
         this.until = getDateAsString(stats.simStat.end + 60000L); // add one more minute to prevent empty chart
         this.outputDirectory = outputDirectory;
         this.user = user;
         this.password = password;
+        if (zoneId == null) {
+            this.zoneId = ZoneId.systemDefault();
+        } else {
+            this.zoneId = zoneId;
+        }
         Utils.setBasicAuth(user, password);
         parseDashboard();
         downloadImages();
     }
 
     private String getDateAsString(long start) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm_yyyyMMdd").withZone(ZoneId.systemDefault());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm_yyyyMMdd").withZone(zoneId);
         return formatter.format(Instant.ofEpochMilli(start));
     }
 

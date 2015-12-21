@@ -18,6 +18,7 @@
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.internal.Lists;
 
+import java.time.ZoneId;
 import java.util.List;
 
 public class Options {
@@ -48,8 +49,19 @@ public class Options {
     public String user;
 
     @Parameter(names = {"--password", "-p"},
-            description = "Graphite basic authoentication password.")
+            description = "Graphite basic authentication password.")
     public String password;
+
+    @Parameter(names = {"--zoneid"},
+            description = "Graphite time zone if different from Gatling, ex: Europe/Paris")
+    private String zoneIdString;
+
+    public ZoneId getZoneId() {
+        if (zoneIdString == null) {
+            return null;
+        }
+        return ZoneId.of(zoneIdString);
+    }
 
     @Parameter(names = {"--apdex-threshold", "-T"},
             description = "Apdex thresold, the response time in second above which the request switch from satisfying" +
