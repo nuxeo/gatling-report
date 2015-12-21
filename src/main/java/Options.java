@@ -52,15 +52,15 @@ public class Options {
             description = "Graphite basic authentication password.")
     public String password;
 
-    @Parameter(names = {"--zoneid"},
+    @Parameter(names = {"--timezone"},
             description = "Graphite time zone if different from Gatling, ex: Europe/Paris")
-    private String zoneIdString;
+    private String timeZoneString;
 
     public ZoneId getZoneId() {
-        if (zoneIdString == null) {
+        if (timeZoneString == null) {
             return null;
         }
-        return ZoneId.of(zoneIdString);
+        return ZoneId.of(timeZoneString);
     }
 
     @Parameter(names = {"--apdex-threshold", "-T"},

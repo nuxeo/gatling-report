@@ -65,16 +65,16 @@ public class Graphite {
                     ZoneId zoneId) {
         this.dashboardUrl = graphiteUrl;
         baseUrl = Utils.getBaseUrl(graphiteUrl);
-        this.from = getDateAsString(stats.simStat.start - 30000L);
-        this.until = getDateAsString(stats.simStat.end + 60000L); // add one more minute to prevent empty chart
-        this.outputDirectory = outputDirectory;
-        this.user = user;
-        this.password = password;
         if (zoneId == null) {
             this.zoneId = ZoneId.systemDefault();
         } else {
             this.zoneId = zoneId;
         }
+        this.from = getDateAsString(stats.simStat.start - 30000L);
+        this.until = getDateAsString(stats.simStat.end + 60000L); // add one more minute to prevent empty chart
+        this.outputDirectory = outputDirectory;
+        this.user = user;
+        this.password = password;
         Utils.setBasicAuth(user, password);
         parseDashboard();
         downloadImages();
