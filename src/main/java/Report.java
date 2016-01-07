@@ -32,10 +32,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Report {
+    private static final String YAML = "yaml/";
+    private static final String HTML = "html/";
     private static final String SIMULATION_TEMPLATE = "simulation.mustache";
     private static final String TREND_TEMPLATE = "trend.mustache";
     private static final String DIFF_TEMPLATE = "diff.mustache";
     private static final String INDEX = "index.html";
+    private static final String YAML_INDEX = "data.yml";
     private static final String DEFAULT_SCRIPT = "plotly-latest.min.js";
     private static final String DEFAULT_CDN_SCRIPT = "https://cdn.plot.ly/plotly-latest.min.js";
 
@@ -48,6 +51,7 @@ public class Report {
     private String graphiteUrl, user, password;
     private Graphite graphite;
     private ZoneId zoneId;
+    private boolean yaml = false;
 
     public Report(List<SimulationContext> stats) {
         this.stats = stats;
@@ -132,6 +136,9 @@ public class Report {
     }
 
     public File getReportPath() {
+        if (yaml) {
+            return new File(outputDirectory, YAML_INDEX);
+        }
         return new File(outputDirectory, INDEX);
     }
 
@@ -157,13 +164,14 @@ public class Report {
 
     public String getDefaultTemplate() {
         int nbSimulation = stats.size();
+        String prefix = yaml ? YAML : HTML;
         switch (nbSimulation) {
             case 1:
-                return SIMULATION_TEMPLATE;
+                return prefix + SIMULATION_TEMPLATE;
             case 2:
-                return DIFF_TEMPLATE;
+                return prefix + DIFF_TEMPLATE;
             default:
-                return template = TREND_TEMPLATE;
+                return prefix + TREND_TEMPLATE;
         }
     }
 
@@ -172,6 +180,11 @@ public class Report {
         this.user = user;
         this.password = password;
         this.zoneId = zoneId;
+        return this;
+    }
+
+    public Report yamlReport(boolean yaml) {
+        this.yaml = yaml;
         return this;
     }
 }

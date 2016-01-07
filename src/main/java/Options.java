@@ -29,6 +29,9 @@ public class Options {
             description = "Create a report in this directory, if not specified output CSV stats to stdout.")
     public String outputDirectory;
 
+    @Parameter(names = {"--yaml", "-y"}, description = "Create a YAML report instead of an HTML report.")
+    public boolean yaml = false;
+
     @Parameter(names = {"--force", "-f"}, description = "Override an existing report.")
     public boolean force = false;
 

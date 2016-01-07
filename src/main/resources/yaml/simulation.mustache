@@ -1,0 +1,43 @@
+simulation: {{simStat.scenario}}
+start: {{simStat.startDate}}
+duration: {{simStat.getDuration}}
+throughput: {{simStat.throughput}}
+averageMs: {{simStat.average}}
+count: {{simStat.count}}
+successCount: {{simStat.successCount}}
+errorCount: {{simStat.errorCount}}
+apdex: {
+  t: {{simStat.apdex.threshold}}
+  rating: {{simStat.apdex.rating}}
+  score: {{simStat.apdex.score}}
+}
+min: {{simStat.min}}
+max: {{simStat.max}}
+p50: {{simStat.p50}}
+p95: {{simStat.p95}}
+p99: {{simStat.p99}}
+avg: {{simStat.avg}}
+
+# Request mapping
+{{#requests}}
+{{request}}: {
+  name: {{request}}
+  averageMs: {{average}}
+  stddev: {{stddev}}
+  rps: {{rps}}
+  count: {{count}}
+  successCount: {{successCount}}
+  errorCount: {{errorCount}}
+  apdex: {
+    t: {{apdex.threshold}}
+    rating: {{apdex.rating}}
+    score: {{apdex.score}}
+  }
+  min: {{min}}
+  max: {{max}}
+  p50: {{p50}}
+  p95: {{p95}}
+  p99: {{p99}}
+  avg: {{avg}}
+}
+{{/requests}}
