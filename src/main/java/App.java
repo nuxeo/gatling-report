@@ -87,6 +87,7 @@ public class App implements Runnable {
                 .setTemplate(options.template)
                 .includeGraphite(options.graphiteUrl, options.user, options.password, options.getZoneId())
                 .yamlReport(options.yaml)
+                .withMap(options.map)
                 .create();
         log.info("Report generated: " + reportPath);
     }

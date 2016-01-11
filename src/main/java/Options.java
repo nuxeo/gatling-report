@@ -19,6 +19,7 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.internal.Lists;
 
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Options {
@@ -42,6 +43,10 @@ public class Options {
     @Parameter(names = {"--template", "-t"},
             description = "Use a custom mustache template to generate the report.")
     public String template;
+
+    @Parameter(names = {"--map", "-m"},
+            description = "When using a custom template each simulation stat are accessible using its name.")
+    public List<String> map = new ArrayList<>();
 
     @Parameter(names = {"--graphite", "-g"},
             description = "Download graphite dashboard images.")

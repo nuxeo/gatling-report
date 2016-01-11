@@ -29,6 +29,7 @@ import java.io.Writer;
 import java.net.URL;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Report {
@@ -52,6 +53,7 @@ public class Report {
     private Graphite graphite;
     private ZoneId zoneId;
     private boolean yaml = false;
+    private List<String> map;
 
     public Report(List<SimulationContext> stats) {
         this.stats = stats;
@@ -119,12 +121,33 @@ public class Report {
 
     public void createTrendReport() throws IOException {
         Mustache mustache = getMustache();
-        mustache.execute(getWriter(), new TrendContext(stats).setScripts(getScripts())).flush();
+        if (map != null && map.size() == stats.size()) {
+            HashMap<String, Object> scopes = new HashMap<String, Object>();
+            scopes.put("trend", new TrendContext(stats).setScripts(getScripts()));
+            int i=0;
+            for (String name : map) {
+                scopes.put(name, stats.get(i++));
+            }
+            mustache.execute(getWriter(), scopes).flush();
+        } else {
+            mustache.execute(getWriter(), new TrendContext(stats).setScripts(getScripts())).flush();
+        }
     }
 
     public void createDiffReport() throws IOException {
         Mustache mustache = getMustache();
-        mustache.execute(getWriter(), new DiffContext(stats).setScripts(getScripts())).flush();
+        if (map != null && map.size() == stats.size()) {
+            HashMap<String, Object> scopes = new HashMap<String, Object>();
+            scopes.put("diff", new DiffContext(stats).setScripts(getScripts()));
+            int i=0;
+            for (String name : map) {
+                scopes.put(name, stats.get(i++));
+            }
+            mustache.execute(getWriter(), scopes).flush();
+        } else {
+            mustache.execute(getWriter(), new DiffContext(stats).setScripts(getScripts())).flush();
+        }
+
     }
 
     public Writer getWriter() throws IOException {
@@ -185,6 +208,11 @@ public class Report {
 
     public Report yamlReport(boolean yaml) {
         this.yaml = yaml;
+        return this;
+    }
+
+    public Report withMap(List<String> map) {
+        this.map = map;
         return this;
     }
 }

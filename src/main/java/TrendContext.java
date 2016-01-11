@@ -62,8 +62,9 @@ public class TrendContext {
         for (String requestName : requestNames) {
             requests.add(new TrendStat());
         }
-        Collections.sort(stats, (a, b) -> (int) (a.simStat.start - b.simStat.start));
-        for (SimulationContext simStat : stats) {
+        ArrayList<SimulationContext> orderedStats = new ArrayList<SimulationContext>(stats);
+        Collections.sort(orderedStats, (a, b) -> (int) (a.simStat.start - b.simStat.start));
+        for (SimulationContext simStat : orderedStats) {
             names.add(simStat.simulationName);
             all.add(simStat.simStat);
             for (int i = 0; i < requestNames.size(); i++) {
