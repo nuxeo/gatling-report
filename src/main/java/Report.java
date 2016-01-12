@@ -35,11 +35,10 @@ import java.util.List;
 public class Report {
     private static final String YAML = "yaml/";
     private static final String HTML = "html/";
+    private static final String DEFAULT_FILENAME = "index.html";
     private static final String SIMULATION_TEMPLATE = "simulation.mustache";
     private static final String TREND_TEMPLATE = "trend.mustache";
     private static final String DIFF_TEMPLATE = "diff.mustache";
-    private static final String INDEX = "index.html";
-    private static final String YAML_INDEX = "data.yml";
     private static final String DEFAULT_SCRIPT = "plotly-latest.min.js";
     private static final String DEFAULT_CDN_SCRIPT = "https://cdn.plot.ly/plotly-latest.min.js";
 
@@ -54,6 +53,7 @@ public class Report {
     private ZoneId zoneId;
     private boolean yaml = false;
     private List<String> map;
+    private String filename = DEFAULT_FILENAME;
 
     public Report(List<SimulationContext> stats) {
         this.stats = stats;
@@ -159,10 +159,7 @@ public class Report {
     }
 
     public File getReportPath() {
-        if (yaml) {
-            return new File(outputDirectory, YAML_INDEX);
-        }
-        return new File(outputDirectory, INDEX);
+        return new File(outputDirectory, filename);
     }
 
     public List<String> getScripts() {
@@ -213,6 +210,11 @@ public class Report {
 
     public Report withMap(List<String> map) {
         this.map = map;
+        return this;
+    }
+
+    public Report setFilename(String filename) {
+        this.filename = filename;
         return this;
     }
 }

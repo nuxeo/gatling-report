@@ -26,10 +26,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
-
 public class RequestStat {
     String scenario;
     String request;
+    String requestId;
     static AtomicInteger statCounter = new AtomicInteger();
     int indice;
     String startDate;
@@ -45,6 +45,7 @@ public class RequestStat {
     public RequestStat(String scenario, String request, long start, Float apdexT) {
         this.scenario = scenario;
         this.request = request;
+        requestId = Utils.getIdentifier(request);
         this.start = start;
         durations = new ArrayList<>();
         indice = statCounter.incrementAndGet();
@@ -97,11 +98,11 @@ public class RequestStat {
     }
 
     public String average() {
-        return String.format("%.1f", avg);
+        return String.format(Locale.ENGLISH, "%.1f", avg);
     }
 
     public String throughput() {
-        return String.format("%.1f", rps);
+        return String.format(Locale.ENGLISH, "%.1f", rps);
     }
 
     private String getDateFromInstant(long start) {
@@ -119,7 +120,7 @@ public class RequestStat {
     }
 
     public String getDuration() {
-        return String.format("%.1f", duration);
+        return String.format(Locale.ENGLISH, "%.1f", duration);
     }
 
     public static String header() {

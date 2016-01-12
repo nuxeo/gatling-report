@@ -18,6 +18,7 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class DiffContext {
     SimulationContext ref;
@@ -52,7 +53,7 @@ public class DiffContext {
     }
 
     public String avgPercent() {
-        return String.format("%+.2f", (challenger.simStat.avg * 100.0 / ref.simStat.avg) - 100.0);
+        return String.format(Locale.ENGLISH, "%+.2f", (challenger.simStat.avg * 100.0 / ref.simStat.avg) - 100.0);
     }
 
     public String avgClass() {
@@ -63,7 +64,7 @@ public class DiffContext {
     }
 
     public String rpsPercent() {
-        return String.format("%+.2f", (challenger.simStat.rps * 100.0 / ref.simStat.rps) - 100.0);
+        return String.format(Locale.ENGLISH, "%+.2f", (challenger.simStat.rps * 100.0 / ref.simStat.rps) - 100.0);
     }
 
     public String rpsClass() {

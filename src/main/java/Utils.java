@@ -73,4 +73,13 @@ public class Utils {
         }
         return ret.toString();
     }
+
+    static String getIdentifier(String str) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < str.length(); i++) {
+            if (Character.isLetter(str.charAt(i)))
+                sb.append(str.charAt(i));
+        }
+        return sb.toString().toLowerCase();
+    }
 }

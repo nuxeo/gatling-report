@@ -30,6 +30,10 @@ public class Options {
             description = "Create a report in this directory, if not specified output CSV stats to stdout.")
     public String outputDirectory;
 
+    @Parameter(names = {"--output-name", "-n"},
+            description = "The name of the file in the report directory, default to index.html.")
+    public String outputName;
+
     @Parameter(names = {"--yaml", "-y"}, description = "Create a YAML report instead of an HTML report.")
     public boolean yaml = false;
 
