@@ -214,7 +214,9 @@ public class Report {
     }
 
     public Report setFilename(String filename) {
-        this.filename = filename;
+        if (filename != null) {
+            this.filename = filename;
+        }
         return this;
     }
 }
