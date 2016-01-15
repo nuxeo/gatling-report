@@ -13,7 +13,7 @@
   </style>
 </head>
 
-<h1>{{simStat.startDate}} - Gatling report for simulation {{simStat.scenario}}</h1>
+<h1>{{simStat.startDate}} - Gatling report for simulation {{simStat.simulation}}</h1>
 
 <div id="summaryDiv">
   <table id="summaryTab">
@@ -32,6 +32,10 @@
     <tr>
       <th>Throughput requests/s</th>
       <td>{{simStat.throughput}}</td>
+    </tr>
+    <tr>
+      <th>Max concurrent users</th>
+      <td>{{simStat.maxUsers}}</td>
     </tr>
   </table>
 </div>

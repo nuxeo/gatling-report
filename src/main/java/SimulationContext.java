@@ -22,21 +22,42 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static java.lang.Math.max;
+
 public class SimulationContext {
-    private final Float apdexT;
     String filePath;
     String simulationName;
     RequestStat simStat;
-    Map<String, RequestStat> reqStats;
+    Map<String, RequestStat> reqStats = new HashMap<>();
     List<String> scripts = new ArrayList<>();
+    int maxUsers;
 
+    private final Float apdexT;
     private static final String ALL_REQUESTS = "_all";
     private long start;
 
+    class CountMax {
+        int current = 0, maximum = 0;
+
+        public void incr() {
+            current += 1;
+            maximum = max(current, maximum);
+        }
+
+        public void decr() {
+            current -= 1;
+        }
+
+        public int getMax() {
+            return maximum;
+        }
+    }
+
+    Map<String, CountMax> users = new HashMap<>();
+
     public SimulationContext(String filePath, Float apdexT) {
         this.filePath = filePath;
-        this.simStat = new RequestStat(filePath, ALL_REQUESTS, 0, apdexT);
-        reqStats = new HashMap<>();
+        this.simStat = new RequestStat(ALL_REQUESTS, ALL_REQUESTS, ALL_REQUESTS, 0, apdexT);
         this.apdexT = apdexT;
     }
 
@@ -46,10 +67,10 @@ public class SimulationContext {
         return ret;
     }
 
-    public void addRequest(String requestName, long start, long end, boolean success) {
+    public void addRequest(String scenario, String requestName, long start, long end, boolean success) {
         RequestStat request = reqStats.get(requestName);
         if (request == null) {
-            request = new RequestStat(simulationName, requestName, this.start, apdexT);
+            request = new RequestStat(simulationName, scenario, requestName, this.start, apdexT);
             reqStats.put(requestName, request);
         }
         request.add(start, end, success);
@@ -57,13 +78,16 @@ public class SimulationContext {
     }
 
     public void computeStat() {
-        simStat.computeStat();
-        reqStats.values().forEach(request -> request.computeStat(simStat.duration));
+        maxUsers = users.values().stream().mapToInt(CountMax::getMax).sum();
+        simStat.computeStat(maxUsers);
+        reqStats.values().forEach(request ->
+                request.computeStat(simStat.duration, users.get(request.scenario).maximum));
+
     }
 
     public void setSimulationName(String name) {
         this.simulationName = name;
-        simStat.setScenario(name);
+        simStat.setSimulationName(name);
     }
 
     public void setStart(long start) {
@@ -81,4 +105,26 @@ public class SimulationContext {
         return simStat.toString() + "\n" + getRequests().stream().map(RequestStat::toString)
                 .collect(Collectors.joining("\n"));
     }
+
+    public SimulationContext setMaxUsers(int maxUsers) {
+        this.maxUsers = maxUsers;
+        return this;
+    }
+
+    public void addUser(String scenario) {
+        CountMax count = users.get(scenario);
+        if (count == null) {
+            count = new CountMax();
+            users.put(scenario, count);
+        }
+        count.incr();
+    }
+
+    public void endUser(String scenario) {
+        CountMax count = users.get(scenario);
+        if (count != null) {
+            count.decr();
+        }
+    }
+
 }

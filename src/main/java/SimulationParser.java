@@ -26,11 +26,16 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.zip.GZIPInputStream;
 
+import static java.lang.Math.max;
+
 public class SimulationParser {
 
     private static final String OK = "OK";
     private static final String REQUEST = "REQUEST";
     private static final String RUN = "RUN";
+    private static final String USER = "USER";
+    private static final String START = "START";
+    private static final String END = "END";
     private static final String GZ = "gz";
     private final File file;
     private final Float apdexT;
@@ -50,12 +55,14 @@ public class SimulationParser {
         CSVReader reader = new CSVReader(getReaderFor(file), '\t');
         String[] line;
         String name;
+        String scenario;
         long start, end;
         boolean success;
         while ((line = reader.readNext()) != null) {
             if (line.length <= 2) {
                 invalidFile();
             }
+            scenario = line[0];
             switch (line[2]) {
                 case RUN:
                     String version = line[5];
@@ -70,11 +77,19 @@ public class SimulationParser {
                     start = Long.parseLong(line[6]);
                     end = Long.parseLong(line[8]);
                     success = OK.equals(line[9]);
-                    ret.addRequest(name, start, end, success);
+                    ret.addRequest(scenario, name, start, end, success);
                     break;
-
+                case USER:
+                    switch (line[3]) {
+                        case START:
+                            ret.addUser(scenario);
+                            break;
+                        case END:
+                            ret.endUser(scenario);
+                            break;
+                    }
+                    break;
             }
-
         }
         ret.computeStat();
         return ret;

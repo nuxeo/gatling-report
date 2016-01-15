@@ -6,10 +6,11 @@ averageMs: {{simStat.average}}
 count: {{simStat.count}}
 successCount: {{simStat.successCount}}
 errorCount: {{simStat.errorCount}}
+maxUser: {{simStat.maxUsers}}
 apdex: {
-  t: {{simStat.apdex.threshold}}
-  rating: {{simStat.apdex.rating}}
-  score: {{simStat.apdex.score}}
+t: {{simStat.apdex.threshold}}
+rating: {{simStat.apdex.rating}}
+score: {{simStat.apdex.score}}
 }
 min: {{simStat.min}}
 max: {{simStat.max}}
@@ -22,12 +23,14 @@ avg: {{simStat.avg}}
 {{#requests}}
 {{request}}: {
   name: {{request}}
+  scenario: {{scenario}}
   averageMs: {{average}}
   stddev: {{stddev}}
   rps: {{rps}}
   count: {{count}}
   successCount: {{successCount}}
   errorCount: {{errorCount}}
+  maxUser: {{maxUsers}}
   apdex: {
     t: {{apdex.threshold}}
     rating: {{apdex.rating}}

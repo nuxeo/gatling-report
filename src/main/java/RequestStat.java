@@ -27,6 +27,7 @@ import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class RequestStat {
+    String simulation;
     String scenario;
     String request;
     String requestId;
@@ -41,8 +42,10 @@ public class RequestStat {
     List<Double> durations;
     Graphite graphite;
     Apdex apdex;
+    int maxUsers;
 
-    public RequestStat(String scenario, String request, long start, Float apdexT) {
+    public RequestStat(String simulation, String scenario, String request, long start, Float apdexT) {
+        this.simulation = simulation;
         this.scenario = scenario;
         this.request = request;
         requestId = Utils.getIdentifier(request);
@@ -67,11 +70,11 @@ public class RequestStat {
         apdex.addMs(duration);
     }
 
-    public void computeStat() {
-        computeStat((end - start) / 1000.0);
+    public void computeStat(int maxUsers) {
+        computeStat((end - start) / 1000.0, maxUsers);
     }
 
-    public void computeStat(double duration) {
+    public void computeStat(double duration, int maxUsers) {
         double[] times = getDurationAsArray();
         min = (long) StatUtils.min(times);
         max = (long) StatUtils.max(times);
@@ -84,9 +87,14 @@ public class RequestStat {
         StandardDeviation stdDev = new StandardDeviation();
         stddev = (long) stdDev.evaluate(times, avg);
         this.duration = duration;
+        this.maxUsers = maxUsers;
         rps = (count - errorCount) / duration;
         startDate = getDateFromInstant(start);
         successCount = count - errorCount;
+    }
+
+    public void setSimulationName(String name) {
+        simulation = name;
     }
 
     public void setScenario(String name) {
@@ -124,15 +132,15 @@ public class RequestStat {
     }
 
     public static String header() {
-        return "scenario\trequest\tstart\tstartDate\tduration\tend\tcount\tsuccessCount\terrorCount\tmin\tp50\tp95" +
-                "\tp99\tmax\tavg\tstddev\trps\tapdex\trating";
+        return "simulation\tscenario\tmaxUsers\trequest\tstart\tstartDate\tduration\tend\tcount\tsuccessCount\t" +
+                "errorCount\tmin\tp50\tp95\tp99\tmax\tavg\tstddev\trps\tapdex\trating";
     }
 
     @Override
     public String toString() {
-        return String.format(Locale.ENGLISH, "%s\t%s\t%s\t%s\t%.2f\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%.2f\t%s\t" +
-                "%.2f\t%.2f\t%s",
-                scenario, request, start, startDate, duration, end, count, successCount, errorCount, min, p50, p95,
-                p99, max, avg, stddev, rps, apdex.getScore(), apdex.getRating());
+        return String.format(Locale.ENGLISH,
+                "%s\t%s\t%s\t%s\t%s\t%s\t%.2f\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%.2f\t%s\t%.2f\t%.2f\t%s",
+                simulation, scenario, maxUsers, request, start, startDate, duration, end, count, successCount,
+                errorCount, min, p50, p95, p99, max, avg, stddev, rps, apdex.getScore(), apdex.getRating());
     }
 }
