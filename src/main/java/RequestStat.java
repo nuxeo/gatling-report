@@ -113,6 +113,13 @@ public class RequestStat {
         return String.format(Locale.ENGLISH, "%.1f", rps);
     }
 
+    public String percentError() {
+        if (count == 0) {
+            return "0.00";
+        }
+        return String.format(Locale.ENGLISH, "%.2f", (errorCount * 100.0) / count);
+    }
+
     private String getDateFromInstant(long start) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd " +
                 "HH:mm:ss").withZone(ZoneId.systemDefault());
