@@ -27,6 +27,7 @@ import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class RequestStat {
+    private static final long MAX_BOXPOINT = 50000;
     String simulation;
     String scenario;
     String request;
@@ -108,6 +109,14 @@ public class RequestStat {
     public String average() {
         return String.format(Locale.ENGLISH, "%.1f", avg);
     }
+
+    public String boxpoints() {
+        if (count < MAX_BOXPOINT) {
+            return "'all'";
+        }
+        return "false";
+    }
+
 
     public String throughput() {
         return String.format(Locale.ENGLISH, "%.1f", rps);

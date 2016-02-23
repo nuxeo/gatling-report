@@ -68,7 +68,7 @@ var dataAll = [
   {
     y: {{simStat.durations}},
     name: 'Average: {{simStat.average}}ms',
-    boxpoints: 'all',
+    boxpoints: {{{simStat.boxpoints}}},
     jitter: 0.3,
     pointpos: -1.8,
     boxmean: 'sd',
@@ -116,7 +116,7 @@ var dataResponse = [];
 {{#requests}}
 var data{{indice}} = {
     y: {{durations}},
-    boxpoints: 'all',
+    boxpoints: {{{boxpoints}}},
     jitter: 0.2,
     pointpos: -5,
     fillcolor: 'cls',

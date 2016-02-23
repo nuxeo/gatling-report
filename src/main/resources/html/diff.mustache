@@ -101,7 +101,7 @@ var dataAll = [
   {
     y: {{ref.simStat.durations}},
     name: 'Reference: {{ref.simStat.average}}ms',
-    boxpoints: 'all',
+    boxpoints: {{{ref.simStat.boxpoints}}},
     jitter: 0.3,
     pointpos: -1.8,
     boxmean: 'sd',
@@ -114,7 +114,7 @@ var dataAll = [
   {
     y: {{challenger.simStat.durations}},
     name: 'Challenger: {{challenger.simStat.average}}ms',
-    boxpoints: 'all',
+    boxpoints: {{{challenger.simStat.boxpoints}}},
     jitter: 0.3,
     pointpos: -1.8,
     boxmean: 'sd',
@@ -163,7 +163,7 @@ var data{{refR.indice}} = [
   {
     y: {{refR.durations}},
     name: 'Reference: {{refR.average}}ms',
-    boxpoints: 'all',
+    boxpoints: {{{refR.boxpoints}}},
     jitter: 0.3,
     pointpos: -1.8,
     boxmean: 'sd',
@@ -176,7 +176,7 @@ var data{{refR.indice}} = [
   {
     y: {{challengerR.durations}},
     name: 'Challenger: {{challengerR.average}}ms',
-    boxpoints: 'all',
+    boxpoints: {{{challengerR.boxpoints}}},
     jitter: 0.3,
     pointpos: -1.8,
     boxmean: 'sd',
