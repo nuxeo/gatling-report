@@ -35,6 +35,12 @@ public class RequestStat {
     int indice;
     String startDate;
     long start, end;
+    ArrayList <Long> startTimes;
+    ArrayList <Long> endTimes;
+    ArrayList <Long> errors;
+    ArrayList <Integer> reqPerSec;
+    ArrayList <Integer> resPerSec;
+    ArrayList <Integer> errorPerSec;
     long count, successCount, errorCount;
     long min, max, stddev, p50, p95, p99;
     double rps, avg;
@@ -53,6 +59,9 @@ public class RequestStat {
         durations = new ArrayList<>();
         indice = statCounter.incrementAndGet();
         apdex = new Apdex(apdexT);
+        startTimes = new ArrayList<Long>();
+        endTimes = new ArrayList<Long>();
+        errors = new ArrayList<Long>();
     }
 
     public void add(long start, long end, boolean success) {
@@ -64,18 +73,23 @@ public class RequestStat {
         this.end = Math.max(this.end, end);
         if (!success) {
             errorCount += 1;
+            errors.add(end);
         }
         long duration = end - start;
+        startTimes.add(start);
+        endTimes.add(end);
         durations.add((double) duration);
         apdex.addMs(duration);
     }
 
-    public void computeStat(int maxUsers) {
-        computeStat((end - start) / 1000.0, maxUsers);
+    public void computeStat(int maxUsers, boolean normalised) {
+    	System.out.println("ComputeStat minimal");
+        computeStat((end - start) / 1000.0, maxUsers, normalised);
     }
 
-    public void computeStat(double duration, int maxUsers) {
-        double[] times = getDurationAsArray();
+    public void computeStat(double duration, int maxUsers, boolean normalised) {
+    	System.out.println("ComputeStat bigger");
+    	double[] times = getDurationAsArray();
         min = (long) StatUtils.min(times);
         max = (long) StatUtils.max(times);
         double sum = 0;
@@ -91,8 +105,60 @@ public class RequestStat {
         rps = (count - errorCount) / duration;
         startDate = getDateFromInstant(start);
         successCount = count - errorCount;
+        
+        if (normalised) {
+	        initialiseTimeSlots();
+	        calculateRollingErrorPerSec();
+	        calculateRollingReqPerSec();
+	        calculateRollingResPerSec();
+        }
+    }
+    
+    public void initialiseTimeSlots() {
+    	reqPerSec = new ArrayList<Integer>();
+    	resPerSec = new ArrayList<Integer>();
+    	errorPerSec = new ArrayList<Integer>();
+    	System.out.println("Duration:  " + duration);
+    	for (int i = 0; i <= duration + 1; i++) {
+    		reqPerSec.add(0);
+    		resPerSec.add(0);
+    		errorPerSec.add(0);
+    	}
+    }
+    
+    public void calculateRollingErrorPerSec() {
+    	int value = 0;
+    	Long timeSlot = new Long(0);
+    	for (Long time : errors) {
+    		timeSlot = time/1000;
+    		value = errorPerSec.get(timeSlot.intValue());
+    		value += 1;
+    		errorPerSec.set(timeSlot.intValue(), value);
+    	}
+    }
+    
+    public void calculateRollingReqPerSec() {
+    	int value = 0;
+    	Long timeSlot = new Long(0);
+    	for (Long time : startTimes) {
+    		timeSlot = time/1000;
+    		value = reqPerSec.get(timeSlot.intValue());
+    		value += 1;
+    		reqPerSec.set(timeSlot.intValue(), value);
+    	}
     }
 
+    public void calculateRollingResPerSec() {
+    	int value = 0;
+    	Long timeSlot = new Long(0);
+    	for (Long time : endTimes) {
+    		timeSlot = time/1000;
+    		value = resPerSec.get(timeSlot.intValue());
+    		value += 1;
+    		resPerSec.set(timeSlot.intValue(), value);
+    	}
+    }
+    
     public void setSimulationName(String name) {
         simulation = name;
     }

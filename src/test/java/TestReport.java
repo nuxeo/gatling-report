@@ -37,7 +37,7 @@ public class TestReport {
     public void generateSimulationReport() throws Exception {
         List<SimulationContext> stats = Arrays.asList(new SimulationParser(getRessourceFile(SIM_GZ)).parse());
         Writer writer = new StringWriter();
-        String reportPath = new Report(stats).setWriter(writer).create();
+        String reportPath = new Report(stats, false).setWriter(writer).create();
         // System.out.println(writer);
         Assert.assertTrue(reportPath.endsWith("index.html"));
         Assert.assertTrue(writer.toString().contains("simulation sim50bench"));
@@ -54,7 +54,7 @@ public class TestReport {
             }
         });
         Writer writer = new StringWriter();
-        String reportPath = new Report(stats).setWriter(writer).create();
+        String reportPath = new Report(stats, false).setWriter(writer).create();
         // System.out.println(writer);
         Assert.assertTrue(reportPath.endsWith("index.html"));
         Assert.assertTrue(writer.toString().contains("Trend report"));

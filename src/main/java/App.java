@@ -54,7 +54,7 @@ public class App implements Runnable {
     private void parseSimulationFile(File file) {
         log.info("Parsing " + file.getAbsolutePath());
         try {
-            stats.add(new SimulationParser(file, options.apdexT).parse());
+            stats.add(new SimulationParser(file, options.apdexT, options.normalised).parse());
         } catch (IOException e) {
             log.error("Invalid file: " + file.getAbsolutePath(), e);
         }
@@ -81,7 +81,7 @@ public class App implements Runnable {
             }
             log.warn("Overriding existing report directory" + options.outputDirectory);
         }
-        String reportPath = new Report(stats)
+        String reportPath = new Report(stats, options.normalised)
                 .setOutputDirectory(dir)
                 .includeJs(options.includeJs)
                 .setTemplate(options.template)

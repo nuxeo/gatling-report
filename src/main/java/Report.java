@@ -45,6 +45,7 @@ public class Report {
     private final List<SimulationContext> stats;
     private File outputDirectory;
     private Writer writer;
+    private Writer csvWriter;
     private List<String> scripts = new ArrayList<>();
     private boolean includeJs = false;
     private String template;
@@ -54,9 +55,11 @@ public class Report {
     private boolean yaml = false;
     private List<String> map;
     private String filename = DEFAULT_FILENAME;
+    private boolean normalised = false;
 
-    public Report(List<SimulationContext> stats) {
+    public Report(List<SimulationContext> stats, boolean normalised) {
         this.stats = stats;
+        this.normalised = normalised;
     }
 
     public Report setOutputDirectory(File output) {
@@ -100,12 +103,16 @@ public class Report {
             default:
                 createTrendReport();
         }
-        return getReportPath().getAbsolutePath();
+        return getReportPath(null).getAbsolutePath();
     }
 
     public void createSimulationReport() throws IOException {
-        Mustache mustache = getMustache();
-        mustache.execute(getWriter(), stats.get(0).setScripts(getScripts())).flush();
+        if (normalised) {
+        	writeResultsToCsv();
+        } else {
+            Mustache mustache = getMustache();
+            mustache.execute(getWriter(), stats.get(0).setScripts(getScripts())).flush();
+        }
     }
 
     private Mustache getMustache() throws FileNotFoundException {
@@ -150,16 +157,60 @@ public class Report {
 
     }
 
+    public void writeResultsToCsv() {
+    	System.out.println("WriteToCsv");
+    	try {
+    		Writer csvWriter = getCsvWriter();
+    		csvWriter.append("Time (sec)");
+    		writer.append(',');
+    		csvWriter.append("Request Rate");
+    		writer.append(',');
+    		csvWriter.append("Response Rate");
+    		writer.append(',');
+    		csvWriter.append("Error Rate");
+    		writer.append('\n');
+    		
+    		ArrayList <Integer> requestRate = stats.get(0).simStat.reqPerSec;
+    		ArrayList <Integer> responseRate = stats.get(0).simStat.resPerSec;
+    		ArrayList <Integer> errorRate = stats.get(0).simStat.errorPerSec;
+    		for (int i = 0; i < requestRate.size(); i++){
+    			csvWriter.append("" + i);
+    			writer.append(',');
+    			csvWriter.append(requestRate.get(i).toString());
+    			writer.append(',');
+    			csvWriter.append(responseRate.get(i).toString());
+    			writer.append(',');
+    			csvWriter.append(errorRate.get(i).toString());
+    			writer.append('\n');
+    		}
+    		writer.flush();
+    	} catch (IOException ex) {
+    		System.out.println(ex.toString());
+    	}
+    }
+    
+    public Writer getCsvWriter() throws IOException {
+        if (writer == null) {
+            File index = getReportPath("Results.csv");
+            writer = new FileWriter(index);
+        }
+        return writer;
+    }
+    
     public Writer getWriter() throws IOException {
         if (writer == null) {
-            File index = getReportPath();
+            File index = getReportPath(null);
             writer = new FileWriter(index);
         }
         return writer;
     }
 
-    public File getReportPath() {
-        return new File(outputDirectory, filename);
+    public File getReportPath(String fName) {
+    	if (null != fName){
+            return new File(outputDirectory, fName);
+    	} else {
+            return new File(outputDirectory, filename);    		
+    	}
     }
 
     public List<String> getScripts() {

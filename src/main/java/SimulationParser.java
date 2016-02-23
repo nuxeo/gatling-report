@@ -24,6 +24,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.zip.GZIPInputStream;
 
 import static java.lang.Math.max;
@@ -39,15 +42,18 @@ public class SimulationParser {
     private static final String GZ = "gz";
     private final File file;
     private final Float apdexT;
+    private final boolean normalised;
 
-    public SimulationParser(File file, Float apdexT) {
+    public SimulationParser(File file, Float apdexT, boolean normalised) {
         this.file = file;
         this.apdexT = apdexT;
+        this.normalised = normalised;
     }
 
     public SimulationParser(File file) {
         this.file = file;
         this.apdexT = null;
+        this.normalised = false;
     }
 
     public SimulationContext parse() throws IOException {
@@ -57,11 +63,15 @@ public class SimulationParser {
         String name;
         String scenario;
         long start, end;
+        long firstReq = 0;
+        boolean firstReqSet = false;
         boolean success;
+        ArrayList <Request> requests = new ArrayList<Request>();
         while ((line = reader.readNext()) != null) {
             if (line.length <= 2) {
                 invalidFile();
             }
+
             scenario = line[0];
             switch (line[2]) {
                 case RUN:
@@ -73,11 +83,18 @@ public class SimulationParser {
                     ret.setStart(Long.parseLong(line[3]));
                     break;
                 case REQUEST:
+                	start = Long.parseLong(line[6]);
+                	if (!firstReqSet && normalised) {
+                		firstReq = start;
+                		firstReqSet = true;
+                	}
+                	else if (normalised && start < firstReq) {
+                    	firstReq = start;
+                    }
                     name = line[4];
-                    start = Long.parseLong(line[6]);
                     end = Long.parseLong(line[8]);
                     success = OK.equals(line[9]);
-                    ret.addRequest(scenario, name, start, end, success);
+                    requests.add(new Request(name, scenario, start,end, success));
                     break;
                 case USER:
                     switch (line[3]) {
@@ -91,7 +108,25 @@ public class SimulationParser {
                     break;
             }
         }
-        ret.computeStat();
+        //sort
+        Collections.sort(requests, new Comparator<Request>() {
+            @Override
+            public int compare(Request request, Request request2)
+            {
+
+                return  Long.compare(request.getStart(), request2.getStart());
+            }
+        });
+        
+        for (Request req : requests) {
+        	if (normalised) {
+        		ret.addRequest(req.getScenario(), req.getName(), req.getStart() - firstReq, req.getEnd() - firstReq, req.getSuccess());
+        	} else {
+        		ret.addRequest(req.getScenario(), req.getName(), req.getStart(), req.getEnd(), req.getSuccess());        		
+        	}
+        }
+        ret.computeStat(normalised);
+        System.out.println("SimContext: " + ret.toString());
         return ret;
     }
 

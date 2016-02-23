@@ -44,6 +44,10 @@ public class Options {
             description = "Include Plotly js in the report, otherwhise use the CDN version.")
     public boolean includeJs = false;
 
+    @Parameter(names = {"--normalised"},
+            description = "Shifts time-range to start from zero, first request is consequently 0 (zero). Accuracy may be affected.")
+    public boolean normalised;
+    
     @Parameter(names = {"--template", "-t"},
             description = "Use a custom mustache template to generate the report.")
     public String template;
