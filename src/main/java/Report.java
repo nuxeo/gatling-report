@@ -18,6 +18,7 @@
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
+
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -109,6 +110,7 @@ public class Report {
     public void createSimulationReport() throws IOException {
         if (normalised) {
         	writeResultsToCsv();
+        	writeAvgResultsToCsv();
         } else {
             Mustache mustache = getMustache();
             mustache.execute(getWriter(), stats.get(0).setScripts(getScripts())).flush();
@@ -160,14 +162,14 @@ public class Report {
     public void writeResultsToCsv() {
     	System.out.println("WriteToCsv");
     	try {
-    		Writer csvWriter = getCsvWriter();
-    		csvWriter.append("Time (sec)");
+    		Writer csvWriter = getCsvWriter("data.csv");
+    		csvWriter.append("Time");
     		writer.append(',');
-    		csvWriter.append("Request Rate");
+    		csvWriter.append("Requests");
     		writer.append(',');
-    		csvWriter.append("Response Rate");
+    		csvWriter.append("Response");
     		writer.append(',');
-    		csvWriter.append("Error Rate");
+    		csvWriter.append("Error");
     		writer.append('\n');
     		
     		ArrayList <Integer> requestRate = stats.get(0).simStat.reqPerSec;
@@ -189,11 +191,56 @@ public class Report {
     	}
     }
     
-    public Writer getCsvWriter() throws IOException {
-        if (writer == null) {
-            File index = getReportPath("Results.csv");
-            writer = new FileWriter(index);
-        }
+    public void writeAvgResultsToCsv() {
+    	System.out.println("WriteToCsv");
+    	try {
+    		Writer csvWriter = getCsvWriter("avg-data.csv");
+    		csvWriter.append("Time");
+    		writer.append(',');
+    		csvWriter.append("Requests");
+    		writer.append(',');
+    		csvWriter.append("Response");
+    		writer.append(',');
+    		csvWriter.append("Error");
+    		writer.append(',');
+    		csvWriter.append("Min");
+    		writer.append(',');
+    		csvWriter.append("Max");
+    		writer.append('\n');
+    		
+    		ArrayList <Integer> requestRate = stats.get(0).simStat.reqPerSecAvg;
+    		ArrayList <Integer> responseRate = stats.get(0).simStat.resPerSecAvg;
+    		ArrayList <Integer> errorRate = stats.get(0).simStat.errorPerSecAvg;
+    		ArrayList <Request> minMax = stats.get(0).simStat.minMaxResponse;
+            
+    		System.out.println("minMax.size" + minMax.size());
+    		System.out.println("requestRate.size" + requestRate.size());
+    		System.out.println("responseRate.size" + responseRate.size());
+    		System.out.println("errorRate.size" + errorRate.size());
+            
+    		for (int i = 0; i < requestRate.size(); i++){
+    			csvWriter.append("" + i);
+    			writer.append(',');
+    			csvWriter.append(requestRate.get(i).toString());
+    			writer.append(',');
+    			csvWriter.append(responseRate.get(i).toString());
+    			writer.append(',');
+    			csvWriter.append(errorRate.get(i).toString());
+    			writer.append(',');
+    			csvWriter.append("" + minMax.remove(0).getDuration());
+    			writer.append(',');
+    			csvWriter.append("" + minMax.remove(0).getDuration());
+    			writer.append('\n');
+    		}
+    		writer.flush();
+    	} catch (IOException ex) {
+    		System.out.println(ex.toString());
+    	}
+    }
+    
+    public Writer getCsvWriter(String fileName) throws IOException {
+        File index = getReportPath(fileName);
+        writer = new FileWriter(index);
         return writer;
     }
     

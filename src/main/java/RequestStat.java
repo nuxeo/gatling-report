@@ -24,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class RequestStat {
@@ -41,6 +42,11 @@ public class RequestStat {
     ArrayList <Integer> reqPerSec;
     ArrayList <Integer> resPerSec;
     ArrayList <Integer> errorPerSec;
+    ArrayList <Integer> reqPerSecAvg;
+    ArrayList <Integer> resPerSecAvg;
+    ArrayList <Integer> errorPerSecAvg;
+    ArrayList <Request> requestList;
+    ArrayList <Request> minMaxResponse;
     long count, successCount, errorCount;
     long min, max, stddev, p50, p95, p99;
     double rps, avg;
@@ -50,18 +56,20 @@ public class RequestStat {
     Apdex apdex;
     int maxUsers;
 
-    public RequestStat(String simulation, String scenario, String request, long start, Float apdexT) {
+	public RequestStat(String simulation, String scenario, String request, long start, Float apdexT) {
         this.simulation = simulation;
         this.scenario = scenario;
         this.request = request;
         requestId = Utils.getIdentifier(request);
         this.start = start;
         durations = new ArrayList<>();
+        
         indice = statCounter.incrementAndGet();
         apdex = new Apdex(apdexT);
         startTimes = new ArrayList<Long>();
         endTimes = new ArrayList<Long>();
         errors = new ArrayList<Long>();
+        requestList = new ArrayList<Request>();
     }
 
     public void add(long start, long end, boolean success) {
@@ -80,6 +88,7 @@ public class RequestStat {
         endTimes.add(end);
         durations.add((double) duration);
         apdex.addMs(duration);
+        requestList.add(new Request("na", "na", start, end, success));
     }
 
     public void computeStat(int maxUsers, boolean normalised) {
@@ -111,6 +120,10 @@ public class RequestStat {
 	        calculateRollingErrorPerSec();
 	        calculateRollingReqPerSec();
 	        calculateRollingResPerSec();
+	        reqPerSecAvg = calculateRollingAvgPerMinute(reqPerSec);
+	        resPerSecAvg = calculateRollingAvgPerMinute(resPerSec);
+	        errorPerSecAvg = calculateRollingAvgPerMinute(errorPerSec);
+	        minMaxResponse = calculateRollingMinuteMaxMinResponse(requestList);
         }
     }
     
@@ -124,6 +137,48 @@ public class RequestStat {
     		resPerSec.add(0);
     		errorPerSec.add(0);
     	}
+    }
+    public ArrayList<Request> calculateRollingMinuteMaxMinResponse(ArrayList<Request> dataset) {
+    	ArrayList<Request> minMax = new ArrayList<Request>();
+    	long min = Long.MAX_VALUE, max = 0, dur = 0, strt = 0, timeslot = 0;    	
+    	Request mini = new Request("na", "na", 0, 0, true);
+    	Request maxi = new Request("na", "na", 0, 0, true);
+    	
+    	for (Request req : dataset) {
+    		dur = req.getDuration();
+    		strt = req.getStart();
+    		if (dur > max && strt < timeslot) {
+    			max = dur;
+    			maxi = req;
+    		} else if (dur < min && strt < timeslot) {
+    			min = dur;
+    			mini = req;
+    		} else if (strt > timeslot) {
+    			System.out.println("TimeSlot: " + timeslot);
+    			timeslot += 60000;
+    			System.out.println("TimeSlot: " + timeslot);
+    			min = Long.MAX_VALUE; 
+    			max = 0;
+    			minMax.add(mini);
+    			minMax.add(maxi);
+    		}
+    	}
+    	return minMax;
+    }
+    
+    public ArrayList<Integer> calculateRollingAvgPerMinute(ArrayList<Integer> dataset) {
+    	int value = 0;
+    	int counter = 0;
+    	ArrayList<Integer> avg = new ArrayList<Integer>();
+    	for (int result : dataset) {
+    		value += dataset.get(counter);
+    		if(counter % 60 == 0) {
+    			avg.add(value/60);
+    			value = 0;
+    		}
+    		counter += 1;
+    	}
+    	return avg;
     }
     
     public void calculateRollingErrorPerSec() {

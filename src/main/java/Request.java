@@ -9,7 +9,7 @@
 public class Request {
 
 	private String name, scenario;
-	private long start, end;
+	private long start, end, duration;
 	private boolean success;
 	
 	public Request (String Name, String Scenario, long Start, long End, boolean Success) {
@@ -18,6 +18,7 @@ public class Request {
 		this.start = Start;
 		this.end = End;
 		this.success = Success;
+		this.duration = this.end - this.start;
 	}
 	
 	public String getScenario() {
@@ -34,6 +35,10 @@ public class Request {
 	
 	public long getEnd() {
 		return this.end;
+	}
+
+	public long getDuration() {
+		return this.duration;
 	}
 	
 	public boolean getSuccess() {
