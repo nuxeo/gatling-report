@@ -104,6 +104,7 @@
             <id>make-assembly</id>
             <phase>package</phase>
             <goals>
+
               <goal>single</goal>
             </goals>
           </execution>
@@ -121,7 +122,7 @@
         <repository>
           <id>internal-releases</id>
           <url>
-            http://maven.in.nuxeo.com/nexus/content/groups/internal-releases
+            http://mavenin.nuxeo.com/nexus/content/groups/internal-releases
           </url>
           <releases>
             <enabled>true</enabled>
@@ -133,7 +134,7 @@
         <repository>
           <id>internal-snapshots</id>
           <url>
-            http://maven.in.nuxeo.com/nexus/content/groups/internal-snapshots
+            http://mavenin.nuxeo.com/nexus/content/groups/internal-snapshots
           </url>
           <releases>
             <enabled>false</enabled>
@@ -148,13 +149,13 @@
         <repository>
           <id>public-releases</id>
           <url>
-            http://maven.in.nuxeo.com/nexus/content/repositories/public-releases
+            http://mavenin.nuxeo.com/nexus/content/repositories/public-releases
           </url>
         </repository>
         <snapshotRepository>
           <id>public-snapshots</id>
           <url>
-            http://maven.in.nuxeo.com/nexus/content/repositories/public-snapshots
+            http://mavenin.nuxeo.com/nexus/content/repositories/public-snapshots
           </url>
           <uniqueVersion>true</uniqueVersion>
         </snapshotRepository>
