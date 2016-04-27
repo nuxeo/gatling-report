@@ -37,14 +37,14 @@ public class DiffContext {
         return this;
     }
 
-    public List<DiffRequestStat> getDiffRequests() {
+    public List<DiffRequestStat> getDiffRequests(boolean normalised) {
         List<DiffRequestStat> ret = new ArrayList<>(ref.reqStats.size());
         for (RequestStat refStat : ref.getRequests()) {
             RequestStat challengerStat = challenger.reqStats.get(refStat.request);
             if (challengerStat == null) {
                 challengerStat = new RequestStat(refStat.simulation, refStat.scenario, refStat.request, 0, null);
                 challengerStat.add(0, 0, false);
-                challengerStat.computeStat(0);
+                challengerStat.computeStat(0, normalised);
             }
             ret.add(new DiffRequestStat(refStat, challengerStat));
         }

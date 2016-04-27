@@ -24,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class RequestStat {
@@ -36,6 +37,17 @@ public class RequestStat {
     int indice;
     String startDate;
     long start, end;
+    ArrayList <Long> startTimes;
+    ArrayList <Long> endTimes;
+    ArrayList <Long> errors;
+    ArrayList <Integer> reqPerSec;
+    ArrayList <Integer> resPerSec;
+    ArrayList <Integer> errorPerSec;
+    ArrayList <Integer> reqPerSecAvg;
+    ArrayList <Integer> resPerSecAvg;
+    ArrayList <Integer> errorPerSecAvg;
+    ArrayList <Request> requestList;
+    ArrayList <Request> minMaxResponse;
     long count, successCount, errorCount;
     long min, max, stddev, p50, p95, p99;
     double rps, avg;
@@ -45,15 +57,20 @@ public class RequestStat {
     Apdex apdex;
     int maxUsers;
 
-    public RequestStat(String simulation, String scenario, String request, long start, Float apdexT) {
+	public RequestStat(String simulation, String scenario, String request, long start, Float apdexT) {
         this.simulation = simulation;
         this.scenario = scenario;
         this.request = request;
         requestId = Utils.getIdentifier(request);
         this.start = start;
         durations = new ArrayList<>();
+        
         indice = statCounter.incrementAndGet();
         apdex = new Apdex(apdexT);
+        startTimes = new ArrayList<Long>();
+        endTimes = new ArrayList<Long>();
+        errors = new ArrayList<Long>();
+        requestList = new ArrayList<Request>();
     }
 
     public void add(long start, long end, boolean success) {
@@ -65,18 +82,24 @@ public class RequestStat {
         this.end = Math.max(this.end, end);
         if (!success) {
             errorCount += 1;
+            errors.add(end);
         }
         long duration = end - start;
+        startTimes.add(start);
+        endTimes.add(end);
         durations.add((double) duration);
         apdex.addMs(duration);
+        requestList.add(new Request("na", "na", start, end, success));
     }
 
-    public void computeStat(int maxUsers) {
-        computeStat((end - start) / 1000.0, maxUsers);
+    public void computeStat(int maxUsers, boolean normalised) {
+    	System.out.println("ComputeStat minimal");
+        computeStat((end - start) / 1000.0, maxUsers, normalised);
     }
 
-    public void computeStat(double duration, int maxUsers) {
-        double[] times = getDurationAsArray();
+    public void computeStat(double duration, int maxUsers, boolean normalised) {
+    	System.out.println("ComputeStat bigger");
+    	double[] times = getDurationAsArray();
         min = (long) StatUtils.min(times);
         max = (long) StatUtils.max(times);
         double sum = 0;
@@ -92,8 +115,106 @@ public class RequestStat {
         rps = (count - errorCount) / duration;
         startDate = getDateFromInstant(start);
         successCount = count - errorCount;
+        
+        if (normalised) {
+	        initialiseTimeSlots();
+	        calculateRollingErrorPerSec();
+	        calculateRollingReqPerSec();
+	        calculateRollingResPerSec();
+	        reqPerSecAvg = calculateRollingAvgPerMinute(reqPerSec);
+	        resPerSecAvg = calculateRollingAvgPerMinute(resPerSec);
+	        errorPerSecAvg = calculateRollingAvgPerMinute(errorPerSec);
+	        minMaxResponse = calculateRollingMinuteMaxMinResponse(requestList);
+        }
+    }
+    
+    public void initialiseTimeSlots() {
+    	reqPerSec = new ArrayList<Integer>();
+    	resPerSec = new ArrayList<Integer>();
+    	errorPerSec = new ArrayList<Integer>();
+    	System.out.println("Duration:  " + duration);
+    	for (int i = 0; i <= duration + 1; i++) {
+    		reqPerSec.add(0);
+    		resPerSec.add(0);
+    		errorPerSec.add(0);
+    	}
+    }
+    public ArrayList<Request> calculateRollingMinuteMaxMinResponse(ArrayList<Request> dataset) {
+    	ArrayList<Request> minMax = new ArrayList<Request>();
+    	long min = Long.MAX_VALUE, max = 0, dur = 0, strt = 0, timeslot = 0;    	
+    	Request mini = new Request("na", "na", 0, 0, true);
+    	Request maxi = new Request("na", "na", 0, 0, true);
+    	
+    	for (Request req : dataset) {
+    		dur = req.getDuration();
+    		strt = req.getStart();
+    		if (dur > max && strt < timeslot) {
+    			max = dur;
+    			maxi = req;
+    		} else if (dur < min && strt < timeslot) {
+    			min = dur;
+    			mini = req;
+    		} else if (strt > timeslot) {
+    			System.out.println("TimeSlot: " + timeslot);
+    			timeslot += 60000;
+    			System.out.println("TimeSlot: " + timeslot);
+    			min = Long.MAX_VALUE; 
+    			max = 0;
+    			minMax.add(mini);
+    			minMax.add(maxi);
+    		}
+    	}
+    	return minMax;
+    }
+    
+    public ArrayList<Integer> calculateRollingAvgPerMinute(ArrayList<Integer> dataset) {
+    	int value = 0;
+    	int counter = 0;
+    	ArrayList<Integer> avg = new ArrayList<Integer>();
+    	for (int result : dataset) {
+    		value += dataset.get(counter);
+    		if(counter % 60 == 0) {
+    			avg.add(value/60);
+    			value = 0;
+    		}
+    		counter += 1;
+    	}
+    	return avg;
+    }
+    
+    public void calculateRollingErrorPerSec() {
+    	int value = 0;
+    	Long timeSlot = new Long(0);
+    	for (Long time : errors) {
+    		timeSlot = time/1000;
+    		value = errorPerSec.get(timeSlot.intValue());
+    		value += 1;
+    		errorPerSec.set(timeSlot.intValue(), value);
+    	}
+    }
+    
+    public void calculateRollingReqPerSec() {
+    	int value = 0;
+    	Long timeSlot = new Long(0);
+    	for (Long time : startTimes) {
+    		timeSlot = time/1000;
+    		value = reqPerSec.get(timeSlot.intValue());
+    		value += 1;
+    		reqPerSec.set(timeSlot.intValue(), value);
+    	}
     }
 
+    public void calculateRollingResPerSec() {
+    	int value = 0;
+    	Long timeSlot = new Long(0);
+    	for (Long time : endTimes) {
+    		timeSlot = time/1000;
+    		value = resPerSec.get(timeSlot.intValue());
+    		value += 1;
+    		resPerSec.set(timeSlot.intValue(), value);
+    	}
+    }
+    
     public void setSimulationName(String name) {
         simulation = name;
     }

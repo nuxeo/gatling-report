@@ -77,11 +77,11 @@ public class SimulationContext {
         simStat.add(start, end, success);
     }
 
-    public void computeStat() {
+    public void computeStat(boolean normalised) {
         maxUsers = users.values().stream().mapToInt(CountMax::getMax).sum();
-        simStat.computeStat(maxUsers);
+        simStat.computeStat(maxUsers, normalised);
         reqStats.values().forEach(request ->
-                request.computeStat(simStat.duration, users.get(request.scenario).maximum));
+                request.computeStat(simStat.duration, users.get(request.scenario).maximum, normalised));
 
     }
 
