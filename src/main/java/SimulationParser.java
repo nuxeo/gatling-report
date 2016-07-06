@@ -15,7 +15,10 @@
  *     Benoit Delbosc
  */
 
-import au.com.bytecode.opencsv.CSVReader;
+import net.quux00.simplecsv.CsvParser;
+import net.quux00.simplecsv.CsvParserBuilder;
+import net.quux00.simplecsv.CsvReader;
+import net.quux00.simplecsv.CsvReaderBuilder;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,9 +27,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.List;
 import java.util.zip.GZIPInputStream;
-
-import static java.lang.Math.max;
 
 public class SimulationParser {
 
@@ -52,35 +54,36 @@ public class SimulationParser {
 
     public SimulationContext parse() throws IOException {
         SimulationContext ret = new SimulationContext(file.getAbsolutePath(), apdexT);
-        CSVReader reader = new CSVReader(getReaderFor(file), '\t');
-        String[] line;
+        CsvParser p = new CsvParserBuilder().trimWhitespace(true).allowUnbalancedQuotes(true).separator('\t').build();
+        CsvReader reader = new CsvReaderBuilder(getReaderFor(file)).csvParser(p).build();
+        List<String> line;
         String name;
         String scenario;
         long start, end;
         boolean success;
         while ((line = reader.readNext()) != null) {
-            if (line.length <= 2) {
+            if (line.size() <= 2) {
                 invalidFile();
             }
-            scenario = line[0];
-            switch (line[2]) {
+            scenario = line.get(0);
+            switch (line.get(2)) {
                 case RUN:
-                    String version = line[5];
+                    String version = line.get(5);
                     if (!version.startsWith("2.")) {
                         return invalidFile();
                     }
-                    ret.setSimulationName(line[1]);
-                    ret.setStart(Long.parseLong(line[3]));
+                    ret.setSimulationName(line.get(1));
+                    ret.setStart(Long.parseLong(line.get(3)));
                     break;
                 case REQUEST:
-                    name = line[4];
-                    start = Long.parseLong(line[6]);
-                    end = Long.parseLong(line[8]);
-                    success = OK.equals(line[9]);
+                    name = line.get(4);
+                    start = Long.parseLong(line.get(6));
+                    end = Long.parseLong(line.get(8));
+                    success = OK.equals(line.get(9));
                     ret.addRequest(scenario, name, start, end, success);
                     break;
                 case USER:
-                    switch (line[3]) {
+                    switch (line.get(3)) {
                         case START:
                             ret.addUser(scenario);
                             break;
