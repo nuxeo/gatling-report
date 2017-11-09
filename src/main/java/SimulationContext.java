@@ -27,6 +27,7 @@ import static java.lang.Math.max;
 public class SimulationContext {
     String filePath;
     String simulationName;
+    String scenarioName;
     RequestStat simStat;
     Map<String, RequestStat> reqStats = new HashMap<>();
     List<String> scripts = new ArrayList<>();
@@ -88,6 +89,11 @@ public class SimulationContext {
     public void setSimulationName(String name) {
         this.simulationName = name;
         simStat.setSimulationName(name);
+    }
+
+    public void setScenarioName(String name) {
+        this.scenarioName = name;
+        simStat.setScenario(name);
     }
 
     public void setStart(long start) {
