@@ -127,7 +127,7 @@ var dataAll = [
 ];
 var layoutAll = {
   height: 500,
-  width: 500,
+  width: 900,
   yaxis: {
     title: 'Time ms',
     type: 'log'
@@ -139,24 +139,6 @@ var layoutAll = {
   title: 'Response time all requests'
 };
 Plotly.newPlot('responseAllDiv', dataAll, layoutAll);
-
-var layoutResponse = {
-  height: 600,
-  width: 1200,
-  yaxis: {
-    title: 'Time ms',
-    type: 'log',
-    zeroline: true
-  },
-  xaxis: {
-    showticklabels: false
-  },
-  title: 'Response time per request',
-  showlegend: true,
-  legend: {
-    traceorder: 'reversed'
-  }
-};
 
 {{#getDiffRequests}}
 var data{{refR.indice}} = [
@@ -189,7 +171,7 @@ var data{{refR.indice}} = [
 ];
 var layout{{refR.indice}} = {
   height: 500,
-  width: 500,
+  width: 900,
   yaxis: {
     title: 'Time ms',
     type: 'log'
@@ -203,6 +185,4 @@ var layout{{refR.indice}} = {
 Plotly.newPlot('response{{refR.indice}}Div', data{{refR.indice}}, layout{{refR.indice}});
 {{/getDiffRequests}}
 
-
 </script>
-

@@ -14,20 +14,17 @@
  *     Benoit Delbosc
  */
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Authenticator;
 import java.net.MalformedURLException;
 import java.net.PasswordAuthentication;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.zip.GZIPInputStream;
 
 public class Utils {
+
+    private static final String GZ = "gz";
 
     static void setBasicAuth(String user, String password) {
         if (user == null) {
@@ -82,4 +79,23 @@ public class Utils {
         }
         return sb.toString().toLowerCase();
     }
+
+    static Reader getReaderFor(File file) throws IOException {
+        if (GZ.equals(getFileExtension(file))) {
+            InputStream fileStream = new FileInputStream(file);
+            InputStream gzipStream = new GZIPInputStream(fileStream);
+            return new InputStreamReader(gzipStream, "UTF-8");
+        }
+        return new FileReader(file);
+    }
+
+    static String getFileExtension(File file) {
+        String name = file.getName();
+        try {
+            return name.substring(name.lastIndexOf(".") + 1);
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
 }

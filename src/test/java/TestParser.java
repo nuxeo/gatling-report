@@ -24,11 +24,12 @@ import java.io.FileNotFoundException;
 
 public class TestParser {
     private static final String SIM_SMALL = "simulation-small.log";
+    private static final String SIM_SMALL_V3 = "simulation-small-v3.log";
     private static final String SIM_GZ = "simulation-1.log.gz";
 
     @Test
     public void parseSimpleSimulation() throws Exception {
-        SimulationContext ret = new SimulationParser(getRessourceFile(SIM_SMALL)).parse();
+        SimulationContext ret = ParserFactory.getParser(getRessourceFile(SIM_SMALL)).parse();
         // System.out.println(ret);
         Assert.assertEquals("sim80reindexall", ret.simulationName);
         Assert.assertEquals(2, ret.simStat.count);
@@ -37,10 +38,19 @@ public class TestParser {
 
     @Test
     public void parseCompressedSimulation() throws Exception {
-        SimulationContext ret = new SimulationParser(getRessourceFile(SIM_GZ)).parse();
+        SimulationContext ret = ParserFactory.getParser(getRessourceFile(SIM_GZ)).parse();
         // System.out.println(ret);
         Assert.assertEquals("sim50bench", ret.simulationName);
         Assert.assertEquals(2464, ret.simStat.count);
+        Assert.assertTrue(ret.toString().contains("_all"));
+    }
+
+    @Test
+    public void parseSimpleSimulationGatlingV3() throws Exception {
+        SimulationContext ret = ParserFactory.getParser(getRessourceFile(SIM_SMALL_V3)).parse();
+        // System.out.println(ret);
+        Assert.assertEquals("sim80reindexall", ret.simulationName);
+        Assert.assertEquals(2, ret.simStat.count);
         Assert.assertTrue(ret.toString().contains("_all"));
     }
 

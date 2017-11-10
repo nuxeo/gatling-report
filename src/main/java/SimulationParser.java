@@ -21,24 +21,17 @@ import net.quux00.simplecsv.CsvReader;
 import net.quux00.simplecsv.CsvReaderBuilder;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.List;
-import java.util.zip.GZIPInputStream;
 
-public class SimulationParser {
+public abstract class SimulationParser {
 
-    private static final String OK = "OK";
+    protected static final String OK = "OK";
     private static final String REQUEST = "REQUEST";
     private static final String RUN = "RUN";
     private static final String USER = "USER";
     private static final String START = "START";
     private static final String END = "END";
-    private static final String GZ = "gz";
     private final File file;
     private final Float apdexT;
 
@@ -55,35 +48,34 @@ public class SimulationParser {
     public SimulationContext parse() throws IOException {
         SimulationContext ret = new SimulationContext(file.getAbsolutePath(), apdexT);
         CsvParser p = new CsvParserBuilder().trimWhitespace(true).allowUnbalancedQuotes(true).separator('\t').build();
-        CsvReader reader = new CsvReaderBuilder(getReaderFor(file)).csvParser(p).build();
+        CsvReader reader = new CsvReaderBuilder(Utils.getReaderFor(file)).csvParser(p).build();
+
         List<String> line;
         String name;
         String scenario;
         long start, end;
         boolean success;
+        List<String> header = reader.readNext();
+        checkLine(header);
+        ret.setSimulationName(getSimulationName(header));
+        ret.setScenarioName(getScenario(header));
+        ret.setStart(Long.parseLong(getSimulationStart(header)));
+
         while ((line = reader.readNext()) != null) {
-            if (line.size() <= 2) {
-                invalidFile();
-            }
-            scenario = line.get(0);
-            switch (line.get(2)) {
+            scenario = getScenario(line);
+
+            switch (getType(line)) {
                 case RUN:
-                    String version = line.get(5);
-                    if (!version.startsWith("2.")) {
-                        return invalidFile();
-                    }
-                    ret.setSimulationName(line.get(1));
-                    ret.setStart(Long.parseLong(line.get(3)));
                     break;
                 case REQUEST:
-                    name = line.get(4);
-                    start = Long.parseLong(line.get(6));
-                    end = Long.parseLong(line.get(8));
-                    success = OK.equals(line.get(9));
+                    name = getRequestName(line);
+                    start = getRequestStart(line);
+                    end = getRequestEnd(line);
+                    success = getRequestSuccess(line);
                     ret.addRequest(scenario, name, start, end, success);
                     break;
                 case USER:
-                    switch (line.get(3)) {
+                    switch (getUserType(line)) {
                         case START:
                             ret.addUser(scenario);
                             break;
@@ -98,27 +90,33 @@ public class SimulationParser {
         return ret;
     }
 
+    private void checkLine(List<String> line) {
+        if (line.size() <= 2) {
+            invalidFile();
+        }
+    }
+
+    abstract String getSimulationName(List<String> line);
+
+    abstract String getSimulationStart(List<String> line);
+
+    abstract String getScenario(List<String> line);
+
+    abstract String getType(List<String> line);
+
+    abstract String getUserType(List<String> line);
+
+    abstract String getRequestName(List<String> line);
+
+    abstract Long getRequestStart(List<String> line);
+
+    abstract Long getRequestEnd(List<String> line);
+
+    abstract boolean getRequestSuccess(List<String> line);
+
     private SimulationContext invalidFile() {
         throw new IllegalArgumentException(String.format("Invalid simulation file: %s expecting " +
-                "Gatling 2.x format", file.getAbsolutePath()));
-    }
-
-    private String getFileExtension(File file) {
-        String name = file.getName();
-        try {
-            return name.substring(name.lastIndexOf(".") + 1);
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
-    private Reader getReaderFor(File file) throws IOException {
-        if (GZ.equals(getFileExtension(file))) {
-            InputStream fileStream = new FileInputStream(file);
-            InputStream gzipStream = new GZIPInputStream(fileStream);
-            return new InputStreamReader(gzipStream, "UTF-8");
-        }
-        return new FileReader(file);
+                "Gatling 2.x or 3.x format", file.getAbsolutePath()));
     }
 
 }

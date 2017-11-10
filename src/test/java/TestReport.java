@@ -35,7 +35,7 @@ public class TestReport {
 
     @Test
     public void generateSimulationReport() throws Exception {
-        List<SimulationContext> stats = Arrays.asList(new SimulationParser(getRessourceFile(SIM_GZ)).parse());
+        List<SimulationContext> stats = Arrays.asList(ParserFactory.getParser(getRessourceFile(SIM_GZ)).parse());
         Writer writer = new StringWriter();
         String reportPath = new Report(stats).setWriter(writer).create();
         // System.out.println(writer);
@@ -48,7 +48,7 @@ public class TestReport {
         List<SimulationContext> stats = new ArrayList<>(SIMS_GZ.size());
         SIMS_GZ.forEach(file -> {
             try {
-                stats.add(new SimulationParser(getRessourceFile(file)).parse());
+                stats.add(ParserFactory.getParser(getRessourceFile(file)).parse());
             } catch (IOException e) {
                 Assert.fail("Can not parse: " + file);
             }
