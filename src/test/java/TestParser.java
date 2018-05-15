@@ -23,13 +23,14 @@ import java.io.FileNotFoundException;
  */
 
 public class TestParser {
-    private static final String SIM_SMALL = "simulation-small.log";
+    private static final String SIM_SMALL_V2_1 = "simulation-small.log";
+    private static final String SIM_V2_3 = "simulation-v2.3.log";
     private static final String SIM_SMALL_V3 = "simulation-small-v3.log";
     private static final String SIM_GZ = "simulation-1.log.gz";
 
     @Test
-    public void parseSimpleSimulation() throws Exception {
-        SimulationContext ret = ParserFactory.getParser(getRessourceFile(SIM_SMALL)).parse();
+    public void parseSimpleSimulationVersion21() throws Exception {
+        SimulationContext ret = ParserFactory.getParser(getRessourceFile(SIM_SMALL_V2_1)).parse();
         // System.out.println(ret);
         Assert.assertEquals("sim80reindexall", ret.simulationName);
         Assert.assertEquals(2, ret.simStat.count);
@@ -46,7 +47,16 @@ public class TestParser {
     }
 
     @Test
-    public void parseSimpleSimulationGatlingV3() throws Exception {
+    public void parseSimulationVersion23() throws Exception {
+        SimulationContext ret = ParserFactory.getParser(getRessourceFile(SIM_V2_3)).parse();
+        //System.out.println(ret);
+        Assert.assertEquals("sim20createdocuments", ret.simulationName);
+        Assert.assertEquals(1000, ret.simStat.count);
+        Assert.assertTrue(ret.toString().contains("_all"));
+    }
+
+    @Test
+    public void parseSimpleSimulationVersion3() throws Exception {
         SimulationContext ret = ParserFactory.getParser(getRessourceFile(SIM_SMALL_V3)).parse();
         // System.out.println(ret);
         Assert.assertEquals("sim80reindexall", ret.simulationName);

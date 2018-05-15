@@ -1,3 +1,4 @@
+
 /*
  * (C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
@@ -15,18 +16,16 @@
  *     Kris Geusebroek
  */
 
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
 import net.quux00.simplecsv.CsvParser;
 import net.quux00.simplecsv.CsvParserBuilder;
 import net.quux00.simplecsv.CsvReader;
 import net.quux00.simplecsv.CsvReaderBuilder;
 
-import java.io.*;
-import java.util.List;
-
 public class ParserFactory {
-
-    private static final int VERSION2 = 2;
-    private static final int VERSION3 = 3;
 
     public static SimulationParser getParser(File file, Float apdexT) throws IOException {
         return getVersionSpecificParser(file, apdexT);
@@ -41,26 +40,22 @@ public class ParserFactory {
         CsvReader reader = new CsvReaderBuilder(Utils.getReaderFor(file)).csvParser(p).build();
 
         List<String> header = reader.readNext();
-        int version = getVersion(header);
-        if (version == VERSION3) {
-            return new SimulationParserV3(file, apdexT);
-        } else {
-            return new SimulationParserV2(file, apdexT);
-        }
-    }
-
-    private static int getVersion(List<String> line) {
-        if (line.size() > 2) {
-            String v = line.get(5);
-            if (v.startsWith("2.")) {
-                return VERSION2;
-            } else {
-                return VERSION3;
+        //System.out.println(header.size() + " " + header);
+        if (header.size()  == 6) {
+            String version = header.get(5);
+            if (version.startsWith("3.")) {
+                return new SimulationParserV3(file, apdexT);
             }
-        } else {
-            return -1;
+            if (version.startsWith("2.")) {
+                return new SimulationParserV2(file, apdexT);
+            }
+        } else if (header.size() == 7) {
+            String version = header.get(6);
+            if (version.startsWith("2.")) {
+                return new SimulationParserV23(file, apdexT);
+            }
         }
+        throw new IllegalArgumentException("Unknown Gatling simulation version: " + header);
     }
-
 
 }

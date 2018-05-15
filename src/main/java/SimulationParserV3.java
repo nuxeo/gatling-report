@@ -18,6 +18,9 @@
 import java.io.*;
 import java.util.List;
 
+/**
+ * Gatling 3.? simulation format
+ */
 public class SimulationParserV3 extends SimulationParser {
 
     public SimulationParserV3(File file, Float apdexT) {

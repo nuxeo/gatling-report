@@ -57,6 +57,7 @@ public abstract class SimulationParser {
         boolean success;
         List<String> header = reader.readNext();
         checkLine(header);
+
         ret.setSimulationName(getSimulationName(header));
         ret.setScenarioName(getScenario(header));
         ret.setStart(Long.parseLong(getSimulationStart(header)));
@@ -116,7 +117,7 @@ public abstract class SimulationParser {
 
     private SimulationContext invalidFile() {
         throw new IllegalArgumentException(String.format("Invalid simulation file: %s expecting " +
-                "Gatling 2.x or 3.x format", file.getAbsolutePath()));
+                "Gatling 2.1, 2.3.1 or 3.x format", file.getAbsolutePath()));
     }
 
 }
