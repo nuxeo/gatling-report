@@ -6,14 +6,13 @@ reports with [Plotly](https://plot.ly/) charts or CSV output.
 
 # gatling-report examples
 
-Report are single html file, to view the example download the raw version locally and dispay the file 
-on your browser. 
+A report is a single standalone html file, here are some examples:
 
 - [Simulation report](https://min.gitcdn.link/repo/nuxeo/gatling-report/master/docs/simulation-1/index.html): compact representation of response time for a
 bench, help to pinpoint slow requests.
-- [Diff report](https://min.gitcdn.link/repo/nuxeo/gatling-report/master/docs/diff-sim1-vs-sim2/index.html): compare 2 bench result.
+- [Differential report](https://min.gitcdn.link/repo/nuxeo/gatling-report/master/docs/diff-sim1-vs-sim2/index.html): compare 2 bench result.
 - [Trend report](https://min.gitcdn.link/repo/nuxeo/gatling-report/master/docs/trend-sim1-10/index.html): follow the trend of bench results over time.
-- [CSV output](./docs/sim1-10.csv)
+- [Default CSV output](./docs/sim1-10.csv)
 
 # Install
 
