@@ -4,13 +4,13 @@ This is a reporting tool that parses [Galting](http://gatling.io/) result files 
 reports with [Plotly](https://plot.ly/) charts or CSV output.
 
 
-# Report examples
+# gatling-report examples
 
-- [Simulation report](http://public.dev.nuxeo.com/~ben/gat-simulation/): compact representation of response time for a
+- [Simulation report](./doc/simulation-1/index.html): compact representation of response time for a
 bench, help to pinpoint slow requests.
-- [Diff report](http://public.dev.nuxeo.com/~ben/gat-diff/): compare 2 bench result.
-- [Trend report](http://public.dev.nuxeo.com/~ben/gat-trend/): follow the trend of bench results over time.
-- [CSV output](http://public.dev.nuxeo.com/~ben/gat.csv)
+- [Diff report](./doc/diff-sim1-vs-sim2/index.html): compare 2 bench result.
+- [Trend report](./doc/trend-sim1-10/index.html): follow the trend of bench results over time.
+- [CSV output](./doc/sim1-10.csv)
 
 # Install
 
@@ -59,8 +59,8 @@ The following command will output to stdout a CSV with stats per request.
  - avg: average
  - stddev: standard deviation
  - rps: average request per second for the simulation duration
- - apdex: Apdex score converts many measurements into one number on a uniform scale of 0-to-1
- - rating: Apdex rating
+ - apdex: org.nuxeo.tools.gatling.report.Apdex score converts many measurements into one number on a uniform scale of 0-to-1
+ - rating: org.nuxeo.tools.gatling.report.Apdex rating
 
 You can also submit multiple simulation files, the output will concatenate stats. 
 

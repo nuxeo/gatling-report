@@ -1,4 +1,3 @@
-
 /*
  * (C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
@@ -15,6 +14,7 @@
  * Contributors:
  *     Benoit Delbosc
  */
+package org.nuxeo.tools.gatling.report;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -81,11 +81,6 @@ public class Report {
 
     public Report setOutputDirectory(File output) {
         this.outputDirectory = output;
-        return this;
-    }
-
-    public Report setWriter(Writer writer) {
-        this.writer = writer;
         return this;
     }
 
@@ -176,6 +171,11 @@ public class Report {
             writer = new FileWriter(index);
         }
         return writer;
+    }
+
+    public Report setWriter(Writer writer) {
+        this.writer = writer;
+        return this;
     }
 
     public File getReportPath() {

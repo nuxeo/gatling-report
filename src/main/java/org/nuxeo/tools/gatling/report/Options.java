@@ -1,4 +1,3 @@
-
 /*
  * (C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
@@ -15,6 +14,7 @@
  * Contributors:
  *     Benoit Delbosc
  */
+package org.nuxeo.tools.gatling.report;
 
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -61,6 +61,14 @@ public class Options {
     @Parameter(names = { "--password", "-p" }, description = "Graphite basic authentication password.")
     public String password;
 
+    @Parameter(names = { "--apdex-threshold",
+            "-T" }, description = "Apdex thresold, the response time in second above which the request switch from satisfying"
+                    + " to tolerable.")
+    public Float apdexT = 1.5f;
+
+    @Parameter(names = { "--help", "-h" }, description = "Display this message.", help = true)
+    public boolean help;
+
     @Parameter(names = { "--timezone" }, description = "Graphite time zone if different from Gatling, ex: Europe/Paris")
     private String timeZoneString;
 
@@ -70,12 +78,4 @@ public class Options {
         }
         return ZoneId.of(timeZoneString);
     }
-
-    @Parameter(names = { "--apdex-threshold",
-            "-T" }, description = "Apdex thresold, the response time in second above which the request switch from satisfying"
-                    + " to tolerable.")
-    public Float apdexT = 1.5f;
-
-    @Parameter(names = { "--help", "-h" }, description = "Display this message.", help = true)
-    public boolean help;
 }

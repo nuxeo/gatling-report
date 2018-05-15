@@ -1,4 +1,3 @@
-
 /*
  * (C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
@@ -15,6 +14,7 @@
  * Contributors:
  *     Benoit Delbosc
  */
+package org.nuxeo.tools.gatling.report;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,28 +45,6 @@ public class Graphite {
     String from, until;
 
     File outputDirectory;
-
-    class Image {
-        String url;
-
-        String title;
-
-        String filename;
-
-        public Image(String url, String title, String from, String until) {
-            this.url = getUrl(url, from, until);
-            this.title = title;
-        }
-
-        private String getUrl(String url, String from, String until) {
-            return url + String.format("&from=%s&until=%s", from, until);
-        }
-
-        public File getFile(File outputDirectory) {
-            filename = (title + "_" + from).replaceAll("\\W+", "") + ".png";
-            return new File(outputDirectory, filename);
-        }
-    }
 
     public Graphite(String graphiteUrl, String user, String password, SimulationContext stats, File outputDirectory,
             ZoneId zoneId) {
@@ -136,6 +114,28 @@ public class Graphite {
     private String getJsonDashboardUrl() {
         return String.format("%s?from=%s&until=%s", dashboardUrl.replace("/dashboard/#", "/dashboard/load/"), from,
                 until);
+    }
+
+    class Image {
+        String url;
+
+        String title;
+
+        String filename;
+
+        public Image(String url, String title, String from, String until) {
+            this.url = getUrl(url, from, until);
+            this.title = title;
+        }
+
+        private String getUrl(String url, String from, String until) {
+            return url + String.format("&from=%s&until=%s", from, until);
+        }
+
+        public File getFile(File outputDirectory) {
+            filename = (title + "_" + from).replaceAll("\\W+", "") + ".png";
+            return new File(outputDirectory, filename);
+        }
     }
 
 }

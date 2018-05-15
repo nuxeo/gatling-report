@@ -1,6 +1,5 @@
-
 /*
- * (C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2018 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -15,6 +14,8 @@
  * Contributors:
  *     bdelbosc
  */
+
+package org.nuxeo.tools.gatling.report;
 
 import java.io.File;
 import java.util.List;

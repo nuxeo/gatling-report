@@ -1,4 +1,3 @@
-
 /*
  * (C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
@@ -15,6 +14,7 @@
  * Contributors:
  *     Benoit Delbosc
  */
+package org.nuxeo.tools.gatling.report;
 
 import static java.lang.Math.max;
 
@@ -26,42 +26,25 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SimulationContext {
-    String filePath;
+    public static final String ALL_REQUESTS = "_all";
 
-    String simulationName;
+    protected final Float apdexT;
 
-    String scenarioName;
+    protected String filePath;
 
-    RequestStat simStat;
+    protected String simulationName;
 
-    Map<String, RequestStat> reqStats = new HashMap<>();
+    protected String scenarioName;
 
-    List<String> scripts = new ArrayList<>();
+    protected RequestStat simStat;
 
-    int maxUsers;
+    protected Map<String, RequestStat> reqStats = new HashMap<>();
 
-    private final Float apdexT;
+    protected List<String> scripts = new ArrayList<>();
 
-    private static final String ALL_REQUESTS = "_all";
+    protected int maxUsers;
 
-    private long start;
-
-    class CountMax {
-        int current = 0, maximum = 0;
-
-        public void incr() {
-            current += 1;
-            maximum = max(current, maximum);
-        }
-
-        public void decr() {
-            current -= 1;
-        }
-
-        public int getMax() {
-            return maximum;
-        }
-    }
+    protected long start;
 
     Map<String, CountMax> users = new HashMap<>();
 
@@ -69,6 +52,19 @@ public class SimulationContext {
         this.filePath = filePath;
         this.simStat = new RequestStat(ALL_REQUESTS, ALL_REQUESTS, ALL_REQUESTS, 0, apdexT);
         this.apdexT = apdexT;
+    }
+
+    public String getSimulationName() {
+        return simulationName;
+    }
+
+    public void setSimulationName(String name) {
+        this.simulationName = name;
+        simStat.setSimulationName(name);
+    }
+
+    public RequestStat getSimStat() {
+        return simStat;
     }
 
     public List<RequestStat> getRequests() {
@@ -93,11 +89,6 @@ public class SimulationContext {
         reqStats.values()
                 .forEach(request -> request.computeStat(simStat.duration, users.get(request.scenario).maximum));
 
-    }
-
-    public void setSimulationName(String name) {
-        this.simulationName = name;
-        simStat.setSimulationName(name);
     }
 
     public void setScenarioName(String name) {
@@ -139,6 +130,23 @@ public class SimulationContext {
         CountMax count = users.get(scenario);
         if (count != null) {
             count.decr();
+        }
+    }
+
+    class CountMax {
+        int current = 0, maximum = 0;
+
+        public void incr() {
+            current += 1;
+            maximum = max(current, maximum);
+        }
+
+        public void decr() {
+            current -= 1;
+        }
+
+        public int getMax() {
+            return maximum;
         }
     }
 

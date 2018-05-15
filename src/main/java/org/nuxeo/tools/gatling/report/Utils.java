@@ -1,4 +1,3 @@
-
 /* (C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
@@ -14,6 +13,8 @@
  * Contributors:
  *     Benoit Delbosc
  */
+
+package org.nuxeo.tools.gatling.report;
 
 import java.io.BufferedReader;
 import java.io.File;

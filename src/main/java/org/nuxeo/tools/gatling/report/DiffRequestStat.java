@@ -14,6 +14,7 @@
  * Contributors:
  *     Benoit Delbosc
  */
+package org.nuxeo.tools.gatling.report;
 
 public class DiffRequestStat {
     RequestStat refR;

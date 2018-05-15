@@ -14,6 +14,7 @@
  * Contributors:
  *     Benoit Delbosc
  */
+package org.nuxeo.tools.gatling.report;
 
 /**
  * Application Performance Index, measuring user satisfaction. The Apdex score converts many measurements into one

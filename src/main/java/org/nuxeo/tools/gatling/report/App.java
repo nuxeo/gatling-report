@@ -1,4 +1,3 @@
-
 /*
  * (C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
@@ -15,6 +14,7 @@
  * Contributors:
  *     Benoit Delbosc
  */
+package org.nuxeo.tools.gatling.report;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,6 +42,10 @@ public class App implements Runnable {
             command.usage();
             System.exit(0);
         }
+    }
+
+    public static void main(String args[]) {
+        (new Thread(new App(args))).start();
     }
 
     @Override
@@ -102,9 +106,5 @@ public class App implements Runnable {
     private void renderAsCsv() {
         System.out.println(RequestStat.header());
         stats.forEach(System.out::println);
-    }
-
-    public static void main(String args[]) {
-        (new Thread(new App(args))).start();
     }
 }

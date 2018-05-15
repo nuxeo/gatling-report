@@ -91,7 +91,7 @@
               <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
             </manifest>
             <manifestEntries>
-              <Application-Class>App</Application-Class>
+              <Application-Class>org.nuxeo.tools.gatling.report.App</Application-Class>
               <Premain-Class>Capsule</Premain-Class>
               <!-- <Caplets>MavenCapsule</Caplets> --> <!-- uncomment for a thin capsule -->
               <Min-Java-Version>1.8.0</Min-Java-Version>

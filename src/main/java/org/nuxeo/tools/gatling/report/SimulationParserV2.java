@@ -1,4 +1,3 @@
-
 /*
  * (C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
@@ -15,6 +14,7 @@
  * Contributors:
  *     Kris Geusebroek
  */
+package org.nuxeo.tools.gatling.report;
 
 import java.io.File;
 import java.util.List;

@@ -1,4 +1,3 @@
-
 /*
  * (C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
@@ -15,6 +14,7 @@
  * Contributors:
  *     Benoit Delbosc
  */
+package org.nuxeo.tools.gatling.report;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -28,39 +28,43 @@ import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 
 public class RequestStat {
-    private static final long MAX_BOXPOINT = 50000;
+    public static final long MAX_BOXPOINT = 50000;
 
-    String simulation;
+    protected static AtomicInteger statCounter = new AtomicInteger();
 
-    String scenario;
+    protected String simulation;
 
-    String request;
+    protected String scenario;
 
-    String requestId;
+    protected String request;
 
-    static AtomicInteger statCounter = new AtomicInteger();
+    protected String requestId;
 
-    int indice;
+    protected int indice;
 
-    String startDate;
+    protected String startDate;
 
-    long start, end;
+    protected long start, end;
 
-    long count, successCount, errorCount;
+    protected long count, successCount, errorCount;
 
-    long min, max, stddev, p50, p95, p99;
+    protected long min, max, stddev, p50, p95, p99;
 
-    double rps, avg;
+    protected double rps, avg;
 
-    double duration;
+    protected double duration;
 
-    List<Double> durations;
+    protected List<Double> durations;
 
-    Graphite graphite;
+    protected Graphite graphite;
 
-    Apdex apdex;
+    protected Apdex apdex;
 
-    int maxUsers;
+    protected int maxUsers;
+
+    public long getCount() {
+        return count;
+    }
 
     public RequestStat(String simulation, String scenario, String request, long start, Float apdexT) {
         this.simulation = simulation;
@@ -71,6 +75,11 @@ public class RequestStat {
         durations = new ArrayList<>();
         indice = statCounter.incrementAndGet();
         apdex = new Apdex(apdexT);
+    }
+
+    public static String header() {
+        return "simulation\tscenario\tmaxUsers\trequest\tstart\tstartDate\tduration\tend\tcount\tsuccessCount\t"
+                + "errorCount\tmin\tp50\tp95\tp99\tmax\tavg\tstddev\trps\tapdex\trating";
     }
 
     public void add(long start, long end, boolean success) {
@@ -162,11 +171,6 @@ public class RequestStat {
 
     public String getDuration() {
         return String.format(Locale.ENGLISH, "%.1f", duration);
-    }
-
-    public static String header() {
-        return "simulation\tscenario\tmaxUsers\trequest\tstart\tstartDate\tduration\tend\tcount\tsuccessCount\t"
-                + "errorCount\tmin\tp50\tp95\tp99\tmax\tavg\tstddev\trps\tapdex\trating";
     }
 
     @Override

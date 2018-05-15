@@ -1,4 +1,3 @@
-
 /*
  * (C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
@@ -15,6 +14,7 @@
  * Contributors:
  *     Benoit Delbosc
  */
+package org.nuxeo.tools.gatling.report;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,36 +32,6 @@ public class TrendContext {
     List<TrendStat> requests = new ArrayList<>();
 
     List<String> scripts;
-
-    class TrendStat {
-        String name;
-
-        Integer indice;
-
-        List<String> xvalues = new ArrayList<>();
-
-        List<Double> yvalues = new ArrayList<>();
-
-        List<Long> yerrors = new ArrayList<>();
-
-        List<Double> rps = new ArrayList<>();
-
-        public void add(RequestStat stat) {
-            if (stat == null) {
-                xvalues.add(null);
-                yvalues.add(null);
-                yerrors.add(null);
-                rps.add(null);
-            } else {
-                name = stat.request;
-                indice = stat.indice;
-                xvalues.add(String.format("'%s'", stat.startDate));
-                yvalues.add(stat.avg);
-                yerrors.add(stat.stddev);
-                rps.add(stat.rps);
-            }
-        }
-    }
 
     public TrendContext(List<SimulationContext> stats) {
         Set<String> names = new HashSet<>();
@@ -99,6 +69,36 @@ public class TrendContext {
 
     public TrendStat getChallenger() {
         return requests.get(1);
+    }
+
+    class TrendStat {
+        String name;
+
+        Integer indice;
+
+        List<String> xvalues = new ArrayList<>();
+
+        List<Double> yvalues = new ArrayList<>();
+
+        List<Long> yerrors = new ArrayList<>();
+
+        List<Double> rps = new ArrayList<>();
+
+        public void add(RequestStat stat) {
+            if (stat == null) {
+                xvalues.add(null);
+                yvalues.add(null);
+                yerrors.add(null);
+                rps.add(null);
+            } else {
+                name = stat.request;
+                indice = stat.indice;
+                xvalues.add(String.format("'%s'", stat.startDate));
+                yvalues.add(stat.avg);
+                yerrors.add(stat.stddev);
+                rps.add(stat.rps);
+            }
+        }
     }
 
 }
