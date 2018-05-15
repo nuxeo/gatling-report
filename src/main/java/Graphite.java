@@ -1,3 +1,4 @@
+
 /*
  * (C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
@@ -15,12 +16,6 @@
  *     Benoit Delbosc
  */
 
-import org.apache.log4j.Logger;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -30,20 +25,32 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class Graphite {
     private final static Logger log = Logger.getLogger(Report.class);
-    final ZoneId zoneId;
-    String dashboardUrl, user, password;
-    String baseUrl;
-    List<Image> images = new ArrayList<>();
-    String from, until;
-    File outputDirectory;
 
+    final ZoneId zoneId;
+
+    String dashboardUrl, user, password;
+
+    String baseUrl;
+
+    List<Image> images = new ArrayList<>();
+
+    String from, until;
+
+    File outputDirectory;
 
     class Image {
         String url;
+
         String title;
+
         String filename;
 
         public Image(String url, String title, String from, String until) {
@@ -62,7 +69,7 @@ public class Graphite {
     }
 
     public Graphite(String graphiteUrl, String user, String password, SimulationContext stats, File outputDirectory,
-                    ZoneId zoneId) {
+            ZoneId zoneId) {
         this.dashboardUrl = graphiteUrl;
         baseUrl = Utils.getBaseUrl(graphiteUrl);
         if (zoneId == null) {
@@ -127,9 +134,8 @@ public class Graphite {
     }
 
     private String getJsonDashboardUrl() {
-        return String.format("%s?from=%s&until=%s", dashboardUrl.replace("/dashboard/#", "/dashboard/load/"),
-                from, until);
+        return String.format("%s?from=%s&until=%s", dashboardUrl.replace("/dashboard/#", "/dashboard/load/"), from,
+                until);
     }
-
 
 }

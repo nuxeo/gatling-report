@@ -1,9 +1,8 @@
-import org.junit.Assert;
-import org.junit.Test;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import org.junit.Assert;
+import org.junit.Test;
 
 /*
  * (C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
@@ -24,8 +23,11 @@ import java.io.FileNotFoundException;
 
 public class TestParser {
     private static final String SIM_SMALL_V2_1 = "simulation-small.log";
+
     private static final String SIM_V2_3 = "simulation-v2.3.log";
+
     private static final String SIM_SMALL_V3 = "simulation-small-v3.log";
+
     private static final String SIM_GZ = "simulation-1.log.gz";
 
     @Test
@@ -49,7 +51,7 @@ public class TestParser {
     @Test
     public void parseSimulationVersion23() throws Exception {
         SimulationContext ret = ParserFactory.getParser(getRessourceFile(SIM_V2_3)).parse();
-        //System.out.println(ret);
+        // System.out.println(ret);
         Assert.assertEquals("sim20createdocuments", ret.simulationName);
         Assert.assertEquals(1000, ret.simStat.count);
         Assert.assertTrue(ret.toString().contains("_all"));

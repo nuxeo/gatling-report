@@ -1,3 +1,4 @@
+
 /*
  * (C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
@@ -15,6 +16,8 @@
  *     Benoit Delbosc
  */
 
+import static java.lang.Math.max;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,19 +25,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static java.lang.Math.max;
-
 public class SimulationContext {
     String filePath;
+
     String simulationName;
+
     String scenarioName;
+
     RequestStat simStat;
+
     Map<String, RequestStat> reqStats = new HashMap<>();
+
     List<String> scripts = new ArrayList<>();
+
     int maxUsers;
 
     private final Float apdexT;
+
     private static final String ALL_REQUESTS = "_all";
+
     private long start;
 
     class CountMax {
@@ -81,8 +90,8 @@ public class SimulationContext {
     public void computeStat() {
         maxUsers = users.values().stream().mapToInt(CountMax::getMax).sum();
         simStat.computeStat(maxUsers);
-        reqStats.values().forEach(request ->
-                request.computeStat(simStat.duration, users.get(request.scenario).maximum));
+        reqStats.values()
+                .forEach(request -> request.computeStat(simStat.duration, users.get(request.scenario).maximum));
 
     }
 
@@ -108,8 +117,8 @@ public class SimulationContext {
 
     @Override
     public String toString() {
-        return simStat.toString() + "\n" + getRequests().stream().map(RequestStat::toString)
-                .collect(Collectors.joining("\n"));
+        return simStat.toString() + "\n"
+                + getRequests().stream().map(RequestStat::toString).collect(Collectors.joining("\n"));
     }
 
     public SimulationContext setMaxUsers(int maxUsers) {

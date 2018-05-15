@@ -1,3 +1,4 @@
+
 /*
  * (C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
@@ -15,18 +16,22 @@
  *     Benoit Delbosc
  */
 
-import com.beust.jcommander.JCommander;
-import org.apache.log4j.Logger;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
+import com.beust.jcommander.JCommander;
+
 public class App implements Runnable {
     private final static Logger log = Logger.getLogger(App.class);
+
     private static final String PROGRAM_NAME = "java -jar gatling-report.jar";
+
     private final Options options;
+
     private List<SimulationContext> stats;
 
     public App(String[] args) {
@@ -82,15 +87,15 @@ public class App implements Runnable {
             }
             log.warn("Overriding existing report directory" + options.outputDirectory);
         }
-        String reportPath = new Report(stats)
-                .setOutputDirectory(dir)
-                .includeJs(options.includeJs)
-                .setTemplate(options.template)
-                .includeGraphite(options.graphiteUrl, options.user, options.password, options.getZoneId())
-                .yamlReport(options.yaml)
-                .withMap(options.map)
-                .setFilename(options.outputName)
-                .create();
+        String reportPath = new Report(stats).setOutputDirectory(dir)
+                                             .includeJs(options.includeJs)
+                                             .setTemplate(options.template)
+                                             .includeGraphite(options.graphiteUrl, options.user, options.password,
+                                                     options.getZoneId())
+                                             .yamlReport(options.yaml)
+                                             .withMap(options.map)
+                                             .setFilename(options.outputName)
+                                             .create();
         log.info("Report generated: " + reportPath);
     }
 

@@ -10,6 +10,7 @@
     #countDiv {float: left}
     #responseDiv {clear:both}
     #image {float: left}
+
   </style>
 </head>
 
@@ -132,6 +133,7 @@ var data{{indice}} = {
 dataResponse.push(data{{indice}});
 {{/requests}}
 Plotly.newPlot('responseDiv', dataResponse, layoutResponse);
+
 
 
 </script>

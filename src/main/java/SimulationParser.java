@@ -1,3 +1,4 @@
+
 /*
  * (C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
@@ -15,24 +16,31 @@
  *     Benoit Delbosc
  */
 
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
 import net.quux00.simplecsv.CsvParser;
 import net.quux00.simplecsv.CsvParserBuilder;
 import net.quux00.simplecsv.CsvReader;
 import net.quux00.simplecsv.CsvReaderBuilder;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
 public abstract class SimulationParser {
 
     protected static final String OK = "OK";
+
     private static final String REQUEST = "REQUEST";
+
     private static final String RUN = "RUN";
+
     private static final String USER = "USER";
+
     private static final String START = "START";
+
     private static final String END = "END";
+
     private final File file;
+
     private final Float apdexT;
 
     public SimulationParser(File file, Float apdexT) {
@@ -66,25 +74,25 @@ public abstract class SimulationParser {
             scenario = getScenario(line);
 
             switch (getType(line)) {
-                case RUN:
+            case RUN:
+                break;
+            case REQUEST:
+                name = getRequestName(line);
+                start = getRequestStart(line);
+                end = getRequestEnd(line);
+                success = getRequestSuccess(line);
+                ret.addRequest(scenario, name, start, end, success);
+                break;
+            case USER:
+                switch (getUserType(line)) {
+                case START:
+                    ret.addUser(scenario);
                     break;
-                case REQUEST:
-                    name = getRequestName(line);
-                    start = getRequestStart(line);
-                    end = getRequestEnd(line);
-                    success = getRequestSuccess(line);
-                    ret.addRequest(scenario, name, start, end, success);
+                case END:
+                    ret.endUser(scenario);
                     break;
-                case USER:
-                    switch (getUserType(line)) {
-                        case START:
-                            ret.addUser(scenario);
-                            break;
-                        case END:
-                            ret.endUser(scenario);
-                            break;
-                    }
-                    break;
+                }
+                break;
             }
         }
         ret.computeStat();
@@ -116,8 +124,8 @@ public abstract class SimulationParser {
     abstract boolean getRequestSuccess(List<String> line);
 
     private SimulationContext invalidFile() {
-        throw new IllegalArgumentException(String.format("Invalid simulation file: %s expecting " +
-                "Gatling 2.1, 2.3.1 or 3.x format", file.getAbsolutePath()));
+        throw new IllegalArgumentException(String.format(
+                "Invalid simulation file: %s expecting " + "Gatling 2.1, 2.3.1 or 3.x format", file.getAbsolutePath()));
     }
 
 }

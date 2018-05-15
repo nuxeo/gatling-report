@@ -1,3 +1,4 @@
+
 /*
  * (C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
@@ -15,11 +16,6 @@
  *     Benoit Delbosc
  */
 
-import com.github.mustachejava.DefaultMustacheFactory;
-import com.github.mustachejava.Mustache;
-import com.github.mustachejava.MustacheFactory;
-import org.apache.commons.io.FileUtils;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -32,27 +28,51 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+
+import com.github.mustachejava.DefaultMustacheFactory;
+import com.github.mustachejava.Mustache;
+import com.github.mustachejava.MustacheFactory;
+
 public class Report {
     private static final String YAML = "yaml/";
+
     private static final String HTML = "html/";
+
     private static final String DEFAULT_FILENAME = "index.html";
+
     private static final String SIMULATION_TEMPLATE = "simulation.mustache";
+
     private static final String TREND_TEMPLATE = "trend.mustache";
+
     private static final String DIFF_TEMPLATE = "diff.mustache";
+
     private static final String DEFAULT_SCRIPT = "plotly-latest.min.js";
+
     private static final String DEFAULT_CDN_SCRIPT = "https://cdn.plot.ly/plotly-latest.min.js";
 
     private final List<SimulationContext> stats;
+
     private File outputDirectory;
+
     private Writer writer;
+
     private List<String> scripts = new ArrayList<>();
+
     private boolean includeJs = false;
+
     private String template;
+
     private String graphiteUrl, user, password;
+
     private Graphite graphite;
+
     private ZoneId zoneId;
+
     private boolean yaml = false;
+
     private List<String> map;
+
     private String filename = DEFAULT_FILENAME;
 
     public Report(List<SimulationContext> stats) {
@@ -91,14 +111,14 @@ public class Report {
                     outputDirectory, zoneId));
         }
         switch (nbSimulation) {
-            case 1:
-                createSimulationReport();
-                break;
-            case 2:
-                createDiffReport();
-                break;
-            default:
-                createTrendReport();
+        case 1:
+            createSimulationReport();
+            break;
+        case 2:
+            createDiffReport();
+            break;
+        default:
+            createTrendReport();
         }
         return getReportPath().getAbsolutePath();
     }
@@ -124,7 +144,7 @@ public class Report {
         if (map != null && map.size() == stats.size()) {
             HashMap<String, Object> scopes = new HashMap<String, Object>();
             scopes.put("trend", new TrendContext(stats).setScripts(getScripts()));
-            int i=0;
+            int i = 0;
             for (String name : map) {
                 scopes.put(name, stats.get(i++));
             }
@@ -139,7 +159,7 @@ public class Report {
         if (map != null && map.size() == stats.size()) {
             HashMap<String, Object> scopes = new HashMap<String, Object>();
             scopes.put("diff", new DiffContext(stats).setScripts(getScripts()));
-            int i=0;
+            int i = 0;
             for (String name : map) {
                 scopes.put(name, stats.get(i++));
             }
@@ -186,12 +206,12 @@ public class Report {
         int nbSimulation = stats.size();
         String prefix = yaml ? YAML : HTML;
         switch (nbSimulation) {
-            case 1:
-                return prefix + SIMULATION_TEMPLATE;
-            case 2:
-                return prefix + DIFF_TEMPLATE;
-            default:
-                return prefix + TREND_TEMPLATE;
+        case 1:
+            return prefix + SIMULATION_TEMPLATE;
+        case 2:
+            return prefix + DIFF_TEMPLATE;
+        default:
+            return prefix + TREND_TEMPLATE;
         }
     }
 

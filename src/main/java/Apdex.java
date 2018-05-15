@@ -16,17 +16,15 @@
  */
 
 /**
- * Application Performance Index, measuring user satisfaction.
- *
- * The Apdex score converts many measurements into one number on a uniform scale of 0-to-1
- * (0 = no users satisfied, 1 = all users satisfied).
- *
- * Visit http://www.apdex.org/ for more information.
- *
+ * Application Performance Index, measuring user satisfaction. The Apdex score converts many measurements into one
+ * number on a uniform scale of 0-to-1 (0 = no users satisfied, 1 = all users satisfied). Visit http://www.apdex.org/
+ * for more information.
  */
 public class Apdex {
     private static final float DEFAULT_THRESOLD = 1.5f;
+
     final float threshold;
+
     int satisfied, tolerating, frustrated;
 
     enum Rating {

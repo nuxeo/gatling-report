@@ -1,6 +1,3 @@
-import org.junit.Assert;
-import org.junit.Test;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -9,6 +6,9 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 /*
  * (C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
@@ -30,8 +30,9 @@ import java.util.List;
 public class TestReport {
 
     private static final String SIM_GZ = "simulation-1.log.gz";
-    private static final List<String> SIMS_GZ = Arrays.asList("simulation.log.1.gz",
-            "simulation.log.2.gz", "simulation.log.3.gz", "simulation.log.4.gz");
+
+    private static final List<String> SIMS_GZ = Arrays.asList("simulation.log.1.gz", "simulation.log.2.gz",
+            "simulation.log.3.gz", "simulation.log.4.gz");
 
     @Test
     public void generateSimulationReport() throws Exception {

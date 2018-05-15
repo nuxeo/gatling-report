@@ -1,3 +1,4 @@
+
 /*
  * (C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
@@ -15,9 +16,6 @@
  *     Benoit Delbosc
  */
 
-import org.apache.commons.math3.stat.StatUtils;
-import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
-
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -26,23 +24,42 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.math3.stat.StatUtils;
+import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
+
 public class RequestStat {
     private static final long MAX_BOXPOINT = 50000;
+
     String simulation;
+
     String scenario;
+
     String request;
+
     String requestId;
+
     static AtomicInteger statCounter = new AtomicInteger();
+
     int indice;
+
     String startDate;
+
     long start, end;
+
     long count, successCount, errorCount;
+
     long min, max, stddev, p50, p95, p99;
+
     double rps, avg;
+
     double duration;
+
     List<Double> durations;
+
     Graphite graphite;
+
     Apdex apdex;
+
     int maxUsers;
 
     public RequestStat(String simulation, String scenario, String request, long start, Float apdexT) {
@@ -80,7 +97,8 @@ public class RequestStat {
         min = (long) StatUtils.min(times);
         max = (long) StatUtils.max(times);
         double sum = 0;
-        for (double d : times) sum += d;
+        for (double d : times)
+            sum += d;
         avg = sum / times.length;
         p50 = (long) StatUtils.percentile(times, 50.0);
         p95 = (long) StatUtils.percentile(times, 95.0);
@@ -117,7 +135,6 @@ public class RequestStat {
         return "false";
     }
 
-
     public String throughput() {
         return String.format(Locale.ENGLISH, "%.1f", rps);
     }
@@ -130,8 +147,8 @@ public class RequestStat {
     }
 
     private String getDateFromInstant(long start) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd " +
-                "HH:mm:ss").withZone(ZoneId.systemDefault());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd " + "HH:mm:ss")
+                                                       .withZone(ZoneId.systemDefault());
         return formatter.format(Instant.ofEpochMilli(start));
     }
 
@@ -148,8 +165,8 @@ public class RequestStat {
     }
 
     public static String header() {
-        return "simulation\tscenario\tmaxUsers\trequest\tstart\tstartDate\tduration\tend\tcount\tsuccessCount\t" +
-                "errorCount\tmin\tp50\tp95\tp99\tmax\tavg\tstddev\trps\tapdex\trating";
+        return "simulation\tscenario\tmaxUsers\trequest\tstart\tstartDate\tduration\tend\tcount\tsuccessCount\t"
+                + "errorCount\tmin\tp50\tp95\tp99\tmax\tavg\tstddev\trps\tapdex\trating";
     }
 
     @Override

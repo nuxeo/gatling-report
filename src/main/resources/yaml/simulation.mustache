@@ -7,10 +7,10 @@ count: {{simStat.count}}
 successCount: {{simStat.successCount}}
 errorCount: {{simStat.errorCount}}
 maxUser: {{simStat.maxUsers}}
-apdex: 
-  t: {{simStat.apdex.threshold}}
-  rating: {{simStat.apdex.rating}}
-  score: {{simStat.apdex.score}}
+apdex:
+t: {{simStat.apdex.threshold}}
+rating: {{simStat.apdex.rating}}
+score: {{simStat.apdex.score}}
 min: {{simStat.min}}
 max: {{simStat.max}}
 p50: {{simStat.p50}}
@@ -20,7 +20,7 @@ avg: {{simStat.avg}}
 
 # Request mapping
 {{#requests}}
-{{request}}: 
+  {{request}}:
   name: {{request}}
   scenario: {{scenario}}
   averageMs: {{average}}
@@ -30,10 +30,10 @@ avg: {{simStat.avg}}
   successCount: {{successCount}}
   errorCount: {{errorCount}}
   maxUser: {{maxUsers}}
-  apdex: 
-    t: {{apdex.threshold}}
-    rating: {{apdex.rating}}
-    score: {{apdex.score}}
+  apdex:
+  t: {{apdex.threshold}}
+  rating: {{apdex.rating}}
+  score: {{apdex.score}}
   min: {{min}}
   max: {{max}}
   p50: {{p50}}

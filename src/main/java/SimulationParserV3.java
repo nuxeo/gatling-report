@@ -1,3 +1,4 @@
+
 /*
  * (C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
@@ -15,7 +16,7 @@
  *     Kris Geusebroek
  */
 
-import java.io.*;
+import java.io.File;
 import java.util.List;
 
 /**

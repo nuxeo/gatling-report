@@ -1,93 +1,93 @@
-throughput: 
-  gain: {{rpsPercent}}
-  status: {{rpsClass}}
+throughput:
+gain: {{rpsPercent}}
+status: {{rpsClass}}
 
-average: 
-  gain: {{avgPercent}}
-  status: {{avgClass}}
+average:
+gain: {{avgPercent}}
+status: {{avgClass}}
 
-ref: 
-  simulation: {{ref.simStat.scenario}}
-  start: {{ref.simStat.startDate}}
-  duration: {{ref.simStat.getDuration}}
-  throughput: {{ref.simStat.throughput}}
-  averageMs: {{ref.simStat.average}}
-  count: {{ref.simStat.count}}
-  successCount: {{ref.simStat.successCount}}
-  errorCount: {{ref.simStat.errorCount}}
-  apdex: 
-    t: {{ref.simStat.apdex.threshold}}
-    rating: {{ref.simStat.apdex.rating}}
-    score: {{ref.simStat.apdex.score}}
-  min: {{ref.simStat.min}}
-  max: {{ref.simStat.max}}
-  p50: {{ref.simStat.p50}}
-  p95: {{ref.simStat.p95}}
-  p99: {{ref.simStat.p99}}
-  avg: {{ref.simStat.avg}}
+ref:
+simulation: {{ref.simStat.scenario}}
+start: {{ref.simStat.startDate}}
+duration: {{ref.simStat.getDuration}}
+throughput: {{ref.simStat.throughput}}
+averageMs: {{ref.simStat.average}}
+count: {{ref.simStat.count}}
+successCount: {{ref.simStat.successCount}}
+errorCount: {{ref.simStat.errorCount}}
+apdex:
+t: {{ref.simStat.apdex.threshold}}
+rating: {{ref.simStat.apdex.rating}}
+score: {{ref.simStat.apdex.score}}
+min: {{ref.simStat.min}}
+max: {{ref.simStat.max}}
+p50: {{ref.simStat.p50}}
+p95: {{ref.simStat.p95}}
+p99: {{ref.simStat.p99}}
+avg: {{ref.simStat.avg}}
 
-  # Request mapping
-  requests: 
-  {{#ref.requests}}
+# Request mapping
+requests:
+{{#ref.requests}}
   - {{request}}:
-      name: {{request}}
-      averageMs: {{average}}
-      stddev: {{stddev}}
-      rps: {{rps}}
-      count: {{count}}
-      successCount: {{successCount}}
-      errorCount: {{errorCount}}
-      apdex:
-        t: {{apdex.threshold}}
-        rating: {{apdex.rating}}
-        score: {{apdex.score}}
-      min: {{min}}
-      max: {{max}}
-      p50: {{p50}}
-      p95: {{p95}}
-      p99: {{p99}}
-      avg: {{avg}}
-  {{/ref.requests}}
+  name: {{request}}
+  averageMs: {{average}}
+  stddev: {{stddev}}
+  rps: {{rps}}
+  count: {{count}}
+  successCount: {{successCount}}
+  errorCount: {{errorCount}}
+  apdex:
+  t: {{apdex.threshold}}
+  rating: {{apdex.rating}}
+  score: {{apdex.score}}
+  min: {{min}}
+  max: {{max}}
+  p50: {{p50}}
+  p95: {{p95}}
+  p99: {{p99}}
+  avg: {{avg}}
+{{/ref.requests}}
 
 challenger:
-  simulation: {{challenger.simStat.scenario}}
-  start: {{challenger.simStat.startDate}}
-  duration: {{challenger.simStat.getDuration}}
-  throughput: {{challenger.simStat.throughput}}
-  averageMs: {{challenger.simStat.average}}
-  count: {{challenger.simStat.count}}
-  successCount: {{challenger.simStat.successCount}}
-  errorCount: {{challenger.simStat.errorCount}}
-  apdex:
-    t: {{challenger.simStat.apdex.threshold}}
-    rating: {{challenger.simStat.apdex.rating}}
-    score: {{challenger.simStat.apdex.score}}
-  min: {{challenger.simStat.min}}
-  max: {{challenger.simStat.max}}
-  p50: {{challenger.simStat.p50}}
-  p95: {{challenger.simStat.p95}}
-  p99: {{challenger.simStat.p99}}
-  avg: {{challenger.simStat.avg}}
+simulation: {{challenger.simStat.scenario}}
+start: {{challenger.simStat.startDate}}
+duration: {{challenger.simStat.getDuration}}
+throughput: {{challenger.simStat.throughput}}
+averageMs: {{challenger.simStat.average}}
+count: {{challenger.simStat.count}}
+successCount: {{challenger.simStat.successCount}}
+errorCount: {{challenger.simStat.errorCount}}
+apdex:
+t: {{challenger.simStat.apdex.threshold}}
+rating: {{challenger.simStat.apdex.rating}}
+score: {{challenger.simStat.apdex.score}}
+min: {{challenger.simStat.min}}
+max: {{challenger.simStat.max}}
+p50: {{challenger.simStat.p50}}
+p95: {{challenger.simStat.p95}}
+p99: {{challenger.simStat.p99}}
+avg: {{challenger.simStat.avg}}
 
-  # Request mapping
-  requests: 
-  {{#challenger.requests}}
+# Request mapping
+requests:
+{{#challenger.requests}}
   - {{request}}:
-      name: {{request}}
-      averageMs: {{average}}
-      stddev: {{stddev}}
-      rps: {{rps}}
-      count: {{count}}
-      successCount: {{successCount}}
-      errorCount: {{errorCount}}
-      apdex:
-        t: {{apdex.threshold}}
-        rating: {{apdex.rating}}
-        score: {{apdex.score}}
-      min: {{min}}
-      max: {{max}}
-      p50: {{p50}}
-      p95: {{p95}}
-      p99: {{p99}}
-      avg: {{avg}}
-  {{/challenger.requests}}
+  name: {{request}}
+  averageMs: {{average}}
+  stddev: {{stddev}}
+  rps: {{rps}}
+  count: {{count}}
+  successCount: {{successCount}}
+  errorCount: {{errorCount}}
+  apdex:
+  t: {{apdex.threshold}}
+  rating: {{apdex.rating}}
+  score: {{apdex.score}}
+  min: {{min}}
+  max: {{max}}
+  p50: {{p50}}
+  p95: {{p95}}
+  p99: {{p99}}
+  avg: {{avg}}
+{{/challenger.requests}}

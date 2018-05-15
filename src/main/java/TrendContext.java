@@ -1,3 +1,4 @@
+
 /*
  * (C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
@@ -25,17 +26,24 @@ import java.util.stream.Collectors;
 public class TrendContext {
 
     String scenario;
-    TrendStat all = new TrendStat();
-    List<TrendStat> requests = new ArrayList<>();
-    List<String> scripts;
 
+    TrendStat all = new TrendStat();
+
+    List<TrendStat> requests = new ArrayList<>();
+
+    List<String> scripts;
 
     class TrendStat {
         String name;
+
         Integer indice;
+
         List<String> xvalues = new ArrayList<>();
+
         List<Double> yvalues = new ArrayList<>();
+
         List<Long> yerrors = new ArrayList<>();
+
         List<Double> rps = new ArrayList<>();
 
         public void add(RequestStat stat) {

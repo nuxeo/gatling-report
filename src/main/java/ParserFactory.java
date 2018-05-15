@@ -40,8 +40,8 @@ public class ParserFactory {
         CsvReader reader = new CsvReaderBuilder(Utils.getReaderFor(file)).csvParser(p).build();
 
         List<String> header = reader.readNext();
-        //System.out.println(header.size() + " " + header);
-        if (header.size()  == 6) {
+        // System.out.println(header.size() + " " + header);
+        if (header.size() == 6) {
             String version = header.get(5);
             if (version.startsWith("3.")) {
                 return new SimulationParserV3(file, apdexT);

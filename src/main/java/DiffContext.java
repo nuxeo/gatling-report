@@ -1,3 +1,4 @@
+
 /*
  * (C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
@@ -22,8 +23,11 @@ import java.util.Locale;
 
 public class DiffContext {
     SimulationContext ref;
+
     SimulationContext challenger;
+
     List<String> scripts;
+
     long max;
 
     public DiffContext(List<SimulationContext> stats) {
