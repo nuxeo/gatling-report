@@ -23,21 +23,23 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 public class TestReport {
 
-    private static final String SIM_GZ = "simulation-1.log.gz";
+    protected static final String SIM_GZ = "simulation-1.log.gz";
 
-    private static final List<String> SIMS_GZ = Arrays.asList("simulation.log.1.gz", "simulation.log.2.gz",
+    protected static final List<String> SIMS_GZ = Arrays.asList("simulation.log.1.gz", "simulation.log.2.gz",
             "simulation.log.3.gz", "simulation.log.4.gz");
 
     @Test
     public void generateSimulationReport() throws Exception {
-        List<SimulationContext> stats = Arrays.asList(ParserFactory.getParser(getRessourceFile(SIM_GZ)).parse());
+        List<SimulationContext> stats = Collections.singletonList(ParserFactory.getParser(getResourceFile(SIM_GZ)).parse());
         Writer writer = new StringWriter();
         String reportPath = new Report(stats).setWriter(writer).create();
         // System.out.println(writer);
@@ -50,7 +52,7 @@ public class TestReport {
         List<SimulationContext> stats = new ArrayList<>(SIMS_GZ.size());
         SIMS_GZ.forEach(file -> {
             try {
-                stats.add(ParserFactory.getParser(getRessourceFile(file)).parse());
+                stats.add(ParserFactory.getParser(getResourceFile(file)).parse());
             } catch (IOException e) {
                 Assert.fail("Can not parse: " + file);
             }
@@ -62,12 +64,12 @@ public class TestReport {
         Assert.assertTrue(writer.toString().contains("Trend report"));
     }
 
-    private File getRessourceFile(String filename) throws FileNotFoundException {
+    protected File getResourceFile(String filename) throws FileNotFoundException {
         ClassLoader classLoader = getClass().getClassLoader();
         if (classLoader.getResource(filename) == null) {
             throw new FileNotFoundException(filename);
         }
-        return new File(classLoader.getResource(filename).getFile());
+        return new File(Objects.requireNonNull(classLoader.getResource(filename)).getFile());
     }
 
 }

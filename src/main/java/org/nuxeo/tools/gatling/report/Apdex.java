@@ -22,21 +22,17 @@ package org.nuxeo.tools.gatling.report;
  * for more information.
  */
 public class Apdex {
-    private static final float DEFAULT_THRESOLD = 1.5f;
+    protected static final float DEFAULT_THRESOLD = 1.5f;
 
-    final float threshold;
+    protected final float threshold;
 
-    int satisfied, tolerating, frustrated;
+    protected int satisfied, tolerating, frustrated;
 
-    enum Rating {
-        Unacceptable, Poor, Fair, Good, Excellent
-    }
-
-    Apdex() {
+    protected Apdex() {
         threshold = DEFAULT_THRESOLD;
     }
 
-    Apdex(Float thresold) {
+    protected Apdex(Float thresold) {
         if (thresold == null) {
             this.threshold = DEFAULT_THRESOLD;
         } else {
@@ -79,5 +75,9 @@ public class Apdex {
         } else {
             return Rating.Excellent;
         }
+    }
+
+    protected enum Rating {
+        Unacceptable, Poor, Fair, Good, Excellent
     }
 }

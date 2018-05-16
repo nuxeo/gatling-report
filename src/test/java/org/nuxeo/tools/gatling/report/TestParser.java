@@ -18,18 +18,19 @@ package org.nuxeo.tools.gatling.report;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Objects;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 public class TestParser {
-    private static final String SIM_SMALL_V2_1 = "simulation-small.log";
+    protected static final String SIM_SMALL_V2_1 = "simulation-small.log";
 
-    private static final String SIM_V2_3 = "simulation-v2.3.log";
+    protected static final String SIM_V2_3 = "simulation-v2.3.log";
 
-    private static final String SIM_SMALL_V3 = "simulation-small-v3.log";
+    protected static final String SIM_SMALL_V3 = "simulation-small-v3.log";
 
-    private static final String SIM_GZ = "simulation-1.log.gz";
+    protected static final String SIM_GZ = "simulation-1.log.gz";
 
     @Test
     public void parseSimpleSimulationVersion21() throws Exception {
@@ -67,12 +68,12 @@ public class TestParser {
         Assert.assertTrue(ret.toString().contains("_all"));
     }
 
-    private File getRessourceFile(String filename) throws FileNotFoundException {
+    protected File getRessourceFile(String filename) throws FileNotFoundException {
         ClassLoader classLoader = getClass().getClassLoader();
         if (classLoader.getResource(filename) == null) {
             throw new FileNotFoundException(filename);
         }
-        return new File(classLoader.getResource(filename).getFile());
+        return new File(Objects.requireNonNull(classLoader.getResource(filename)).getFile());
     }
 
 }

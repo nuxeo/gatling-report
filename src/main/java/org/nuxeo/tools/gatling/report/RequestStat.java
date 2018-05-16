@@ -30,17 +30,17 @@ import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 public class RequestStat {
     public static final long MAX_BOXPOINT = 50000;
 
-    protected static AtomicInteger statCounter = new AtomicInteger();
+    protected static final AtomicInteger statCounter = new AtomicInteger();
 
     protected String simulation;
 
     protected String scenario;
 
-    protected String request;
+    protected final String request;
 
-    protected String requestId;
+    protected final String requestId;
 
-    protected int indice;
+    protected final int indice;
 
     protected String startDate;
 
@@ -54,11 +54,11 @@ public class RequestStat {
 
     protected double duration;
 
-    protected List<Double> durations;
+    protected final List<Double> durations;
 
     protected Graphite graphite;
 
-    protected Apdex apdex;
+    protected final Apdex apdex;
 
     protected int maxUsers;
 
@@ -155,13 +155,13 @@ public class RequestStat {
         return String.format(Locale.ENGLISH, "%.2f", (errorCount * 100.0) / count);
     }
 
-    private String getDateFromInstant(long start) {
+    protected String getDateFromInstant(long start) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd " + "HH:mm:ss")
                                                        .withZone(ZoneId.systemDefault());
         return formatter.format(Instant.ofEpochMilli(start));
     }
 
-    private double[] getDurationAsArray() {
+    protected double[] getDurationAsArray() {
         double[] ret = new double[durations.size()];
         for (int i = 0; i < durations.size(); i++) {
             ret[i] = durations.get(i);

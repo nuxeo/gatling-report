@@ -47,22 +47,24 @@ The following command will output to stdout a CSV with stats per request.
         sim50bench      Logout  1446578664151   2015-11-03 20:24:24     62.16   1446578725039   21      21      0       1       2       15      17      17      2.38    3       0.34	1.00	Excellent
         ...
 
- - scenario: Name of the scenario in the simulation
- - request: Name of the request, _all is the total of all requests in the simulation
- - start: start timestamp of the simulation 
- - startDate: start date of the simulation
- - duration: duration of the simulatoin
- - end: last request timestamp
- - count: total number of request
- - successCount: number of requests with the OK status
- - errorCount: number of requets with the KO status
- - min: minimum elapsed duration for the request
- - p50, p95, p99: percentile 50 95 and 99
- - avg: average
- - stddev: standard deviation
- - rps: average request per second for the simulation duration
- - apdex: org.nuxeo.tools.gatling.report.Apdex score converts many measurements into one number on a uniform scale of 0-to-1
- - rating: org.nuxeo.tools.gatling.report.Apdex rating
+| Header|  Description |
+| --- |  --- |
+| `scenario` | Name of the scenario in the simulation |
+| `request` | Name of the request, `_all` is the total of all requests in the simulation |
+| `start` | start timestamp of the simulation |
+| `startDate` | start date of the simulation |
+| `duration` | duration of the simulation |
+| `end` | last request timestamp |
+| `count` | total number of request |
+| `successCount` | number of requests with the OK status |
+| `errorCount` | number of requets with the KO status |
+| `min` | minimum elapsed duration for the request |
+| `p50`, `p95`, `p99` | percentile 50, 95 and 99 |
+| `avg` | average |
+| `stddev` | standard deviation |
+| `rps` | average request per second for the simulation duration |
+| `apdex` | Apdex score converts many measurements into one number on a uniform scale of 0-to-1 |
+| `rating` | Apdex rating |
 
 You can also submit multiple simulation files, the output will concatenate stats. 
 
@@ -94,13 +96,27 @@ When submitting more than two simulations files it creates a trend report.
 
 ## Customizing the report
 
-You can use your own mustache tempate to customize the report:
+You can use your own mustache template to customize the report:
 
         java -jar path/to/gatling-report-VERSION-capsule-fat.jar --template /my/template.mustache path/to/ref/simulation.log.gz -o /path/to/report/directory
 
 Take example to the default templates located in src/main/resources.
 
 Note that [Plotly charts](https://plot.ly/) can be edited online.
+
+# Limitations
+
+It has been tested successfully with Gatling 2.3.1, 2.1.7 and 3.x `simulation.log` format.
+
+That being said it expects the default format, assertions are not supported, if you encounter:
+```
+Exception in thread "Thread-0" java.lang.IllegalArgumentException: Unknown Gatling simulation version: [ASSERTION, AAMDAAMDAAAAAAAAgFZA]
+	at org.nuxeo.tools.gatling.report.ParserFactory.getVersionSpecificParser(ParserFactory.java:58)
+
+```
+
+Try to remove the first `ASSERTION` lines of the `simulation.log` file.
+
 
 # About Nuxeo
 

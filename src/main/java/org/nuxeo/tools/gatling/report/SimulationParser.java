@@ -29,19 +29,19 @@ public abstract class SimulationParser {
 
     protected static final String OK = "OK";
 
-    private static final String REQUEST = "REQUEST";
+    protected static final String REQUEST = "REQUEST";
 
-    private static final String RUN = "RUN";
+    protected static final String RUN = "RUN";
 
-    private static final String USER = "USER";
+    protected static final String USER = "USER";
 
-    private static final String START = "START";
+    protected static final String START = "START";
 
-    private static final String END = "END";
+    protected static final String END = "END";
 
-    private final File file;
+    protected final File file;
 
-    private final Float apdexT;
+    protected final Float apdexT;
 
     public SimulationParser(File file, Float apdexT) {
         this.file = file;
@@ -99,31 +99,31 @@ public abstract class SimulationParser {
         return ret;
     }
 
-    private void checkLine(List<String> line) {
+    protected void checkLine(List<String> line) {
         if (line.size() <= 2) {
             invalidFile();
         }
     }
 
-    abstract String getSimulationName(List<String> line);
+    protected abstract String getSimulationName(List<String> line);
 
-    abstract String getSimulationStart(List<String> line);
+    protected abstract String getSimulationStart(List<String> line);
 
-    abstract String getScenario(List<String> line);
+    protected abstract String getScenario(List<String> line);
 
-    abstract String getType(List<String> line);
+    protected abstract String getType(List<String> line);
 
-    abstract String getUserType(List<String> line);
+    protected abstract String getUserType(List<String> line);
 
-    abstract String getRequestName(List<String> line);
+    protected abstract String getRequestName(List<String> line);
 
-    abstract Long getRequestStart(List<String> line);
+    protected abstract Long getRequestStart(List<String> line);
 
-    abstract Long getRequestEnd(List<String> line);
+    protected abstract Long getRequestEnd(List<String> line);
 
-    abstract boolean getRequestSuccess(List<String> line);
+    protected abstract boolean getRequestSuccess(List<String> line);
 
-    private SimulationContext invalidFile() {
+    protected SimulationContext invalidFile() {
         throw new IllegalArgumentException(String.format(
                 "Invalid simulation file: %s expecting " + "Gatling 2.1, 2.3.1 or 3.x format", file.getAbsolutePath()));
     }

@@ -35,7 +35,7 @@ public class ParserFactory {
         return getVersionSpecificParser(file, null);
     }
 
-    private static SimulationParser getVersionSpecificParser(File file, Float apdexT) throws IOException {
+    protected static SimulationParser getVersionSpecificParser(File file, Float apdexT) throws IOException {
         CsvParser p = new CsvParserBuilder().trimWhitespace(true).allowUnbalancedQuotes(true).separator('\t').build();
         CsvReader reader = new CsvReaderBuilder(Utils.getReaderFor(file)).csvParser(p).build();
 

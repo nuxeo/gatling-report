@@ -35,45 +35,45 @@ import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
 
 public class Report {
-    private static final String YAML = "yaml/";
+    protected static final String YAML = "yaml/";
 
-    private static final String HTML = "html/";
+    protected static final String HTML = "html/";
 
-    private static final String DEFAULT_FILENAME = "index.html";
+    protected static final String DEFAULT_FILENAME = "index.html";
 
-    private static final String SIMULATION_TEMPLATE = "simulation.mustache";
+    protected static final String SIMULATION_TEMPLATE = "simulation.mustache";
 
-    private static final String TREND_TEMPLATE = "trend.mustache";
+    protected static final String TREND_TEMPLATE = "trend.mustache";
 
-    private static final String DIFF_TEMPLATE = "diff.mustache";
+    protected static final String DIFF_TEMPLATE = "diff.mustache";
 
-    private static final String DEFAULT_SCRIPT = "plotly-latest.min.js";
+    protected static final String DEFAULT_SCRIPT = "plotly-latest.min.js";
 
-    private static final String DEFAULT_CDN_SCRIPT = "https://cdn.plot.ly/plotly-latest.min.js";
+    protected static final String DEFAULT_CDN_SCRIPT = "https://cdn.plot.ly/plotly-latest.min.js";
 
-    private final List<SimulationContext> stats;
+    protected final List<SimulationContext> stats;
 
-    private File outputDirectory;
+    protected File outputDirectory;
 
-    private Writer writer;
+    protected Writer writer;
 
-    private List<String> scripts = new ArrayList<>();
+    protected final List<String> scripts = new ArrayList<>();
 
-    private boolean includeJs = false;
+    protected boolean includeJs = false;
 
-    private String template;
+    protected String template;
 
-    private String graphiteUrl, user, password;
+    protected String graphiteUrl, user, password;
 
-    private Graphite graphite;
+    protected Graphite graphite;
 
-    private ZoneId zoneId;
+    protected ZoneId zoneId;
 
-    private boolean yaml = false;
+    protected boolean yaml = false;
 
-    private List<String> map;
+    protected List<String> map;
 
-    private String filename = DEFAULT_FILENAME;
+    protected String filename = DEFAULT_FILENAME;
 
     public Report(List<SimulationContext> stats) {
         this.stats = stats;
@@ -123,7 +123,7 @@ public class Report {
         mustache.execute(getWriter(), stats.get(0).setScripts(getScripts())).flush();
     }
 
-    private Mustache getMustache() throws FileNotFoundException {
+    protected Mustache getMustache() throws FileNotFoundException {
         MustacheFactory mf = new DefaultMustacheFactory();
         Mustache mustache;
         if (template == null) {
@@ -137,7 +137,7 @@ public class Report {
     public void createTrendReport() throws IOException {
         Mustache mustache = getMustache();
         if (map != null && map.size() == stats.size()) {
-            HashMap<String, Object> scopes = new HashMap<String, Object>();
+            HashMap<String, Object> scopes = new HashMap<>();
             scopes.put("trend", new TrendContext(stats).setScripts(getScripts()));
             int i = 0;
             for (String name : map) {
@@ -152,7 +152,7 @@ public class Report {
     public void createDiffReport() throws IOException {
         Mustache mustache = getMustache();
         if (map != null && map.size() == stats.size()) {
-            HashMap<String, Object> scopes = new HashMap<String, Object>();
+            HashMap<String, Object> scopes = new HashMap<>();
             scopes.put("diff", new DiffContext(stats).setScripts(getScripts()));
             int i = 0;
             for (String name : map) {

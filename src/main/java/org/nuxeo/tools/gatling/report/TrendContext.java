@@ -25,13 +25,13 @@ import java.util.stream.Collectors;
 
 public class TrendContext {
 
-    String scenario;
+    protected final String scenario;
 
-    TrendStat all = new TrendStat();
+    protected final TrendStat all = new TrendStat();
 
-    List<TrendStat> requests = new ArrayList<>();
+    protected final List<TrendStat> requests = new ArrayList<>();
 
-    List<String> scripts;
+    protected List<String> scripts;
 
     public TrendContext(List<SimulationContext> stats) {
         Set<String> names = new HashSet<>();
@@ -40,8 +40,8 @@ public class TrendContext {
         for (String requestName : requestNames) {
             requests.add(new TrendStat());
         }
-        ArrayList<SimulationContext> orderedStats = new ArrayList<SimulationContext>(stats);
-        Collections.sort(orderedStats, (a, b) -> (int) (a.simStat.start - b.simStat.start));
+        ArrayList<SimulationContext> orderedStats = new ArrayList<>(stats);
+        orderedStats.sort((a, b) -> (int) (a.simStat.start - b.simStat.start));
         for (SimulationContext simStat : orderedStats) {
             names.add(simStat.simulationName);
             all.add(simStat.simStat);
@@ -59,7 +59,7 @@ public class TrendContext {
         return this;
     }
 
-    private List<String> getRequestListSorted(SimulationContext stat) {
+    protected List<String> getRequestListSorted(SimulationContext stat) {
         return stat.getRequests().stream().map(s -> s.request).collect(Collectors.toList());
     }
 
@@ -71,18 +71,13 @@ public class TrendContext {
         return requests.get(1);
     }
 
-    class TrendStat {
-        String name;
-
-        Integer indice;
-
-        List<String> xvalues = new ArrayList<>();
-
-        List<Double> yvalues = new ArrayList<>();
-
-        List<Long> yerrors = new ArrayList<>();
-
-        List<Double> rps = new ArrayList<>();
+    protected class TrendStat {
+        protected final List<String> xvalues = new ArrayList<>();
+        protected final List<Double> yvalues = new ArrayList<>();
+        protected final List<Long> yerrors = new ArrayList<>();
+        protected final List<Double> rps = new ArrayList<>();
+        protected String name;
+        protected Integer indice;
 
         public void add(RequestStat stat) {
             if (stat == null) {

@@ -26,13 +26,13 @@ import org.apache.log4j.Logger;
 import com.beust.jcommander.JCommander;
 
 public class App implements Runnable {
+    protected static final String PROGRAM_NAME = "java -jar gatling-report.jar";
+
     private final static Logger log = Logger.getLogger(App.class);
 
-    private static final String PROGRAM_NAME = "java -jar gatling-report.jar";
+    protected final Options options;
 
-    private final Options options;
-
-    private List<SimulationContext> stats;
+    protected List<SimulationContext> stats;
 
     public App(String[] args) {
         options = new Options();
@@ -54,13 +54,12 @@ public class App implements Runnable {
         render();
     }
 
-    private void parseSimulationFiles() {
-        List<File> files = new ArrayList<>(options.simulations.size());
-        stats = new ArrayList<>(files.size());
+    protected void parseSimulationFiles() {
+        stats = new ArrayList<>(options.simulations.size());
         options.simulations.forEach(simulation -> parseSimulationFile(new File(simulation)));
     }
 
-    private void parseSimulationFile(File file) {
+    protected void parseSimulationFile(File file) {
         log.info("Parsing " + file.getAbsolutePath());
         try {
             SimulationParser parser = ParserFactory.getParser(file, options.apdexT);
@@ -70,7 +69,7 @@ public class App implements Runnable {
         }
     }
 
-    private void render() {
+    protected void render() {
         if (options.outputDirectory == null) {
             renderAsCsv();
         } else {
@@ -82,7 +81,7 @@ public class App implements Runnable {
         }
     }
 
-    private void renderAsReport() throws IOException {
+    protected void renderAsReport() throws IOException {
         File dir = new File(options.outputDirectory);
         if (!dir.mkdirs()) {
             if (!options.force) {
@@ -103,7 +102,7 @@ public class App implements Runnable {
         log.info("Report generated: " + reportPath);
     }
 
-    private void renderAsCsv() {
+    protected void renderAsCsv() {
         System.out.println(RequestStat.header());
         stats.forEach(System.out::println);
     }

@@ -34,17 +34,23 @@ import org.json.simple.parser.ParseException;
 public class Graphite {
     private final static Logger log = Logger.getLogger(Report.class);
 
-    final ZoneId zoneId;
+    protected final ZoneId zoneId;
 
-    String dashboardUrl, user, password;
+    protected final String dashboardUrl;
 
-    String baseUrl;
+    protected final String user;
 
-    List<Image> images = new ArrayList<>();
+    protected final String password;
 
-    String from, until;
+    protected final String baseUrl;
 
-    File outputDirectory;
+    protected final List<Image> images = new ArrayList<>();
+
+    protected final String from;
+
+    protected final String until;
+
+    protected final File outputDirectory;
 
     public Graphite(String graphiteUrl, String user, String password, SimulationContext stats, File outputDirectory,
             ZoneId zoneId) {
@@ -65,12 +71,12 @@ public class Graphite {
         downloadImages();
     }
 
-    private String getDateAsString(long start) {
+    protected String getDateAsString(long start) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm_yyyyMMdd").withZone(zoneId);
         return formatter.format(Instant.ofEpochMilli(start));
     }
 
-    private void downloadImages() {
+    protected void downloadImages() {
         images.forEach(image -> {
             try {
                 downloadImage(image);
@@ -82,12 +88,12 @@ public class Graphite {
         });
     }
 
-    private void downloadImage(Image image) throws IOException {
+    protected void downloadImage(Image image) throws IOException {
         File dest = image.getFile(outputDirectory);
         Utils.download(new URL(image.url), dest);
     }
 
-    private void parseDashboard() {
+    protected void parseDashboard() {
         JSONParser parser = new JSONParser();
         Object obj;
         try {
@@ -105,21 +111,21 @@ public class Graphite {
         }
     }
 
-    private String getJsonDashboard() throws IOException {
+    protected String getJsonDashboard() throws IOException {
         String url = getJsonDashboardUrl();
         log.info("Downloading: " + url);
         return Utils.getContent(new URL(url));
     }
 
-    private String getJsonDashboardUrl() {
+    protected String getJsonDashboardUrl() {
         return String.format("%s?from=%s&until=%s", dashboardUrl.replace("/dashboard/#", "/dashboard/load/"), from,
                 until);
     }
 
-    class Image {
-        String url;
+    protected class Image {
+        final String url;
 
-        String title;
+        final String title;
 
         String filename;
 
@@ -128,7 +134,7 @@ public class Graphite {
             this.title = title;
         }
 
-        private String getUrl(String url, String from, String until) {
+        protected String getUrl(String url, String from, String until) {
             return url + String.format("&from=%s&until=%s", from, until);
         }
 

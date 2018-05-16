@@ -70,7 +70,7 @@ public class Options {
     public boolean help;
 
     @Parameter(names = { "--timezone" }, description = "Graphite time zone if different from Gatling, ex: Europe/Paris")
-    private String timeZoneString;
+    protected String timeZoneString;
 
     public ZoneId getZoneId() {
         if (timeZoneString == null) {

@@ -19,7 +19,6 @@ package org.nuxeo.tools.gatling.report;
 import static java.lang.Math.max;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,23 +29,23 @@ public class SimulationContext {
 
     protected final Float apdexT;
 
-    protected String filePath;
+    protected final String filePath;
+
+    protected final RequestStat simStat;
+
+    protected final Map<String, RequestStat> reqStats = new HashMap<>();
+
+    protected final Map<String, CountMax> users = new HashMap<>();
 
     protected String simulationName;
 
     protected String scenarioName;
-
-    protected RequestStat simStat;
-
-    protected Map<String, RequestStat> reqStats = new HashMap<>();
 
     protected List<String> scripts = new ArrayList<>();
 
     protected int maxUsers;
 
     protected long start;
-
-    Map<String, CountMax> users = new HashMap<>();
 
     public SimulationContext(String filePath, Float apdexT) {
         this.filePath = filePath;
@@ -69,16 +68,13 @@ public class SimulationContext {
 
     public List<RequestStat> getRequests() {
         List<RequestStat> ret = new ArrayList<>(reqStats.values());
-        Collections.sort(ret, (a, b) -> (int) (1000 * (a.avg - b.avg)));
+        ret.sort((a, b) -> (int) (1000 * (a.avg - b.avg)));
         return ret;
     }
 
     public void addRequest(String scenario, String requestName, long start, long end, boolean success) {
-        RequestStat request = reqStats.get(requestName);
-        if (request == null) {
-            request = new RequestStat(simulationName, scenario, requestName, this.start, apdexT);
-            reqStats.put(requestName, request);
-        }
+        RequestStat request = reqStats.computeIfAbsent(requestName,
+                n -> new RequestStat(simulationName, scenario, n, this.start, apdexT));
         request.add(start, end, success);
         simStat.add(start, end, success);
     }
@@ -118,11 +114,7 @@ public class SimulationContext {
     }
 
     public void addUser(String scenario) {
-        CountMax count = users.get(scenario);
-        if (count == null) {
-            count = new CountMax();
-            users.put(scenario, count);
-        }
+        CountMax count = users.computeIfAbsent(scenario, k -> new CountMax());
         count.incr();
     }
 

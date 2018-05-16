@@ -17,9 +17,9 @@
 package org.nuxeo.tools.gatling.report;
 
 public class DiffRequestStat {
-    RequestStat refR;
+    protected final RequestStat refR;
 
-    RequestStat challengerR;
+    protected final RequestStat challengerR;
 
     public DiffRequestStat(RequestStat refStat, RequestStat challengerStat) {
         refR = refStat;

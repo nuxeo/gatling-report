@@ -22,13 +22,13 @@ import java.util.List;
 import java.util.Locale;
 
 public class DiffContext {
-    SimulationContext ref;
+    protected final SimulationContext ref;
 
-    SimulationContext challenger;
+    protected final SimulationContext challenger;
 
-    List<String> scripts;
+    protected final long max;
 
-    long max;
+    protected List<String> scripts;
 
     public DiffContext(List<SimulationContext> stats) {
         ref = stats.get(0);
@@ -77,7 +77,5 @@ public class DiffContext {
         }
         return "loose";
     }
-
-    ;
 
 }

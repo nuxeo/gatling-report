@@ -35,9 +35,9 @@ import java.util.zip.GZIPInputStream;
 
 public class Utils {
 
-    private static final String GZ = "gz";
+    protected static final String GZ = "gz";
 
-    static void setBasicAuth(String user, String password) {
+    public static void setBasicAuth(String user, String password) {
         if (user == null) {
             return;
         }
@@ -48,7 +48,7 @@ public class Utils {
         });
     }
 
-    static String getBaseUrl(String url) {
+    public static String getBaseUrl(String url) {
         URL targetUrl;
         try {
             targetUrl = new URL(url);
@@ -58,7 +58,7 @@ public class Utils {
         return targetUrl.getProtocol() + "://" + targetUrl.getHost();
     }
 
-    static void download(URL src, File dest) throws IOException {
+    public static void download(URL src, File dest) throws IOException {
         URLConnection conn = src.openConnection();
         byte[] buffer = new byte[8 * 1024];
         try (InputStream input = conn.getInputStream()) {
@@ -71,7 +71,7 @@ public class Utils {
         }
     }
 
-    static String getContent(URL url) throws IOException {
+    public static String getContent(URL url) throws IOException {
         URLConnection conn = url.openConnection();
         StringBuilder ret = new StringBuilder();
         try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
@@ -82,7 +82,7 @@ public class Utils {
         return ret.toString();
     }
 
-    static String getIdentifier(String str) {
+    public static String getIdentifier(String str) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < str.length(); i++) {
             if (Character.isLetter(str.charAt(i)))
@@ -91,7 +91,7 @@ public class Utils {
         return sb.toString().toLowerCase();
     }
 
-    static Reader getReaderFor(File file) throws IOException {
+    public static Reader getReaderFor(File file) throws IOException {
         if (GZ.equals(getFileExtension(file))) {
             InputStream fileStream = new FileInputStream(file);
             InputStream gzipStream = new GZIPInputStream(fileStream);
@@ -100,7 +100,7 @@ public class Utils {
         return new FileReader(file);
     }
 
-    static String getFileExtension(File file) {
+    public static String getFileExtension(File file) {
         String name = file.getName();
         try {
             return name.substring(name.lastIndexOf(".") + 1);
