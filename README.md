@@ -106,17 +106,7 @@ Note that [Plotly charts](https://plot.ly/) can be edited online.
 
 # Limitations
 
-It has been tested successfully with Gatling 2.3.1, 2.1.7 and 3.x `simulation.log` format.
-
-That being said it expects the default format, assertions are not supported, if you encounter:
-```
-Exception in thread "Thread-0" java.lang.IllegalArgumentException: Unknown Gatling simulation version: [ASSERTION, AAMDAAMDAAAAAAAAgFZA]
-	at org.nuxeo.tools.gatling.report.ParserFactory.getVersionSpecificParser(ParserFactory.java:58)
-
-```
-
-Try to remove the first `ASSERTION` lines of the `simulation.log` file.
-
+It has been tested successfully with default Gatling 2.3.1, 2.1.7 and 3.x `simulation.log` format.
 
 # About Nuxeo
 

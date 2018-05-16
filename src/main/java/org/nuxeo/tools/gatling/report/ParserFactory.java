@@ -20,11 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import net.quux00.simplecsv.CsvParser;
-import net.quux00.simplecsv.CsvParserBuilder;
-import net.quux00.simplecsv.CsvReader;
-import net.quux00.simplecsv.CsvReaderBuilder;
-
 public class ParserFactory {
 
     public static SimulationParser getParser(File file, Float apdexT) throws IOException {
@@ -36,10 +31,7 @@ public class ParserFactory {
     }
 
     protected static SimulationParser getVersionSpecificParser(File file, Float apdexT) throws IOException {
-        CsvParser p = new CsvParserBuilder().trimWhitespace(true).allowUnbalancedQuotes(true).separator('\t').build();
-        CsvReader reader = new CsvReaderBuilder(Utils.getReaderFor(file)).csvParser(p).build();
-
-        List<String> header = reader.readNext();
+        List<String> header = getHeaderLine(file);
         // System.out.println(header.size() + " " + header);
         if (header.size() == 6) {
             String version = header.get(5);
@@ -56,6 +48,12 @@ public class ParserFactory {
             }
         }
         throw new IllegalArgumentException("Unknown Gatling simulation version: " + header);
+    }
+
+    protected static List<String> getHeaderLine(File file) throws IOException {
+        try (SimulationReader reader = new SimulationReader(file)) {
+            return reader.readNext();
+        }
     }
 
 }

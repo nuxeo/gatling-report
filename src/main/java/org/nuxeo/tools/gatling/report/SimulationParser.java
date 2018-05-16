@@ -20,11 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import net.quux00.simplecsv.CsvParser;
-import net.quux00.simplecsv.CsvParserBuilder;
-import net.quux00.simplecsv.CsvReader;
-import net.quux00.simplecsv.CsvReaderBuilder;
-
 public abstract class SimulationParser {
 
     protected static final String OK = "OK";
@@ -55,44 +50,43 @@ public abstract class SimulationParser {
 
     public SimulationContext parse() throws IOException {
         SimulationContext ret = new SimulationContext(file.getAbsolutePath(), apdexT);
-        CsvParser p = new CsvParserBuilder().trimWhitespace(true).allowUnbalancedQuotes(true).separator('\t').build();
-        CsvReader reader = new CsvReaderBuilder(Utils.getReaderFor(file)).csvParser(p).build();
+        try (SimulationReader reader = new SimulationReader(file)) {
+            List<String> line;
+            String name;
+            String scenario;
+            long start, end;
+            boolean success;
+            List<String> header = reader.readNext();
+            checkLine(header);
 
-        List<String> line;
-        String name;
-        String scenario;
-        long start, end;
-        boolean success;
-        List<String> header = reader.readNext();
-        checkLine(header);
+            ret.setSimulationName(getSimulationName(header));
+            ret.setScenarioName(getScenario(header));
+            ret.setStart(Long.parseLong(getSimulationStart(header)));
 
-        ret.setSimulationName(getSimulationName(header));
-        ret.setScenarioName(getScenario(header));
-        ret.setStart(Long.parseLong(getSimulationStart(header)));
+            while ((line = reader.readNext()) != null) {
+                scenario = getScenario(line);
 
-        while ((line = reader.readNext()) != null) {
-            scenario = getScenario(line);
-
-            switch (getType(line)) {
-            case RUN:
-                break;
-            case REQUEST:
-                name = getRequestName(line);
-                start = getRequestStart(line);
-                end = getRequestEnd(line);
-                success = getRequestSuccess(line);
-                ret.addRequest(scenario, name, start, end, success);
-                break;
-            case USER:
-                switch (getUserType(line)) {
-                case START:
-                    ret.addUser(scenario);
-                    break;
-                case END:
-                    ret.endUser(scenario);
-                    break;
+                switch (getType(line)) {
+                    case RUN:
+                        break;
+                    case REQUEST:
+                        name = getRequestName(line);
+                        start = getRequestStart(line);
+                        end = getRequestEnd(line);
+                        success = getRequestSuccess(line);
+                        ret.addRequest(scenario, name, start, end, success);
+                        break;
+                    case USER:
+                        switch (getUserType(line)) {
+                            case START:
+                                ret.addUser(scenario);
+                                break;
+                            case END:
+                                ret.endUser(scenario);
+                                break;
+                        }
+                        break;
                 }
-                break;
             }
         }
         ret.computeStat();
