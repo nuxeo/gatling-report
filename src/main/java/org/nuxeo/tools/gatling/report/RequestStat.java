@@ -48,7 +48,7 @@ public class RequestStat {
 
     protected long count, successCount, errorCount;
 
-    protected long min, max, stddev, p50, p95, p99;
+    protected long min, max, stddev, p50, p90, p95, p99;
 
     protected double rps, avg;
 
@@ -79,7 +79,7 @@ public class RequestStat {
 
     public static String header() {
         return "simulation\tscenario\tmaxUsers\trequest\tstart\tstartDate\tduration\tend\tcount\tsuccessCount\t"
-                + "errorCount\tmin\tp50\tp95\tp99\tmax\tavg\tstddev\trps\tapdex\trating";
+                + "errorCount\tmin\tp50\tp90\tp95\tp99\tmax\tavg\tstddev\trps\tapdex\trating";
     }
 
     public void add(long start, long end, boolean success) {
@@ -110,6 +110,7 @@ public class RequestStat {
             sum += d;
         avg = sum / times.length;
         p50 = (long) StatUtils.percentile(times, 50.0);
+        p90 = (long) StatUtils.percentile(times, 90.0);
         p95 = (long) StatUtils.percentile(times, 95.0);
         p99 = (long) StatUtils.percentile(times, 99.0);
         StandardDeviation stdDev = new StandardDeviation();
@@ -176,8 +177,8 @@ public class RequestStat {
     @Override
     public String toString() {
         return String.format(Locale.ENGLISH,
-                "%s\t%s\t%s\t%s\t%s\t%s\t%.2f\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%.2f\t%s\t%.2f\t%.2f\t%s",
+                "%s\t%s\t%s\t%s\t%s\t%s\t%.2f\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%.2f\t%s\t%.2f\t%.2f\t%s",
                 simulation, scenario, maxUsers, request, start, startDate, duration, end, count, successCount,
-                errorCount, min, p50, p95, p99, max, avg, stddev, rps, apdex.getScore(), apdex.getRating());
+                errorCount, min, p50, p90, p95, p99, max, avg, stddev, rps, apdex.getScore(), apdex.getRating());
     }
 }
