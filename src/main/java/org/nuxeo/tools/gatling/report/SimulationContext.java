@@ -84,7 +84,6 @@ public class SimulationContext {
         simStat.computeStat(maxUsers);
         reqStats.values()
                 .forEach(request -> request.computeStat(simStat.duration, users.get(request.scenario).maximum));
-
     }
 
     public void setScenarioName(String name) {
