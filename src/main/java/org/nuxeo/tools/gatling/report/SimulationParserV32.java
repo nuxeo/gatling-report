@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Gatling 3.? simulation format
+ * Gatling 3.2 simulation format
  */
 public class SimulationParserV32 extends SimulationParser {
 
@@ -45,12 +45,19 @@ public class SimulationParserV32 extends SimulationParser {
     }
 
     protected String getScenario(List<String> line) {
+        String user;
         if (USER.equals(line.get(0))) {
-            String ret = line.get(1);
-            userScenario.put(line.get(2), ret);
-            return ret;
+            user = line.get(2);
+            if (START.equals(line.get(3))) {
+                String ret = line.get(1);
+                userScenario.put(user, ret);
+            }
+        } else if (RUN.equals(line.get(0))) {
+            return line.get(1);
+        } else {
+            user = line.get(1);
         }
-        return userScenario.get(line.get(1));
+        return userScenario.get(user);
     }
 
     protected String getType(List<String> line) {
