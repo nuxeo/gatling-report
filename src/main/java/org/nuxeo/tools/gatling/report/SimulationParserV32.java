@@ -82,6 +82,6 @@ public class SimulationParserV32 extends SimulationParser {
     }
 
     protected boolean getRequestSuccess(List<String> line) {
-        return OK.equals(line.get(7));
+        return OK.equals(line.get(6));
     }
 }
