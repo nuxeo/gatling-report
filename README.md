@@ -18,7 +18,7 @@ bench, help to pinpoint slow requests.
 
 ## Download
 
-Take the latest jar from [nexus](http://maven.nuxeo.org/nexus/#nexus-search;quick~gatling-report).
+Take the latest jar from [nexus](http://maven-eu.nuxeo.org/nexus/#nexus-search;quick~gatling-report).
 
 ## Building from sources
 
