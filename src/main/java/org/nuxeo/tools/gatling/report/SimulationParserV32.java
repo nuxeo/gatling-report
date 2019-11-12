@@ -65,7 +65,6 @@ public class SimulationParserV32 extends SimulationParser {
     }
 
     protected String getUserType(List<String> line) {
-
         return line.get(3);
     }
 
