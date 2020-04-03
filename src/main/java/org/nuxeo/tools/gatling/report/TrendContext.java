@@ -90,7 +90,7 @@ public class TrendContext {
                 indice = stat.indice;
                 xvalues.add(String.format("'%s'", stat.startDate));
                 yvalues.add(stat.avg);
-                yerrors.add(stat.stddev);
+                yerrors.add((long) stat.stddev);
                 rps.add(stat.rps);
             }
         }

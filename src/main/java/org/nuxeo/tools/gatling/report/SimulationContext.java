@@ -74,7 +74,7 @@ public class SimulationContext {
 
     public void addRequest(String scenario, String requestName, long start, long end, boolean success) {
         RequestStat request = reqStats.computeIfAbsent(requestName,
-                n -> new RequestStat(simulationName, scenario, n, this.start, apdexT));
+                n -> new RequestStat(simulationName, scenario, n, start, apdexT));
         request.add(start, end, success);
         simStat.add(start, end, success);
     }
@@ -83,7 +83,7 @@ public class SimulationContext {
         maxUsers = users.values().stream().mapToInt(CountMax::getMax).sum();
         simStat.computeStat(maxUsers);
         reqStats.values()
-                .forEach(request -> request.computeStat(simStat.duration, users.get(request.scenario).maximum));
+                .forEach(request -> request.computeStat(users.get(request.scenario).maximum));
     }
 
     public void setScenarioName(String name) {

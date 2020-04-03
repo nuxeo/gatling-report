@@ -28,7 +28,7 @@ import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 
 public class RequestStat {
-    public static final long MAX_BOXPOINT = 50000;
+    public static final long MAX_BOXPOINT = 500000;
 
     protected static final AtomicInteger statCounter = new AtomicInteger();
 
@@ -48,9 +48,9 @@ public class RequestStat {
 
     protected long count, successCount, errorCount;
 
-    protected long min, max, stddev, p50, p90, p95, p99;
+    protected long min, max, p90, p95, p99, p999;
 
-    protected double rps, avg;
+    protected double rps, avg, mean, stddev;
 
     protected double duration;
 
@@ -79,7 +79,7 @@ public class RequestStat {
 
     public static String header() {
         return "simulation\tscenario\tmaxUsers\trequest\tstart\tstartDate\tduration\tend\tcount\tsuccessCount\t"
-                + "errorCount\tmin\tp50\tp90\tp95\tp99\tmax\tavg\tstddev\trps\tapdex\trating";
+                + "errorCount\tmin\tp90\tp95\tp99\tp999\tmax\tmean\tavg\tstddev\trps";
     }
 
     public void add(long start, long end, boolean success) {
@@ -108,13 +108,14 @@ public class RequestStat {
         double sum = 0;
         for (double d : times)
             sum += d;
-        avg = sum / times.length;
-        p50 = (long) StatUtils.percentile(times, 50.0);
+        avg = StatUtils.mean(times);
+        mean = StatUtils.geometricMean(times);
         p90 = (long) StatUtils.percentile(times, 90.0);
         p95 = (long) StatUtils.percentile(times, 95.0);
         p99 = (long) StatUtils.percentile(times, 99.0);
+        p999 = (long) StatUtils.percentile(times, 99.9);
         StandardDeviation stdDev = new StandardDeviation();
-        stddev = (long) stdDev.evaluate(times, avg);
+        stddev = stdDev.evaluate(times, avg);
         this.duration = duration;
         this.maxUsers = maxUsers;
         rps = (count - errorCount) / duration;
@@ -157,7 +158,7 @@ public class RequestStat {
     }
 
     protected String getDateFromInstant(long start) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd " + "HH:mm:ss")
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd " + "HH:mm:ss.SSS")
                                                        .withZone(ZoneId.systemDefault());
         return formatter.format(Instant.ofEpochMilli(start));
     }
@@ -177,8 +178,8 @@ public class RequestStat {
     @Override
     public String toString() {
         return String.format(Locale.ENGLISH,
-                "%s\t%s\t%s\t%s\t%s\t%s\t%.2f\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%.2f\t%s\t%.2f\t%.2f\t%s",
+                "%s\t%s\t%s\t%s\t%s\t%s\t%.3f\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%.0f\t%.0f\t%.0f\t%.3f",
                 simulation, scenario, maxUsers, request, start, startDate, duration, end, count, successCount,
-                errorCount, min, p50, p90, p95, p99, max, avg, stddev, rps, apdex.getScore(), apdex.getRating());
+                errorCount, min, p90, p95, p99, p999, max, mean, avg, stddev, rps);
     }
 }
