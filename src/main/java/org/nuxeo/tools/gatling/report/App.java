@@ -60,12 +60,16 @@ public class App implements Runnable {
     }
 
     protected void parseSimulationFile(File file) {
-        log.info("Parsing " + file.getAbsolutePath());
+        if(file.isDirectory()) {
+            file = file.toPath().resolve("simulation.log").toFile();
+        }
+        final String absolutePath = file.getAbsolutePath();
+        log.info("Parsing " + absolutePath);
         try {
             SimulationParser parser = ParserFactory.getParser(file, options.apdexT);
             stats.add(parser.parse());
         } catch (IOException e) {
-            log.error("Invalid file: " + file.getAbsolutePath(), e);
+            log.error("Invalid file: " + absolutePath, e);
         }
     }
 
