@@ -4,7 +4,7 @@
 
   <groupId>org.nuxeo.tools</groupId>
   <artifactId>gatling-report</artifactId>
-  <version>5.0</version>
+  <version>5.1-SNAPSHOT</version>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
