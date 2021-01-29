@@ -35,7 +35,10 @@ public class ParserFactory {
         // System.out.println(header.size() + " " + header);
         if (header.size() == 6) {
             String version = header.get(5);
-            if (version.matches("3\\.[2-9].*")) {
+            if (version.matches("3\\.[5-9].*")) {
+                return new SimulationParserV35(file, apdexT);
+            }
+            if (version.matches("3\\.[2-4].*")) {
                 return new SimulationParserV32(file, apdexT);
             }
             if (version.startsWith("3.0")) {

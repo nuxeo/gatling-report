@@ -36,11 +36,13 @@ public class TestParser {
 
     protected static final String SIM_V3_2_GZ = "simulation-v3.2.log.gz";
 
+    protected static final String SIM_V3_5_GZ = "simulation-v3.5.log.gz";
+
     protected static final String SIM_GZ = "simulation-1.log.gz";
 
     @Test
     public void parseSimpleSimulationVersion21() throws Exception {
-        SimulationContext ret = ParserFactory.getParser(getRessourceFile(SIM_SMALL_V2_1)).parse();
+        SimulationContext ret = ParserFactory.getParser(getResourceFile(SIM_SMALL_V2_1)).parse();
         // System.out.println(ret);
         Assert.assertEquals("sim80reindexall", ret.getSimulationName());
         Assert.assertEquals(2, ret.getSimStat().getCount());
@@ -49,7 +51,7 @@ public class TestParser {
 
     @Test
     public void parseCompressedSimulation() throws Exception {
-        SimulationContext ret = ParserFactory.getParser(getRessourceFile(SIM_GZ)).parse();
+        SimulationContext ret = ParserFactory.getParser(getResourceFile(SIM_GZ)).parse();
         // System.out.println(ret);
         Assert.assertEquals("sim50bench", ret.getSimulationName());
         Assert.assertEquals(2464, ret.getSimStat().getCount());
@@ -58,7 +60,7 @@ public class TestParser {
 
     @Test
     public void parseSimulationVersion23() throws Exception {
-        SimulationContext ret = ParserFactory.getParser(getRessourceFile(SIM_V2_3)).parse();
+        SimulationContext ret = ParserFactory.getParser(getResourceFile(SIM_V2_3)).parse();
         // System.out.println(ret);
         Assert.assertEquals("sim20createdocuments", ret.getSimulationName());
         Assert.assertEquals(1000, ret.getSimStat().getCount());
@@ -67,7 +69,7 @@ public class TestParser {
 
     @Test
     public void parseSimpleSimulationVersion3() throws Exception {
-        SimulationContext ret = ParserFactory.getParser(getRessourceFile(SIM_SMALL_V3)).parse();
+        SimulationContext ret = ParserFactory.getParser(getResourceFile(SIM_SMALL_V3)).parse();
         // System.out.println(ret);
         Assert.assertEquals("sim80reindexall", ret.getSimulationName());
         Assert.assertEquals(2, ret.getSimStat().getCount());
@@ -76,7 +78,7 @@ public class TestParser {
 
     @Test
     public void parseSimpleSimulationVersion32Small() throws Exception {
-        SimulationContext ret = ParserFactory.getParser(getRessourceFile(SIM_SMALL_V3_2)).parse();
+        SimulationContext ret = ParserFactory.getParser(getResourceFile(SIM_SMALL_V3_2)).parse();
         // System.out.println(ret);
         Assert.assertEquals("sim80reindexall", ret.getSimulationName());
         Assert.assertEquals(2, ret.getSimStat().getCount());
@@ -85,7 +87,7 @@ public class TestParser {
 
     @Test
     public void parseSimpleSimulationVersion33Small() throws Exception {
-        SimulationContext ret = ParserFactory.getParser(getRessourceFile(SIM_SMALL_V3_3)).parse();
+        SimulationContext ret = ParserFactory.getParser(getResourceFile(SIM_SMALL_V3_3)).parse();
         // System.out.println(ret);
         Assert.assertEquals("sim80reindexall", ret.getSimulationName());
         Assert.assertEquals(2, ret.getSimStat().getCount());
@@ -94,14 +96,23 @@ public class TestParser {
 
     @Test
     public void parseSimpleSimulationVersion32() throws Exception {
-        SimulationContext ret = ParserFactory.getParser(getRessourceFile(SIM_V3_2_GZ)).parse();
+        SimulationContext ret = ParserFactory.getParser(getResourceFile(SIM_V3_2_GZ)).parse();
         // System.out.println(ret);
         Assert.assertEquals("sim50bench", ret.getSimulationName());
         Assert.assertEquals(16095, ret.getSimStat().getCount());
         Assert.assertTrue(ret.toString().contains("_all"));
     }
 
-    protected File getRessourceFile(String filename) throws FileNotFoundException {
+    @Test
+    public void parseSimpleSimulationVersion35() throws Exception {
+        SimulationContext ret = ParserFactory.getParser(getResourceFile(SIM_V3_5_GZ)).parse();
+        // System.out.println(ret);
+        Assert.assertEquals("sim50bench", ret.getSimulationName());
+        Assert.assertEquals(16095, ret.getSimStat().getCount());
+        Assert.assertTrue(ret.toString().contains("_all"));
+    }
+
+    protected File getResourceFile(String filename) throws FileNotFoundException {
         ClassLoader classLoader = getClass().getClassLoader();
         if (classLoader.getResource(filename) == null) {
             throw new FileNotFoundException(filename);
