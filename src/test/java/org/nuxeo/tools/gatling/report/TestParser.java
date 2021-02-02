@@ -38,6 +38,8 @@ public class TestParser {
 
     protected static final String SIM_GZ = "simulation-1.log.gz";
 
+    protected static final String SIM_SMALL_V3_4 = "simulation-small-v3.4.log";
+
     @Test
     public void parseSimpleSimulationVersion21() throws Exception {
         SimulationContext ret = ParserFactory.getParser(getRessourceFile(SIM_SMALL_V2_1)).parse();
@@ -95,9 +97,18 @@ public class TestParser {
     @Test
     public void parseSimpleSimulationVersion32() throws Exception {
         SimulationContext ret = ParserFactory.getParser(getRessourceFile(SIM_V3_2_GZ)).parse();
-        // System.out.println(ret);
+        //System.out.println(ret);
         Assert.assertEquals("sim50bench", ret.getSimulationName());
         Assert.assertEquals(16095, ret.getSimStat().getCount());
+        Assert.assertTrue(ret.toString().contains("_all"));
+    }
+
+    @Test
+    public void parseSimpleSimulationVersion34Small() throws Exception {
+        SimulationContext ret = ParserFactory.getParser(getRessourceFile(SIM_SMALL_V3_4)).parse();
+        //System.out.println(ret);
+        Assert.assertEquals("testsimulationspec", ret.getSimulationName());
+        Assert.assertEquals(31, ret.getSimStat().getCount());
         Assert.assertTrue(ret.toString().contains("_all"));
     }
 
