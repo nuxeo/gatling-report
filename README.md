@@ -106,7 +106,7 @@ Note that [Plotly charts](https://plot.ly/) can be edited online.
 
 # Limitations
 
-It has been tested successfully with default Gatling 2.3.1, 2.1.7, 3.0.0 and 3.2.1 and 3.3.0 `simulation.log` format.
+It has been tested successfully with default Gatling 2.5, 2.4, 2.3.1, 2.1.7, 3.0.0 and 3.2.1 and 3.3.0 `simulation.log` format.
 
 # About Nuxeo
 
