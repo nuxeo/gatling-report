@@ -10,7 +10,7 @@
     <dependencySet>
       <outputDirectory>/</outputDirectory>
       <includes>
-        <include>co.paralleluniverse:capsule:jar</include>
+        <include>io.nextflow:capsule:jar</include>
       </includes>
       <unpack>true</unpack>
       <unpackOptions>
@@ -23,7 +23,7 @@
     <dependencySet>
       <outputDirectory>/</outputDirectory>
       <excludes>
-        <exclude>co.paralleluniverse:capsule:*</exclude>
+        <exclude>io.nextflow:capsule:*</exclude>
       </excludes>
       <useProjectArtifact>true</useProjectArtifact>
       <unpack>false</unpack>
