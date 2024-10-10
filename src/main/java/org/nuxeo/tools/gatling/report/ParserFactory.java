@@ -34,23 +34,22 @@ public class ParserFactory {
         List<String> header = getHeaderLine(file);
         if (header.size() == 6) {
             String version = header.get(5);
-            if (version.matches("3\\.[2-3].*")) {
-                return new SimulationParserV32(file, apdexT);
-            }
-            if (version.startsWith("3.4")) {
-                return new SimulationParserV34(file, apdexT);
-            }
-            if (version.matches("3\\.[5-9].*")) {
-                return new SimulationParserV35(file, apdexT);
-            }
-            if (version.matches("3\\.1[0-1].*")) {
-                return new SimulationParserV35(file, apdexT);
-            }
-            if (version.startsWith("3.0")) {
-                return new SimulationParserV3(file, apdexT);
-            }
             if (version.startsWith("2.")) {
                 return new SimulationParserV2(file, apdexT);
+            }
+            if (version.equals("3.0") || version.startsWith("3.0.")) {
+                return new SimulationParserV3(file, apdexT);
+            }
+            if ("3.2".equals(version) || version.startsWith("3.2.")
+                    || ("3.3".equals(version) || version.startsWith("3.3."))) {
+                return new SimulationParserV32(file, apdexT);
+            }
+            if (version.equals("3.4") || version.startsWith("3.4.")) {
+                return new SimulationParserV34(file, apdexT);
+            }
+            // 3.5 and above
+            if (version.startsWith("3.")) {
+                return new SimulationParserV35(file, apdexT);
             }
         } else if (header.size() == 7) {
             String version = header.get(6);
