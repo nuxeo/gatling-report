@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
+import org.apache.commons.math3.stat.descriptive.rank.Percentile;
 
 public class RequestStat {
     public static final long MAX_BOXPOINT = 50000;
@@ -103,18 +104,19 @@ public class RequestStat {
 
     public void computeStat(double duration, int maxUsers) {
         double[] times = getDurationAsArray();
-        min = (long) StatUtils.min(times);
-        max = (long) StatUtils.max(times);
+        min = Math.round(StatUtils.min(times));
+        max = Math.round(StatUtils.max(times));
         double sum = 0;
         for (double d : times)
             sum += d;
         avg = sum / times.length;
-        p50 = (long) StatUtils.percentile(times, 50.0);
-        p90 = (long) StatUtils.percentile(times, 90.0);
-        p95 = (long) StatUtils.percentile(times, 95.0);
-        p99 = (long) StatUtils.percentile(times, 99.0);
+        Percentile percentile = new Percentile().withEstimationType(Percentile.EstimationType.R_7);
+        p50 = Math.round(percentile.evaluate(times, 50.0));
+        p90 = Math.round(percentile.evaluate(times, 90.0));
+        p95 = Math.round(percentile.evaluate(times, 95.0));
+        p99 = Math.round(percentile.evaluate(times, 99.0));
         StandardDeviation stdDev = new StandardDeviation();
-        stddev = (long) stdDev.evaluate(times, avg);
+        stddev = Math.round(stdDev.evaluate(times, avg));
         this.duration = duration;
         this.maxUsers = maxUsers;
         rps = (count - errorCount) / duration;
