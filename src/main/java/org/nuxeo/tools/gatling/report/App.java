@@ -56,7 +56,7 @@ public class App implements Runnable {
 
     protected void parseSimulationFiles() {
         stats = new ArrayList<>(options.simulations.size());
-        options.simulations.forEach(simulation -> parseSimulationFile(new File(simulation)));
+        options.simulations.parallelStream().forEach(simulation -> parseSimulationFile(new File(simulation)));
     }
 
     protected void parseSimulationFile(File file) {
