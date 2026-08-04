@@ -1,6 +1,6 @@
 # About Gatling report
 
-This is a reporting tool that parses [Galting](http://gatling.io/) result files (aka `simulation.log`) and creates HTML 
+This is a reporting tool that parses [Gatling](http://gatling.io/) result files (aka `simulation.log`) and creates HTML 
 reports with [Plotly](https://plot.ly/) charts or CSV output.
 
 
