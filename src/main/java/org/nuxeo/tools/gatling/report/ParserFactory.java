@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2015-2026 Nuxeo (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -18,19 +18,24 @@ package org.nuxeo.tools.gatling.report;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.List;
 
 public class ParserFactory {
 
-    public static SimulationParser getParser(File file, Float apdexT) throws IOException {
+    public static Parser getParser(File file, Float apdexT) throws IOException {
         return getVersionSpecificParser(file, apdexT);
     }
 
-    public static SimulationParser getParser(File file) throws IOException {
+    public static Parser getParser(File file) throws IOException {
         return getVersionSpecificParser(file, null);
     }
 
-    protected static SimulationParser getVersionSpecificParser(File file, Float apdexT) throws IOException {
+    protected static Parser getVersionSpecificParser(File file, Float apdexT) throws IOException {
+        if (isBinaryFormat(file)) {
+            // Gatling 3.13+ simulation.log format
+            return new SimulationParserV4(file, apdexT);
+        }
         List<String> header = getHeaderLine(file);
         if (header.size() == 6) {
             String version = header.get(5);
@@ -63,6 +68,16 @@ public class ParserFactory {
     protected static List<String> getHeaderLine(File file) throws IOException {
         try (SimulationReader reader = new SimulationReader(file)) {
             return reader.readNext();
+        }
+    }
+
+    /**
+     * Gatling 3.13+ binary format starts with a single {@code 0x00} byte (the RUN record header), whereas every
+     * previous text format starts with the ASCII line {@code RUN\t...}.
+     */
+    protected static boolean isBinaryFormat(File file) throws IOException {
+        try (Reader reader = Utils.getReaderFor(file)) {
+            return reader.read() == 0;
         }
     }
 

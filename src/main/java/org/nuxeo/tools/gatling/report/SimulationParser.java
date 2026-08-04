@@ -1,6 +1,6 @@
 package org.nuxeo.tools.gatling.report;
 /*
- * (C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2015-2026 Nuxeo (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -20,7 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-public abstract class SimulationParser {
+public abstract class SimulationParser implements Parser {
 
     protected static final String OK = "OK";
 

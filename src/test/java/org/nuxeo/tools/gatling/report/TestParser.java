@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2015-2026 Nuxeo (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -43,6 +43,8 @@ public class TestParser {
     protected static final String SIM_V3_5_GZ = "simulation-v3.5.log.gz";
 
     protected static final String SIM_V3_10_GZ = "simulation-v3.10.log.gz";
+
+    protected static final String SIM_V3_15_GZ = "simulation-v3.15.log.gz";
 
     @Test
     public void parseSimpleSimulationVersion21() throws Exception {
@@ -132,6 +134,24 @@ public class TestParser {
         Assert.assertEquals("sim50bench", ret.getSimulationName());
         Assert.assertEquals(16029, ret.getSimStat().getCount());
         Assert.assertTrue(ret.toString().contains("_all"));
+    }
+
+    /**
+     * Gatling 3.13+ binary {@code simulation.log} format, see {@link SimulationParserV4}. This is a real run of
+     * {@code org.nuxeo.cap.bench.Sim20CreateDocuments} against Gatling 3.15.1, stored gzip-compressed since CI
+     * typically moves and gzips report files before they get processed.
+     */
+    @Test
+    public void parseSimulationVersion315() throws Exception {
+        Parser parser = ParserFactory.getParser(getResourceFile(SIM_V3_15_GZ));
+        Assert.assertTrue(parser instanceof SimulationParserV4);
+        SimulationContext ret = parser.parse();
+        // System.out.println(ret);
+        Assert.assertEquals("sim20createdocuments", ret.getSimulationName());
+        Assert.assertEquals(7432, ret.getSimStat().getCount());
+        Assert.assertTrue(ret.toString().contains("_all"));
+        Assert.assertTrue(ret.toString().contains("org.nuxeo.cap.bench.Sim20CreateDocuments"));
+        Assert.assertEquals(2, ret.getRequests().size());
     }
 
     protected File getResourceFile(String filename) throws FileNotFoundException {

@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2015-2026 Nuxeo (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -63,7 +63,7 @@ public class App implements Runnable {
         final long startTime = System.currentTimeMillis();
         log.info("Parsing " + file.getAbsolutePath());
         try {
-            SimulationParser parser = ParserFactory.getParser(file, options.apdexT);
+            Parser parser = ParserFactory.getParser(file, options.apdexT);
             stats.add(parser.parse());
             final long endTime = System.currentTimeMillis();
             log.info("Parsing finished in " + (endTime - startTime) + " ms. File " + file.getAbsolutePath());
